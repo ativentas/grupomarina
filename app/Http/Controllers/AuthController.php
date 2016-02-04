@@ -25,7 +25,8 @@ class AuthController extends Controller
 		$this->validate($request, [
 			'email' => 'required|unique:users|email|max:255',
 			'username' => 'required|alpha_dash|unique:users|max:20',
-			'password' => 'required|min:4',
+			'password' => 'required|min:4|confirmed',
+			'password_confirmation' => 'required',
 		]);
 		
 		$supervisor = 0;

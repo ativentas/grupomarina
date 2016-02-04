@@ -243,7 +243,7 @@ Route::group(['middleware' => ['web']], function () {
 
 	Route::get('/plantilla/detalle/{plantilla_id}', [
 		'uses' => '\Pedidos\Http\Controllers\InventarioController@getPlantilla',
-		'as' => 'plantilla.detalle',
+		'as' => 'plantilla.detalle',	
 		'middleware' => ['auth'],
 	]);
 

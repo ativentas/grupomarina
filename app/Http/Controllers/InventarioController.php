@@ -284,13 +284,15 @@ class InventarioController extends Controller
 		$lineas = LineaPlantilla::where('plantilla_id',$plantilla->id)->get();
 		$categories = Articulo::all();
 
-		return view('plantillas.detalle')
-			->with('plantilla_id', $plantilla->id)
-			->with('restaurante', $plantilla->restaurante)
-			->with('lineas', $lineas)
-			->with('seccion', $plantilla->seccion)
-			->with('descripcion', $plantilla->descripcion)
-			->with('categories', $categories);
+		return redirect()->route('plantilla.detalle', $plantilla->id);
+
+		// return view('plantillas.detalle')
+		// 	->with('plantilla_id', $plantilla->id)
+		// 	->with('restaurante', $plantilla->restaurante)
+		// 	->with('lineas', $lineas)
+		// 	->with('seccion', $plantilla->seccion)
+		// 	->with('descripcion', $plantilla->descripcion)
+		// 	->with('categories', $categories);
 	}
 
 	public function getPlantilla($plantilla_id)
@@ -344,6 +346,7 @@ class InventarioController extends Controller
 			'articulo_codint' =>$_POST['articuloId'],
 			]);
 		// return view('home');
+		
 		return redirect()->back();
 	}
 

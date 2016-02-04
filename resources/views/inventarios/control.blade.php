@@ -118,7 +118,7 @@
         	@foreach ($inventariosCerrados as $inventario)
 					<tr>						
     					<td>{{$inventario->restaurante}}</td>  					
-    					<td>{{$inventario->updated_at->format('d-m-Y | h:m')}}</td>
+    					<td>{{$inventario->updated_at->format('d-m-Y | H:i')}}</td>
     					<td>{{$inventario->user->username}}</td>
     					<td>
     						<form action="{{route('inventarios.detalle',$inventario->id)}}" method="POST">
