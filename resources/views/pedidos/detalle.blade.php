@@ -21,7 +21,7 @@
 	                @endif	                
 	            </div>
 	            <div class="form-group">
-	            	<input type="text" name="cantidad" id="cantidad" placeholder="Cantidad">
+	            	<input type="number" name="cantidad" id="cantidad" placeholder="Cantidad">
 	            </div>
 	            <div class="form-group">
 	            	<button type="submit" class="btn btn-default">Añadir producto</button>
@@ -67,6 +67,7 @@
 	            					<td><input type="text" name="cantidad" value={{$linea->cantidad}}></td>
 							        </form>
 						        @endif
+						        {{$linea->cantidad}}
 						    </td>
         					<td>
         						@if ($pedido->estado == 'Abierto')

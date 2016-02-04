@@ -23,9 +23,13 @@ class PedidoController extends Controller
 			}
 		)->orderBy('created_at', 'desc')->get();
 		// dd($pedidos);
+
 		$categories = Proveedor::all();
 		// dd($categories);
 		
+		if(Auth::user()->isAdmin()){
+			$pedidos = Pedido::abiertos()->orderBy('created_at', 'desc')->get();
+		}
 		return view('pedidos.abiertos')->with('pedidos', $pedidos)->with('categories', $categories);
 	}
 
@@ -35,14 +39,14 @@ class PedidoController extends Controller
 		->where
 		(
 			function($query) {
-				if(Auth::user()->isAdmin()){
-					dd('es administrador');
-					return $query;
-				}
+
 				return $query->where('restaurante', Auth::user()->restaurante);
 			}
 		)->orderBy('updated_at', 'desc')->get();
-		// dd($pedidos);
+		
+		if(Auth::user()->isAdmin()){
+			$pedidos = Pedido::cerrados()->orderBy('updated_at', 'desc')->get();
+		}
 		
 		return view('pedidos.completos')->with('pedidos', $pedidos);
 
@@ -149,7 +153,7 @@ class PedidoController extends Controller
 		$linea->cantidad = $cantidad;
 		$linea->save();
 
-		return redirect()->back()	;
+		return redirect()->back();
 	}
 
 	public function postCompletado (Request $request, $pedido_id)
@@ -163,6 +167,19 @@ class PedidoController extends Controller
 		$pedidocompletado->save();
 
 		return redirect()->back();
+	}
+
+	public function postDescompletado (Request $request, $pedido_id)
+	{
+		$this->validate($request, [
+			'descompletado' =>'required',
+		]);
+		$pedidocompletado = Pedido::where('id', $pedido_id)->first();
+		$estado = 'Abierto';
+		$pedidocompletado->estado = $estado;
+		$pedidocompletado->save();
+
+		return redirect()->back()->with('info', 'El pedido se ha abierto, ya puedes modificarlo, pero solo porque eres supervisor');
 	}
 
 }

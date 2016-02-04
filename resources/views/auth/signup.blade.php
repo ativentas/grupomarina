@@ -34,6 +34,9 @@
 						<option>RACO</option>
 					</select>
 				</div>
+				<div class="checkbox">
+		    				<label><input type="checkbox" name="supervisor" id="supervisor" value="1"> Es supervisor de ese Restaurante</label>
+		  				</div>
 	            <div class="form-group">
 	                <button type="submit" class="btn btn-default">Registrar</button>
 	            </div>

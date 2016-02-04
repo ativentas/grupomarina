@@ -27,12 +27,18 @@ class AuthController extends Controller
 			'username' => 'required|alpha_dash|unique:users|max:20',
 			'password' => 'required|min:4',
 		]);
+		
+		$supervisor = 0;
+		if(isset($_POST['supervisor'])){
+			$supervisor = 1;
+		}
 
 		User::create([
 			'email' => $request->input('email'),
 			'username' => $request->input('username'),
 			'password' => bcrypt($request->input('password')),
 			'restaurante' => $request->input('restaurante'),
+			'is_supervisor' => $supervisor,
 		]);
 
 		return redirect()

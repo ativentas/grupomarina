@@ -4,18 +4,18 @@ namespace Pedidos\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Articulo extends Model
+class Inventario extends Model
 {
-  
-    protected $table = 'articles';
-
+    
+    protected $table = 'inventarios';
+    
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-    
+        'user_id', 'seccion', 'restaurante', 'estado',
     ];
 
     /**
@@ -27,19 +27,16 @@ class Articulo extends Model
         
     ];
 
-    public function proveedor()
+    public function user()
     {
-        return $this->belongsTo('Pedidos\Models\Proveedor', 'provider_id');
+        return $this->belongsTo('Pedidos\Models\User', 'user_id');
     }
 
     public function lineas()
     {
-        return $this->hasMany('Pedidos\Models\Linea','article_id');
+        return $this->hasMany('Pedidos\Models\LineaInventario','inventario_id');
     }
 
-    public function lineasPlantilla()
-    {
-        return $this->hasMany('Pedidos\Models\LineaPlantilla', 'articulo_codint', 'codigo_interno');
-    }
+
 
 }

@@ -13,7 +13,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'username', 'email', 'password', 'nombre_completo', 'restaurante', 'active', 'is_admin'
+        'username', 'email', 'password', 'nombre_completo', 'restaurante', 'active', 'is_admin', 'is_supervisor',
     ];
 
     /**
@@ -26,6 +26,11 @@ class User extends Authenticatable
     ];
 
     
+    public function scopeNoAdmin($query)
+    {
+        return $query->where('is_admin',false)->where('active', true);
+    }
+
     public function pedidos()
     {
         return $this->hasMany('Pedidos\Models\Pedido', 'user_id');

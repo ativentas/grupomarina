@@ -5,13 +5,16 @@
 
 
 	<div class="row">
-	    <div class="col-lg-6">
+	    <div class="col-lg-8">
 	        @if (!$pedidos->count())
-	        	<p>No hay nigún pedido lanzado</p>
+	        	<p>No hay nigún pedido completado</p>
 	        @else
 	        	<table class="table table-striped">
 				    <thead>
 				    	<tr>
+				    		@if (Auth::user()->isAdmin())
+        					<th>Restaurante</td>
+        					@endif
 				    		<th>Fecha</th>
 				        	<th>Proveedor</th>
 				        	<th></th>
@@ -21,6 +24,9 @@
 				    <tbody>
 	        	@foreach ($pedidos as $pedido)
 						<tr>
+        					@if (Auth::user()->isAdmin())
+        					<td>{{$pedido->restaurante}}</td>
+        					@endif
         					<td>{{$pedido->created_at->format('d-m-Y')}}</td>
         					<td>{{$pedido->proveedor->nombre}}</td>
         					<td>
@@ -31,12 +37,15 @@
 						    </td>
         					<td>
         						@if (Auth::user()->isSupervisor())
-        						<form action="{{route('pedido.borrar',$pedido->id)}}" method="POST">
-						            {{ csrf_field() }}
-						            {{ method_field('DELETE') }}
-						            <button class="btn-danger">Eliminar</button>
-						        </form>
-						        @endif
+				 				<form action="{{route('pedidos.descompletado', $pedido->id)}}" method="POST">
+		 							<div class="checkbox">
+	    								<label><input type="checkbox" name="descompletado" id="descompletado"> Marca para modificar</label>
+					    				<button class="btn-primary">Modificar</button>
+					  				</div>
+	  								{{ csrf_field() }}
+					  			</form>
+					  			@endif
+        
         						
         					</td>
         					

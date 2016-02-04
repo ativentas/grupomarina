@@ -12,7 +12,7 @@ class HomeController extends Controller
 			if(Auth::user()->is_admin){
 				return view('home');
 			}
-			return redirect()->route('pedidos.abiertos');
+			return redirect()->route('inventarios.pendientes');
 		}
 		return view('home');
 	}

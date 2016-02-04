@@ -3,6 +3,7 @@
 @section('content')
 
 	<div class="row">
+	@if (!Auth::user()->isAdmin())
 	    <div class="col-lg-6">
 	        <form role="form" action="{{route('pedidos.abiertos')}}" method="post">
 	            <div class="form-group{{$errors->has('proveedorId') ? ' has-error' : ''}}">
@@ -26,6 +27,7 @@
 	        </form>
 	        <hr>
 	    </div>
+	@endif
 	</div>
 
 	<div class="row">
@@ -36,6 +38,9 @@
 	        	<table class="table table-striped">
 				    <thead>
 				    	<tr>
+				    		@if (Auth::user()->isAdmin())
+        					<th>Restaurante</td>
+        					@endif
 				    		<th>Fecha</th>
 				        	<th>Proveedor</th>
 				        	<th></th>
@@ -45,6 +50,9 @@
 				    <tbody>
 	        	@foreach ($pedidos as $pedido)
 						<tr>
+							@if (Auth::user()->isAdmin())
+        					<td>{{$pedido->restaurante}}</td>
+        					@endif
         					<td>{{$pedido->created_at->format('d-m-Y')}}</td>
         					<td>{{$pedido->proveedor->nombre}}</td>
         					<td>
