@@ -8,8 +8,10 @@
                 <ul class="nav navbar-nav">
                     <!-- <li><a href="{{route('pedidos.abiertos')}}">Pedidos Abiertos</a></li>
                     <li><a href="{{route('pedidos.completos')}}">Ultimos</a></li> -->
+                    @if(!Auth::user()->isAdmin())
                     <li><a href="{{route('inventarios.pendientes')}}">Inventario</a></li>
                     <li><a href="{{route('inventarios.completos')}}">Ultimos</a></li>
+                    @endif
                 </ul>
 <!--                 <form class="navbar-form navbar-left" role="search" action="#">
                     <div class="form-group">
@@ -21,7 +23,7 @@
             <ul class="nav navbar-nav navbar-right">
                 @if (Auth::check())
                     <li><a href="#">{{ Auth::user()->username }}</a></li>
-                    
+                    <li><a href="{{route('user.cambioPassword')}}">Cambio Password</a></li>
                     @if (Auth::user()->isAdmin())
                         <li><a href="{{route('auth.signup')}}">Usuarios</a></li>
                         <li><a href="{{route('inventarios.admin')}}">Inventarios</a></li>

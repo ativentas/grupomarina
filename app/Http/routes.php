@@ -66,6 +66,33 @@ Route::group(['middleware' => ['web']], function () {
 		'as' => 'auth.signout',
 	]);
 
+	Route::get('/usuarios/modificar/{id}', [
+		'uses' => '\Pedidos\Http\Controllers\AuthController@getmodificar',
+		'as' => 'usuarios.modificar',
+		'middleware' => ['auth'],
+	]);
+
+	Route::post('/usuarios/modificar/{id}', [
+		'uses' => '\Pedidos\Http\Controllers\AuthController@postmodificar',
+		'as' => 'usuarios.modificar',
+		'middleware' => ['auth'],
+	]);
+
+	Route::get('/user/changepwd', [
+		'as' => 'user.cambioPassword',
+		function(){return view('auth.cambioPassword');},
+		'middleware' => ['auth'],
+	]);
+
+	Route::post('/user/changepwd', [
+		'uses' => '\Pedidos\Http\Controllers\AuthController@changePassword',
+		'middleware' => ['auth'],
+	]);
+
+
+
+
+
 	/**
 	 * Pedidos
 	 */

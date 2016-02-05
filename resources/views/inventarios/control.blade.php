@@ -1,9 +1,9 @@
 @extends('templates.default')
 
 @section('content')
-<button type="button" class="btn btn-info" data-toggle="collapse" data-target="#demo">Nuevo Inventario</button>
-
-<div id="demo" class="row collapse{{$errors->has('plantillaId')||$errors->has('empleadoId')||$errors->has('restaurante') ? ' in' : ''}}">
+<button type="button" class="btn btn-info" data-toggle="collapse" data-target="#nuevo">Nuevo Inventario</button>
+<hr>
+<div id="nuevo" class="row collapse{{$errors->has('plantillaId')||$errors->has('empleadoId')||$errors->has('restaurante') ? ' in' : ''}}">
 	
     <div id="" class="col-lg-6">
         <form role="form" action="{{route('inventario.crear')}}" method="post">
@@ -63,7 +63,7 @@
 			    <thead>
 			    	<tr>  		
     					<th>Restaurante</td>   					
-			    		<th>Fecha</th>
+			    		<th>Fecha Creacion</th>
 			        	<th>empleado</th>
 			        	<th></th>
 			        	<th></th>
@@ -73,7 +73,7 @@
         	@foreach ($inventariosPendientes as $inventario)
 					<tr>						
     					<td>{{$inventario->restaurante}}</td>  					
-    					<td>{{$inventario->created_at->format('d-m-Y')}}</td>
+    					<td>{{$inventario->created_at->format('d-m-Y H:i')}}</td>
     					<td>{{$inventario->user->username}}</td>
     					<td>
     						<form action="{{route('inventarios.detalle',$inventario->id)}}" method="POST">

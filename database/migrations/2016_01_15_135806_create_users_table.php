@@ -22,6 +22,7 @@ class CreateUsersTable extends Migration
             $table->boolean('active')->default(true);
             $table->boolean('is_admin')->default(false);
             $table->boolean('is_supervisor')->default(false);
+            $table->boolean('is_root')->default(false);
             $table->string('remember_token')->nullable;
             $table->nullableTimestamps();
         });

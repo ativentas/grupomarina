@@ -4,7 +4,7 @@
 
 	<div class="row">
 	    <h3>{{$restaurante}}</h3>
-	    <h3>{{$seccion}} | Plantilla: {{$descripcion}}</h3>
+	    <h3>{{$seccion}} | Plantilla: {{$descripcion}}</h3> 
 	</div>
 	<div class="row">
 	    <div class="col-sm-8">
@@ -18,6 +18,7 @@
 					   		<option value="{{$category->codigo_interno}}">{{$category->codigo_interno}} - {{$category->nombre}}</option>
 					   	@endforeach
 					  </select>
+
 	  
 	                @if ($errors->has('articuloId'))
 	                	<span class="help-block">{{$errors->first('articuloId')}}</span>
@@ -26,11 +27,17 @@
 	            
 	            <div class="form-group">
 	            	<button type="submit" class="btn btn-default">Añadir producto</button>
+						            	
 	            </div>
 	            <input type="hidden" name="_token" value="{{Session::token()}}">
 	        </form>
+
 	       
 	        <hr>
+	    </div>
+
+	    <div class="col-sm-1">
+		   <a href="{{route('inventarios.admin')}}"><button type="button" class="btn btn-success">Terminado</button></a>
 	    </div>
     </div>
 

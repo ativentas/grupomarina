@@ -35,6 +35,10 @@
 	       	@endif
 	        <hr>
 	    </div>
+	    
+	    <div class="col-sm-1">
+	   		<a href="{{route('inventarios.admin')}}"><button type="button" class="btn btn-success">Volver</button></a>
+    	</div>
     </div>
     @endif
 
@@ -49,7 +53,9 @@
 				    	<tr>
 				    		<th>CÓDIGO</th>
 				        	<th>NOMBRE</th>
+				        	@if ($inventario->estado == 'Cerrado')
 				        	<th>UNIDADES</th>
+				        	@endif
 				    	</tr>
 				    </thead>
 
@@ -60,22 +66,14 @@
         					<td>{{$linea->articulo_codint}}</td>
         					<td>{{$linea->articulo->nombre}}</td>
         					<td>		
-        						@if ($inventario->estado == 'Pendiente')
-        						<form action="{{route('lineaInventario.actualizar', $linea->id)}}" method="POST">
-						             {{ csrf_field() }}
-						            
-            					<input type="number" maxlength= "5" name="cantidad" value={{$linea->unidades}}>
-						        <button class="btn-primary">Actualizar</button>
-						        </form>
-						  		@endif
-						    </td>
-        					<td>		
         						@if (Auth::user()->isAdmin() && $inventario->estado == 'Pendiente')
         						<form action="{{route('lineaInventario.eliminar', $linea->id)}}" method="POST">
 						             {{ csrf_field() }}
 						             {{ method_field('DELETE') }}
 						        <button class="btn-primary btn-danger">Eliminar</button>
 						        </form>
+						        @else
+						        <label for="">{{$linea->unidades}}</label>
 						  		@endif
 						    </td>						    
         					
@@ -83,6 +81,7 @@
 	        	@endforeach
 	        		</tbody>
  				</table>
+ 				<!-- yo creo que el if siguiente se puede borrar, pq esta vista es solo para el admin -->
  				@if (!Auth::user()->isAdmin())
 
  				<form action="{{route('inventarios.completo', $inventario_id)}}" method="POST">

@@ -183,7 +183,7 @@ class InventarioController extends Controller
 		$lineas = LineaInventario::where('inventario_id',$inventario->id)->get();
 		$categories = Articulo::all();
 		
-		return redirect()->route('inventarios.detalle', $inventario->id);
+		return redirect()->route('inventarios.detalle', $inventario->id)->with('info','Añade mas artículos o Finaliza para terminar');
 
 // 		return view('inventarios.detalle')
 // 			->with('inventario_id', $inventario->id)
@@ -297,7 +297,7 @@ class InventarioController extends Controller
 
 	public function getPlantilla($plantilla_id)
 	{
-		$lineas =LineaPlantilla::where('plantilla_id',$plantilla_id)->get();
+		$lineas =LineaPlantilla::where('plantilla_id',$plantilla_id)->orderBy('id', 'DESC')->get();
 		$plantilla = Plantilla::where('id', $plantilla_id)->first();
 		$restaurante = $plantilla->restaurante;
 		$seccion = $plantilla->seccion;
