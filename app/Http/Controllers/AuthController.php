@@ -36,9 +36,14 @@ class AuthController extends Controller
 		]);
 		
 		$supervisor = 0;
+		$administrador = 0;
 		if(isset($_POST['supervisor'])){
 			$supervisor = 1;
 		}
+		if(isset($_POST['administrador'])){
+			$administrador = 1;
+		}
+
 
 		User::create([
 			'email' => $request->input('email'),
@@ -46,6 +51,7 @@ class AuthController extends Controller
 			'password' => bcrypt($request->input('password')),
 			'restaurante' => $request->input('restaurante'),
 			'is_supervisor' => $supervisor,
+			'is_admin' => $administrador,
 		]);
 
 		return redirect()

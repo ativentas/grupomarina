@@ -51,12 +51,18 @@
 					<option>N/A</option>
 				</select>
 			</div>
-			<div class="checkbox">
-	    				<label><input type="checkbox" name="supervisor" id="supervisor" value="1"> Es supervisor de ese Restaurante</label>
+            <div class="checkbox">
+                <label><input type="checkbox" name="supervisor" id="supervisor" value="1"> Es supervisor de ese Restaurante</label>
+            </div>
+			<hr>
+            <div class="checkbox">
+	    		<label><input type="checkbox" name="administrador" id="administrador" value="1"> Es administrador</label>
 			</div>
+            @if(Auth::user()->is_root==1) 
             <div class="form-group">
                 <button type="submit" class="btn btn-default">Registrar</button>
             </div>
+            @endif
             <input type="hidden" name="_token" value="{{Session::token()}}">
         </form>
     </div>
