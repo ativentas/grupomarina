@@ -16,7 +16,7 @@ class CreateArticlesTable extends Migration
             $table->increments('id');
             $table->integer('provider_id');
             $table->integer('codigo_interno')->nullable();
-            $table->integer('codigo_barras')->nullable();
+            $table->string('cod_barras',15)->nullable();
             $table->string('nombre');
             $table->string('nombre_largo')->nullable();
             $table->string('medida')->nullable();

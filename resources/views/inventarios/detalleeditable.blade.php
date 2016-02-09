@@ -5,7 +5,7 @@
 	<div class="row">
 
 	    <h3>{{$restaurante}}</h3>
-	    <h3>{{$seccion}} | Inventario nº {{$inventario_id}} | Asignado a: {{$inventario->user->username}} | Completado: {{$inventario->updated_at->format('d-m-Y h:m')}}</h3>
+	    <h3>{{$seccion}} | Inventario nº {{$inventario_id}} | Asignado a: {{$inventario->user->username}}</h3>
 	</div>
 
 	<div class="row">
@@ -56,6 +56,8 @@
 	    				</label>
 	    				<button class="btn-primary" name="oficina">Enviar Oficina</button>
 	  				</div>
+	  				@elseif($inventario->estado == 'Cerrado')
+	  				Completado: {{$inventario->updated_at->format('d-m-Y H:i')}}
 	  				@endif
 	  			</form>
 	  			

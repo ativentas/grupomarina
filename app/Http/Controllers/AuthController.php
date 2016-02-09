@@ -18,7 +18,13 @@ class AuthController extends Controller
 		if (Auth::user()->is_admin == 1)
 		{
 			$usuarios=User::all();
-			return view('auth.signup')->with('usuarios', $usuarios);
+			
+			$usuariosAdministradores=User::where('is_admin',1)->where('is_root',0)->get();
+			$usuariosNormales=User::where('is_admin',0)->where('is_root',0)->get();
+			return view('auth.signup')
+				->with('usuariosAdministradores', $usuariosAdministradores)
+				->with('usuariosNormales', $usuariosNormales)
+				;
 		}
 		
 
@@ -33,6 +39,7 @@ class AuthController extends Controller
 			'username' => 'required|alpha_dash|unique:users|max:20',
 			'password' => 'required|min:4|confirmed',
 			'password_confirmation' => 'required',
+			'restaurante' => 'required',
 		]);
 		
 		$supervisor = 0;
@@ -128,8 +135,11 @@ class AuthController extends Controller
 		]);
 
 		if (Auth::attempt(['username' => $request->username, 'password' => $request->password, 'active' => 1], $request->has('remember'))) {
- 			return redirect()->route('home')->with('info','Estás dentro');
+ 			$info='Bienvenido, '.Auth::user()->username;
+ 			Auth::user()->touch();
+ 			return redirect()->route('home')->with('info', $info);
 		}
+		
 		return redirect()->back()->with('info', 'Ooops, no es correcto, verifica tus datos');
 	}
 

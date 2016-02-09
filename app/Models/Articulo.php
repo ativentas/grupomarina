@@ -42,4 +42,6 @@ class Articulo extends Model
         return $this->hasMany('Pedidos\Models\LineaPlantilla', 'articulo_codint', 'codigo_interno');
     }
 
+
+
 }

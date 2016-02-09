@@ -221,7 +221,6 @@ Route::group(['middleware' => ['web']], function () {
 	]);
 
 
-
 	Route::post('/inventario/fichero/{inventario_id}', [
 		'uses' => '\Pedidos\Http\Controllers\InventarioController@postFicheroInventario',
 		'as' => 'inventarios.fichero',
@@ -231,6 +230,12 @@ Route::group(['middleware' => ['web']], function () {
 	Route::post('/inventario/completo/{inventario_id}', [
 		'uses' => '\Pedidos\Http\Controllers\InventarioController@postCompletoInventario',
 		'as' => 'inventarios.completo',
+		'middleware' => ['auth'],
+	]);
+
+	Route::post('/inventario/pendiente/{inventario_id}', [
+		'uses' => '\Pedidos\Http\Controllers\InventarioController@postPendienteInventario',
+		'as' => 'inventarios.pendiente',
 		'middleware' => ['auth'],
 	]);
 
@@ -295,6 +300,17 @@ Route::group(['middleware' => ['web']], function () {
 	Route::delete('/plantilla/detalle/borrar/{linea_id}', [
 		'uses' => '\Pedidos\Http\Controllers\InventarioController@deleteLineaPlantilla',
 		'as' => 'lineaPlantilla.borrar',
+		'middleware' => ['auth'],
+	]);
+
+
+	/**
+	 * Imprimir PDF
+	 */
+
+	Route::get('/imprimir/{inventario_id}', [
+		'uses' => '\Pedidos\Http\Controllers\InventarioController@imprimirPdf',
+		'as' => 'imprimir',	
 		'middleware' => ['auth'],
 	]);
 

@@ -1,13 +1,16 @@
 @extends('templates.default')
 
 @section('content')
-
-	<div class="row">
+<div class="container">
+	<div class="row col-sm-8">
 	    <h3>{{$restaurante}}</h3>
-	    <h3>{{$seccion}} | Plantilla: {{$descripcion}}</h3> 
+	    <h3 style="display:inline">{{$seccion}} | Plantilla: {{$descripcion}}</h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		<div style="display: inline" class="">
+	     <a href="{{route('plantillas.admin')}}"><button type="button" class="btn btn-success">Vover</button></a> 
 	</div>
+	<hr>
 	<div class="row">
-	    <div class="col-sm-8">
+	    <div class="col-sm-12">
 	      
 	        <form class="form-inline" role="form" action="{{route('lineaPlantilla.crear', $plantilla_id)}}" method="post">
 	            <div class="form-group{{$errors->has('articuloId') ? ' has-error' : ''}}">
@@ -36,9 +39,9 @@
 	        <hr>
 	    </div>
 
-	    <div class="col-sm-1">
-		   <a href="{{route('inventarios.admin')}}"><button type="button" class="btn btn-success">Terminado</button></a>
-	    </div>
+	    
+		  
+	   
     </div>
 
 
@@ -78,5 +81,6 @@
 	        @endif
 	    </div>
 	</div>
+</div>
 	
 @stop

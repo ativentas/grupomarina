@@ -3,6 +3,7 @@
 namespace Pedidos\Http\Controllers;
 
 use DB;
+use PDF;
 use Auth;
 use Pedidos\Models\User;
 use Pedidos\Models\Articulo;
@@ -15,6 +16,32 @@ use Illuminate\Http\Request;
 class InventarioController extends Controller
 {
 	
+	public function imprimirPdf($inventario_id){
+
+		$lineas =LineaInventario::where('inventario_id',$inventario_id)->get();
+
+		$inventario = Inventario::where('id',$inventario_id)->first();
+		
+		$restaurante = $inventario->restaurante;
+		$seccion = $inventario->seccion;
+		$categories = Articulo::all();
+
+		// $data = array('name'=>'John Smith', 'date'=>'1/29/15');
+
+
+		$data = array(
+			'inventario_id' => $inventario_id,
+			'restaurante' => $restaurante,
+			'lineas' => $lineas,
+			'seccion' => $seccion,
+			'inventario' => $inventario,
+			'categories' => $categories,
+			);
+
+		$pdf = PDF::loadView('inventarios.detalleImprimir',$data);
+		return $pdf->stream('temp.pdf');
+	}
+
 	public function getPendientes()
 	{
 		$inventarios = Inventario::where('user_id', Auth::user()->id)->where('estado', 'Pendiente')->orderBy('created_at', 'ASC')->get();
@@ -36,6 +63,7 @@ class InventarioController extends Controller
 			return redirect()->back();
 		}
 		$inventario = Inventario::where('id',$inventario_id)->first();
+		if(!$inventario){return redirect()->route('home');}
 		$restaurante = $inventario->restaurante;
 		$seccion = $inventario->seccion;
 		$categories = Articulo::all();
@@ -59,6 +87,25 @@ class InventarioController extends Controller
 			->with('inventario', $inventario)
 			->with('categories', $categories)
 			;
+	}
+	public function postPendienteInventario(Request $request, $inventario_id)
+	{
+		if(isset($_POST['cambiarPendiente'])){
+			
+			if ($request->pendiente === 'yes') {
+			    // checked. Actualizar campo 'estado'
+			 	$inventario = Inventario::where('id', $inventario_id)->first();
+				$estado = 'Pendiente';
+				$inventario->estado = $estado;
+				$inventario->save();
+
+				return redirect()->route('inventarios.admin')->with('info','Ya está el inventario como pendiente de nuevo');   
+			
+			} else {
+			    // unchecked
+			    return redirect()->back()->with('info', 'Si quieres volver a poner como pendiente el inventario debes marcar la casilla');
+			}	
+	}
 	}
 
 	public function postCompletoInventario(Request $request, $inventario_id)
@@ -102,22 +149,23 @@ class InventarioController extends Controller
 
 	public function postFicheroInventario($inventario_id)
 	{
-		$result = DB::table('lineasInventarios')->where('inventario_id',$inventario_id)->select('id', 'articulo_codint', 'talla', 'color', 'unidades', 'precio', 'dto', 'total', 'cod_barras')->get();
+		$result = DB::table('lineasInventarios')->where('inventario_id',$inventario_id)->select('id', 'inventario_id', 'articulo_codint', 'talla', 'color', 'unidades', 'precio', 'dto', 'total', 'cod_barras')->get();
 
   		// dd($result);
 		$fichero = fopen("inventario".$inventario_id.".txt","w");
 		
   		foreach ($result as $linea) {
-  			$id = $linea->id;
+  			$id = $linea->inventario_id;
   			$articulo = $linea->articulo_codint;
   			$talla = $linea->talla;
   			$color = $linea->color;
-  			$unidades = $linea->unidades;
+  			$unidades = number_format($linea->unidades, 2, ',', ' ');
   			$precio = number_format($linea->precio, 2, ',', ' ');
   			$dto = number_format($linea->dto, 2, ',', ' ');
   			$total = number_format($linea->total, 2, ',', ' ');
-  			$cod_barras = $linea->cod_barras.PHP_EOL;
-  			fwrite($fichero,$id."|".$articulo."|".$talla."|".$color."|".$unidades."|".$precio."|".$dto."|".$total."|".$cod_barras); //write to txtfile
+  			$cod_barras = $linea->cod_barras;
+  			// $cod_barras = $linea->cod_barras.PHP_EOL;
+  			fwrite($fichero,$id."|".$articulo."|".$talla."|".$color."|".$unidades."|".$precio."|".$dto."|".$total."|".$cod_barras."|\n"); //write to txtfile
   		}
   		
   		fclose($fichero);
@@ -175,7 +223,8 @@ class InventarioController extends Controller
 			foreach ($lineasP as $lineaP) {
 				LineaInventario::insert([
 				'inventario_id'=> $inventario->id,
-				'articulo_codint' => $lineaP['articulo_codint']
+				'articulo_codint' => $lineaP['articulo_codint'],
+				'cod_barras' => $lineaP['cod_barras'],
 				]);
 
 			}
@@ -183,7 +232,7 @@ class InventarioController extends Controller
 		$lineas = LineaInventario::where('inventario_id',$inventario->id)->get();
 		$categories = Articulo::all();
 		
-		return redirect()->route('inventarios.detalle', $inventario->id)->with('info','Añade mas artículos o Finaliza para terminar');
+		return redirect()->route('inventarios.detalle', $inventario->id)->with('info','Añade mas artículos o Volver para terminar');
 
 // 		return view('inventarios.detalle')
 // 			->with('inventario_id', $inventario->id)
@@ -197,13 +246,15 @@ class InventarioController extends Controller
 	public function nuevaLineaInventario(Request $request, $inventario_id)
 	{
 		$this->validate($request, ['articuloId'=>'required']);
-		
+		$articulo = Articulo::where('codigo_interno',$request->input('articuloId'))->first();
+		$codigo_barras = $articulo->codigo_barras;// dd($articulo);
 		$lineaInventario = LineaInventario::create([
 			'articulo_codint'=>$request->input('articuloId'),
 			'inventario_id' =>$inventario_id,
+			'cod_barras' => $codigo_barras,
 			]);
 		
-		return redirect()->back();
+		return redirect()->back()->with('info', 'Artículo añadido, puedes añadir mas o pulsa volver para salir');
 	}
 
 	public function actualizarLineaInventario(Request $request, $lineaId)
@@ -284,15 +335,9 @@ class InventarioController extends Controller
 		$lineas = LineaPlantilla::where('plantilla_id',$plantilla->id)->get();
 		$categories = Articulo::all();
 
-		return redirect()->route('plantilla.detalle', $plantilla->id);
+		return redirect()->route('plantilla.detalle', $plantilla->id)->with('info','Añade mas artículos o Volver para terminar');
 
-		// return view('plantillas.detalle')
-		// 	->with('plantilla_id', $plantilla->id)
-		// 	->with('restaurante', $plantilla->restaurante)
-		// 	->with('lineas', $lineas)
-		// 	->with('seccion', $plantilla->seccion)
-		// 	->with('descripcion', $plantilla->descripcion)
-		// 	->with('categories', $categories);
+
 	}
 
 	public function getPlantilla($plantilla_id)
@@ -346,8 +391,8 @@ class InventarioController extends Controller
 			'articulo_codint' =>$_POST['articuloId'],
 			]);
 		// return view('home');
-		
-		return redirect()->back();
+			
+		return redirect()->back()->with('info', 'Artículo añadido, puedes añadir mas o pulsa volver para salir');
 	}
 
 

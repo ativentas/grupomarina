@@ -11,10 +11,10 @@
 	
 <div id="nuevo" class="row collapse{{$errors->has('email')||$errors->has('username')||$errors->has('password')||$errors->has('password_confirmation') ? ' in' : ''}}">
     <div class="col-lg-6">
-        <form class="form-vertical" role="form" method="post" action="{{route('auth.signup')}}">
+        <form autocomplete="off" class="form-vertical" role="form" method="post" action="{{route('auth.signup')}}">
             <div class="form-group{{$errors->has('email') ? ' has-error' : ''}}">
                 <label for="email" class="control-label">Correo electrónico</label>
-                <input type="text" name="email" class="form-control" id="email" value="{{Request::old('email') ?: ''}}">
+                <input type="text" autocomplete="off" name="email" class="form-control" id="email" value="{{Request::old('email') ?: ''}}">
                 @if ($errors->has('email'))
                 	<span class="help-block">{{$errors->first('email')}}</span>
                 @endif
@@ -55,14 +55,15 @@
                 <label><input type="checkbox" name="supervisor" id="supervisor" value="1"> Es supervisor de ese Restaurante</label>
             </div>
 			<hr>
+            @if(Auth::user()->is_root==1) 
             <div class="checkbox">
 	    		<label><input type="checkbox" name="administrador" id="administrador" value="1"> Es administrador</label>
 			</div>
-            @if(Auth::user()->is_root==1) 
+            @endif
             <div class="form-group">
                 <button type="submit" class="btn btn-default">Registrar</button>
             </div>
-            @endif
+            
             <input type="hidden" name="_token" value="{{Session::token()}}">
         </form>
     </div>
@@ -71,7 +72,7 @@
 <div class="row">
     <div class="col-lg-8">
         
-        @if (!$usuarios->where('is_admin',1)->count())
+        @if (!$usuariosAdministradores)
         	<p>No hay ningun administrador todavía</p>
         @else
         	<h3>Administradores</h3>
@@ -79,69 +80,73 @@
 			    <thead>
 			    	<tr>  		
     					<th>Nombre</td>
-                        <th>Restaurante</th>   					
+                           					
 			    		<th>Estado</th>
 			        	<th></th>
 			    	</tr>
 			    </thead>
 			    <tbody>
-        	@foreach ($usuarios->where('is_admin',1) as $usuario)
+        	@foreach ($usuariosAdministradores as $usuario)
 					<tr>						
                         <td>{{$usuario->username}}</td>
-    					<td>{{$usuario->restaurante}}</td>
+    					
     					@if ($usuario->active=='1')
     					<td>
 						<label for="" style="color:green">ACTIVO</label>
     					</td>
-    					@if (Auth::user()->is_root==1)	    					
-    					<td>
-    						@if(!$usuario->is_root==1)
+                        <td>
+                            @if(Auth::user()->is_root==1 && !$usuario->is_root==1)
                             <form action="{{route('usuarios.modificar', $usuario->id)}}" method="POST">
-					             {{ csrf_field() }}
-					            <button class="btn-warning" name="estado" value="0">Suspender</button>
-					        </form>
+                                 {{ csrf_field() }}
+                                <button class="btn-warning" name="estado" value="0">Suspender</button>
+                            </form>
                             @endif
-					    </td>   					
+                        </td>
+                        @elseif ($usuario->active=='0')
+                        <td>
+                        <label for="" style="color:red">SUSPENDIDO</label>
+                        </td>
+                        <td>
+                            @if(Auth::user()->is_root==1 && $usuario->is_root==0)
+                            <form action="{{route('usuarios.modificar', $usuario->id)}}" method="POST">
+                                 {{ csrf_field() }}
+                                <button class="btn-success" name="estado" value="1">Reactivar</button>
+                            </form>
+                            @endif
+                        </td>
+                        @endif
+                        
+                        @if (Auth::user()->is_root==1 && $usuario->is_root==0)	    					
+   					
     					<td>
-    						@if(!$usuario->is_root==1)
+    						
                             <form action="{{route('usuarios.modificar', $usuario->id)}}" method="POST">
 					             {{ csrf_field() }}
 					            <button class="btn-danger" name="password" value="reset">Reset Pwd</button>
 					        </form>
-                            @endif
+                            
 					    </td>
     					<td>
-    						<form action="{{route('usuarios.modificar', $usuario->id)}}" method="GET">
+    						
+                            <form action="{{route('usuarios.modificar', $usuario->id)}}" method="GET">
 					             {{ csrf_field() }}
 					            <button class="btn-info">Modificar</button>
-					        </form>
+					        </form>                            
 					    </td>
-					    @endif
-    					@else
-						<td>
-						<label for="" style="color:red">SUSPENDIDO</label>
-    					</td>
-						@if (Auth::user()->is_root==1)
-						<td>
-    						<form action="{{route('usuarios.modificar', $usuario->id)}}" method="POST">
-					             {{ csrf_field() }}
-					            <button class="btn-success" name="estado" value="1">Reactivar</button>
-					        </form>
-					    </td>
-    					<td>
-    						<form action="{{route('usuarios.modificar', $usuario->id)}}" method="POST">
-					             {{ csrf_field() }}
-					            <button class="btn-danger" name="password" value="reset">Reset Pwd</button>
-					        </form>
-					    </td>
-    					<td>
-    						<form action="{{route('usuarios.modificar', $usuario->id)}}" method="GET">
-					             {{ csrf_field() }}
-					            <button class="btn-info">Modificar</button>
-					        </form>
-					    </td>
-						@endif
-    					@endif    					       					
+                        @elseif (Auth::user()->is_root ==0 && Auth::user()->id == $usuario->id)
+					    <td>
+                            
+                            <form action="{{route('usuarios.modificar', $usuario->id)}}" method="GET">
+                                 {{ csrf_field() }}
+                                <button class="btn-info">Modificar</button>
+                            </form>                            
+                        </td>
+                        @else
+                        <td>
+                                                    
+                        </td>
+                        @endif
+    					    					    					       					
 					</tr>
         	@endforeach
         		</tbody>
@@ -152,7 +157,7 @@
     <div class="row">
         <div class="col-lg-8">
             
-            @if (!$usuarios->where('is_admin',0)->count())
+            @if (!$usuariosNormales)
             	<p>No hay ningun usuario todavía</p>
             @else
             	<h3>Usuarios</h3>
@@ -166,7 +171,7 @@
     			    	</tr>
     			    </thead>
     			    <tbody>
-            	@foreach ($usuarios->where('is_admin',0) as $usuario)
+            	@foreach ($usuariosNormales as $usuario)
     					<tr>						
                             <td>{{$usuario->username}}</td>
         					<td>{{$usuario->restaurante}}</td>
@@ -174,22 +179,22 @@
                             <td>
                             <label for="" style="color:green">ACTIVO</label>
                             </td>
-                            @if (Auth::user()->is_root==1)                          
+                            @if (Auth::user()->is_root==1 || Auth::user()->is_admin==1)                          
                             <td>
-                                @if(!$usuario->is_root==1)
+                                
                                 <form action="{{route('usuarios.modificar', $usuario->id)}}" method="POST">
                                      {{ csrf_field() }}
                                     <button class="btn-warning" name="estado" value="0">Suspender</button>
                                 </form>
-                                @endif
+                                
                             </td>                       
                             <td>
-                                @if(!$usuario->is_root==1)
+                                
                                 <form action="{{route('usuarios.modificar', $usuario->id)}}" method="POST">
                                      {{ csrf_field() }}
                                     <button class="btn-danger" name="password" value="reset">Reset Pwd</button>
                                 </form>
-                                @endif
+                                
                             </td>
                             <td>
                                 <form action="{{route('usuarios.modificar', $usuario->id)}}" method="GET">
@@ -202,7 +207,7 @@
                             <td>
                             <label for="" style="color:red">SUSPENDIDO</label>
                             </td>
-                            @if (Auth::user()->is_root==1)
+                            @if (Auth::user()->is_root==1 || Auth::user()->is_admin==1)
                             <td>
                                 <form action="{{route('usuarios.modificar', $usuario->id)}}" method="POST">
                                      {{ csrf_field() }}

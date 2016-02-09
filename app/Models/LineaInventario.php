@@ -14,7 +14,7 @@ class LineaInventario extends Model
      *
      * @var array
      */
-    protected $fillable = ['inventario_id','articulo_codint','unidades'
+    protected $fillable = ['inventario_id','articulo_codint','unidades','cod_barras'
 
     ];
 

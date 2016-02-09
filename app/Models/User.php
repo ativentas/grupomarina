@@ -30,7 +30,12 @@ class User extends Authenticatable
     {
         return $query->where('is_admin',false)->where('active', true);
     }
-
+    
+    public function scopeAdministradores($query)
+    {
+        return $query->where('is_admin',true)->where('active', true);
+    }
+    
     public function pedidos()
     {
         return $this->hasMany('Pedidos\Models\Pedido', 'user_id');
