@@ -99,27 +99,29 @@ class AuthController extends Controller
 		$email = $request->input('email');
 		$username = $request->input('username');
 		$restaurante = $request->input('restaurante');
-		$is_supervisor = 0;
-		$is_admin = 0;
+		$is_supervisor = $usuario->is_supervisor;
+		$is_admin = $usuario->is_admin;
+
 		if(isset($_POST['supervisor'])){
 			$is_supervisor = 1;
+			$usuario->is_supervisor = $is_supervisor;
 		}
 		if(isset($_POST['administrador'])){
 			$is_admin = 1;
+			$usuario->is_admin = $is_admin;
 		}
 		
 		$usuario->email = $email;
 		$usuario->username = $username;
 		$usuario->restaurante = $restaurante;
-		$usuario->is_admin = $is_admin;
-		$usuario->is_supervisor = $is_supervisor;
+		
+		
 		
 		$usuario->save();
 
 		return redirect()->back()->with('info', 'Datos actualizados');
 
 		
-		dd('otro tipo de cambio mas normalito');
 	}
 
 	public function getSignin()
