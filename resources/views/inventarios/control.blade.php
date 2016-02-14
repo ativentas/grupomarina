@@ -5,7 +5,7 @@
 <hr>
 <div id="nuevo" class="row collapse{{$errors->has('plantillaId')||$errors->has('empleadoId')||$errors->has('restaurante') ? ' in' : ''}}">
 	
-    <div id="" class="col-lg-6">
+    <div id="" class="col-md-6">
         <form role="form" action="{{route('inventario.crear')}}" method="post">
             <div class="form-group{{$errors->has('plantillaId') ? ' has-error' : ''}}">
                 <!-- <label for="plantillaId" class="control-label">Nuevo Inventario</label> -->       
@@ -42,6 +42,20 @@
                 	<span class="help-block">{{$errors->first('empleadoId')}}</span>
                 @endif
 			</div>
+			<div class="form-group{{$errors->has('seccion') ? ' has-error' : ''}}">
+	                <label for="seccion" class="control-label">Seccion</label>
+	                <input type="text" name="seccion" class="form-control" id="seccion" value="{{Request::old('seccion') ?: ''}}">
+	                @if ($errors->has('seccion'))
+	                	<span class="help-block">{{$errors->first('seccion')}}</span>
+	                @endif
+            </div>
+			<div class="form-group{{$errors->has('descripcion') ? ' has-error' : ''}}">
+	                <label for="descripcion" class="control-label">Descripcion</label>
+	                <input type="text" name="descripcion" class="form-control" id="descripcion" value="{{Request::old('descripcion') ?: ''}}">
+	                @if ($errors->has('descripcion'))
+	                	<span class="help-block">{{$errors->first('descripcion')}}</span>
+	                @endif
+            </div>
             <div class="form-group">
             	<button type="submit" name="crear" class="btn btn-default">Crear Inventario</button>
             </div>
@@ -53,7 +67,7 @@
 </div>
 
 <div class="row">
-    <div class="col-lg-6">
+    <div class="col-md-12">
         @if (!$inventariosPendientes->count())
         	<p>No hay nigún inventario pendiente de recibir</p>
         @else
@@ -62,11 +76,12 @@
         	<table class="table table-striped">
 			    <thead>
 			    	<tr>  		
-    					<th>Restaurante</td>   					
-			    		<th>Fecha Creacion</th>
-			        	<th>empleado</th>
-			        	<th></th>
-			        	<th></th>
+    					<th class="col-md-2">Restaurante</td>   					
+			    		<th class="col-md-2">Fecha Creacion</th>
+			        	<th class="col-md-2">Empleado</th>
+			        	<th class="col-md-3">Descripcion</th>
+			        	<th class="col-md-2"></th>
+			        	<th class="col-md-1"></th>
 			    	</tr>
 			    </thead>
 			    <tbody>
@@ -74,7 +89,8 @@
 					<tr>						
     					<td>{{$inventario->restaurante}}</td>  					
     					<td>{{$inventario->created_at->format('d-m-Y H:i')}}</td>
-    					<td>{{$inventario->user->username}}</td>
+    					<td @if ($inventario->estado == 'Asignado')style="color:green"@endif>{{$inventario->user->username}}</td>
+    					<td>{{$inventario->descripcion}}</td> 
     					<td>
     						<form action="{{route('inventarios.detalle',$inventario->id)}}" method="POST">
 					             {{ csrf_field() }}

@@ -15,7 +15,7 @@ class Inventario extends Model
      * @var array
      */
     protected $fillable = [
-        'user_id', 'seccion', 'restaurante', 'estado',
+        'user_id', 'seccion', 'restaurante', 'estado', 'descripcion'
     ];
 
     /**

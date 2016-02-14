@@ -245,6 +245,18 @@ Route::group(['middleware' => ['web']], function () {
 		'middleware' => ['auth'],
 	]);
 
+	Route::post('/inventario/admin', [
+		'uses' => '\Pedidos\Http\Controllers\InventarioController@getAdminInventarios',
+		'as' => 'inventarios.admin',
+		'middleware' => ['auth'],
+	]);
+
+	Route::post('/inventario/admin/{id}', [
+		'uses' => '\Pedidos\Http\Controllers\InventarioController@asignarUsuario',
+		'as' => 'inventarios.usuario',
+		'middleware' => ['auth'],
+	]);
+
 	Route::post('/inventario/nuevo', [
 		'uses' => '\Pedidos\Http\Controllers\InventarioController@crearInventario',
 		'as' => 'inventario.crear',
@@ -305,7 +317,7 @@ Route::group(['middleware' => ['web']], function () {
 
 
 	/**
-	 * Imprimir PDF
+	 * PDF
 	 */
 
 	Route::get('/imprimir/{inventario_id}', [
@@ -314,5 +326,25 @@ Route::group(['middleware' => ['web']], function () {
 		'middleware' => ['auth'],
 	]);
 
+	Route::get('fileentry', [
+		'uses' =>'FileEntryController@index',
+		'as' => 'fileentry',
+		'middleware' => ['auth'],]);
+	Route::get('nominas', [
+		'uses' =>'FileEntryController@nominas',
+		'as' => 'nominasEmpleado',
+		'middleware' => ['auth'],]);
+	Route::post('fileentry/add',[ 
+        'as' => 'addentry', 
+        'uses' => 'FileEntryController@add','middleware' => ['auth'],]);
+	Route::delete('fileentry/delete/{id}',[ 
+        'as' => 'deleteentry', 
+        'uses' => 'FileEntryController@delete','middleware' => ['auth'],]);
+	Route::get('fileentry/detalle/{filename}',[ 
+        'as' => 'getFile', 
+        'uses' => 'FileEntryController@getFile','middleware' => ['auth'],]);
+
+
+	Route::resource('control', 'ControlInventarioController');
 
 });

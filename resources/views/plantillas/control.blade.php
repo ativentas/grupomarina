@@ -4,7 +4,7 @@
 @section('content')
 <div class="container">
 
-    <div style="" align="center">
+    <div style="" align="">
         <button type="button" style="" class="btn btn-info" data-toggle="collapse" data-target="#nuevo">Nueva Plantilla</button>
         
     </div>

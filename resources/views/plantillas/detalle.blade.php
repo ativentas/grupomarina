@@ -1,47 +1,47 @@
 @extends('templates.default')
 
 @section('content')
-<div class="container">
-	<div class="row col-sm-8">
-	    <h3>{{$restaurante}}</h3>
-	    <h3 style="display:inline">{{$seccion}} | Plantilla: {{$descripcion}}</h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-		<div style="display: inline" class="">
-	     <a href="{{route('plantillas.admin')}}"><button type="button" class="btn btn-success">Vover</button></a> 
-	</div>
-	<hr>
+
 	<div class="row">
-	    <div class="col-sm-12">
-	      
-	        <form class="form-inline" role="form" action="{{route('lineaPlantilla.crear', $plantilla_id)}}" method="post">
-	            <div class="form-group{{$errors->has('articuloId') ? ' has-error' : ''}}">
-	                
-					  <select class="form-control" id="articuloId" name="articuloId">
-					  		<option value="">Añade un artículo</option>
-					    @foreach ($categories as $category)
-					   		<option value="{{$category->codigo_interno}}">{{$category->codigo_interno}} - {{$category->nombre}}</option>
-					   	@endforeach
-					  </select>
+	    <h3 style="display:inline"><span class="label label-default">Restaurante: {{$restaurante}}</span></h3>
+	    <h3 style="display:inline"><span class="label label-default">Sección: {{$seccion}}</span></h3>
+	    <h3> <span class="label label-primary">Plantilla: {{$descripcion}}</span></h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
-	  
-	                @if ($errors->has('articuloId'))
-	                	<span class="help-block">{{$errors->first('articuloId')}}</span>
-	                @endif	                
-	            </div>
-	            
-	            <div class="form-group">
-	            	<button type="submit" class="btn btn-default">Añadir producto</button>
-						            	
-	            </div>
-	            <input type="hidden" name="_token" value="{{Session::token()}}">
-	        </form>
+	</div>
+	
+	
+    <div class="row">
+      
+        <form class="form-inline" role="form" action="{{route('lineaPlantilla.crear', $plantilla_id)}}" method="post">
+            <div class="form-group{{$errors->has('articuloId') ? ' has-error' : ''}}">
+                
+				  <select class="form-control" id="articuloId" name="articuloId">
+				  		<option value="">Elige artículo</option>
+				    @foreach ($categories as $category)
+				   		<option value="{{$category->codigo_interno}}">{{$category->codigo_interno}} - {{$category->nombre}}</option>
+				   	@endforeach
+				  </select>
 
-	       
-	        <hr>
-	    </div>
+  
+                @if ($errors->has('articuloId'))
+                	<span class="help-block">{{$errors->first('articuloId')}}</span>
+                @endif	                
+            </div>
+            
+            &nbsp;&nbsp;&nbsp;
+        	<button type="submit" class="btn btn-primary">Añadir Artículo</button>					            	
+            
+            <input type="hidden" name="_token" value="{{Session::token()}}">
+			
+			&nbsp;&nbsp;&nbsp;
+    		<div style="display: inline" class="">
+	    	<a href="{{route('plantillas.admin')}}"><button type="button" class="btn btn-success">Vover</button></a>
+	    </div> 
+        </form>
 
-	    
-		  
-	   
+
+       
+        <hr>
     </div>
 
 
@@ -69,7 +69,7 @@
         						<form action="{{route('lineaPlantilla.borrar',$linea->id)}}" method="POST">
 						            {{ csrf_field() }}
 						            {{ method_field('DELETE') }}
-						            <button class="btn-danger">Eliminar</button>
+						            <button class="btn-danger">Borrar Linea</button>
 						        </form>
         					
         					</td>
@@ -81,6 +81,6 @@
 	        @endif
 	    </div>
 	</div>
-</div>
+
 	
 @stop

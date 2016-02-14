@@ -17,7 +17,7 @@
 	        	
 	        	<form action="{{route('inventarios.completo', $inventario_id)}}" method="POST">
 	 				{{ csrf_field() }}
-				@if ($inventario->estado == 'Pendiente')
+				@if ($inventario->estado == 'Asignado')
 				<button class="btn-primary" name="cambios">Guardar Cambios</button>
 	        	@endif
 	        	<table class="table table-striped">
@@ -40,7 +40,7 @@
 	    						@if ($inventario->estado == "Cerrado")
 	    						{{$linea->unidades}}
 	    						@endif		
-	    						@if ($inventario->estado == "Pendiente")					            
+	    						@if ($inventario->estado == "Asignado")					            
 	        					<input type="number" maxlength= "5" name="cantidad_{{$linea->id}}" value={{$linea->unidades}}>
 						  		@endif
 						    </td>
@@ -49,7 +49,7 @@
 	        	@endforeach
 	        		</tbody>
  				</table>
- 					@if ($inventario->estado == 'Pendiente')		
+ 					@if ($inventario->estado == 'Asignado')		
 	 				<div class="checkbox">
 	    				<label>
 		    				<input type="checkbox" name="completado" id="completado" value="yes"> INVENTARIO COMPLETADO

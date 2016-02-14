@@ -45,6 +45,12 @@ class User extends Authenticatable
     {
         return $this->hasMany('Pedidos\Models\Linea', 'user_id');
     }
+    
+    public function fileentries()
+    {
+        return $this->hasMany('Pedidos\Models\Fileentry', 'user_id');
+    }
+
 
     public function isAdmin()
     {

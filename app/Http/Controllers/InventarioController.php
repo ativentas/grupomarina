@@ -44,7 +44,7 @@ class InventarioController extends Controller
 
 	public function getPendientes()
 	{
-		$inventarios = Inventario::where('user_id', Auth::user()->id)->where('estado', 'Pendiente')->orderBy('created_at', 'ASC')->get();
+		$inventarios = Inventario::where('user_id', Auth::user()->id)->where('estado', 'Asignado')->orderBy('created_at', 'ASC')->get();
 		// dd($inventarios);
 		return view('inventarios.pendientes')->with('inventarios', $inventarios);
 	}
@@ -175,12 +175,41 @@ class InventarioController extends Controller
 		// dd($inventario_id);
 	}
 
+	public function asignarUsuario($inventario_id)
+	{
+		$inventario = Inventario::where('id', $inventario_id)->first();
+		$info = '';
+
+		if(isset($_POST['terminado'])){
+			$estado='Asignado';
+			$inventario->estado=$estado;
+			
+			$inventario->save();
+			$info = 'Ya tiene disponible el inventario para cumplimentarlo';
+
+
+		}
+
+		//TODO: está creada la función para cambiar pero no implementada todavía
+		if(isset($_POST['cambiar'])){
+			$inventario->user_id = $_POST['usuario'];
+			$inventario->save();
+			$info = 'Ya está cambiado el usuario';
+
+		}
+
+		return redirect()->route('inventarios.admin')->with('info', $info);
+		// $this->getAdminInventarios();
+
+	}
+
+
 	public function getAdminInventarios()
 	{
-		
+			
 		if (Auth::user()->isAdmin()){
 			$plantillas = Plantilla::all();
-			$inventariosPendientes = Inventario::where('estado', 'Pendiente')->orderBy('created_at', 'DESC')->get();
+			$inventariosPendientes = Inventario::where('estado', 'Pendiente')->orWhere('estado', 'Asignado')->orderBy('created_at', 'DESC')->get();
 			$inventariosCerrados = Inventario::where('estado', 'Cerrado')->orderBy('updated_at', 'DESC')->get();
 			$empleados = User::NoAdmin()->get();
 			return view('inventarios.control')
@@ -203,36 +232,39 @@ class InventarioController extends Controller
 		]);
 
 		$plantilla = Plantilla::where('id',$_POST['plantillaId'])->first();
-		$seccion ="";
-		if ($plantilla) {
-			$seccion = $plantilla->seccion;
-		}
 	
 		$inventario = Inventario::create([
 			'restaurante'=>$_POST['restaurante'],
 			'user_id' =>$_POST['empleadoId'],
+			'estado' => 'Pendiente',
+			'descripcion' => $_POST['descripcion'],
+			'seccion' => $_POST['seccion'],
 			]);
 
-		if ($request->plantillaId == "BLANCO"){
-
-		}
+		
+		if ($request->plantillaId == "BLANCO"){}
 		else {
-
 			$lineasP = LineaPlantilla::where('plantilla_id', $_POST['plantillaId'])->get()->toArray();
-
 			foreach ($lineasP as $lineaP) {
 				LineaInventario::insert([
 				'inventario_id'=> $inventario->id,
 				'articulo_codint' => $lineaP['articulo_codint'],
 				'cod_barras' => $lineaP['cod_barras'],
 				]);
-
 			}
 		}
 		$lineas = LineaInventario::where('inventario_id',$inventario->id)->get();
 		$categories = Articulo::all();
 		
-		return redirect()->route('inventarios.detalle', $inventario->id)->with('info','Añade mas artículos o Volver para terminar');
+		$info='Puedes añadir mas artículos y cuando termines pulsa volver';
+		
+		if($inventario->estado =='Pendiente'){
+			$info='Puedes añadir mas artículos y cuando ya lo tengas terminado pulsa ENVIAR';
+		}
+
+
+		return redirect()->route('inventarios.detalle', $inventario->id)->with('info', $info);
+		
 
 // 		return view('inventarios.detalle')
 // 			->with('inventario_id', $inventario->id)
@@ -253,8 +285,9 @@ class InventarioController extends Controller
 			'inventario_id' =>$inventario_id,
 			'cod_barras' => $codigo_barras,
 			]);
+		$info='Artículo añadido';
 		
-		return redirect()->back()->with('info', 'Artículo añadido, puedes añadir mas o pulsa volver para salir');
+		return redirect()->back()->with('info', $info);
 	}
 
 	public function actualizarLineaInventario(Request $request, $lineaId)
@@ -394,6 +427,7 @@ class InventarioController extends Controller
 			
 		return redirect()->back()->with('info', 'Artículo añadido, puedes añadir mas o pulsa volver para salir');
 	}
+
 
 
 	public function deleteLineaPlantilla ($lineaPlantillaId)

@@ -22,9 +22,17 @@
     		</form>
     		</div>&nbsp;&nbsp;&nbsp;
     		@endif
+
+
 	       	<div style="display:inline"class="center-block">
-	   			<a href="{{route('inventarios.admin')}}"><button type="button" class="btn btn-success">Volver</button></a>
-    		</div>
+	   			<a href="{{route('inventarios.admin')}}"><button type="button" class="btn btn-success" name="terminado">Volver</button></a>
+    		</div>&nbsp;&nbsp;&nbsp;
+			@if ($inventario->estado=='Pendiente')
+			<form style="display: inline" action="{{route('inventarios.usuario', $inventario_id)}}" method="POST">
+	            {{ csrf_field() }}	                		 	
+    		 	<button type="submit" class="btn btn-success" name="terminado">ENVIAR a {{$inventario->user->username}}</button>
+    		</form>
+    		@endif
 
 	</div>
 	<hr>
@@ -32,12 +40,12 @@
 	
 	<div class="row">
 	    <div class="col-sm-8">
-	      	@if ($inventario->estado == 'Pendiente')
+	      	@if ($inventario->estado == 'Asignado' || $inventario->estado == 'Pendiente')
 	        <form class="form-inline" role="form" action="{{route('lineaInventario.crear', $inventario_id)}}" method="post">
 	            <div class="form-group{{$errors->has('articuloId') ? ' has-error' : ''}}">
 	                
 					  <select class="form-control" id="articuloId" name="articuloId">
-					  		<option value="">Añade un artículo</option>
+					  		<option value="">Elige un artículo</option>
 					    @foreach ($categories as $category)
 					   		<option value="{{$category->codigo_interno}}">{{$category->codigo_interno}} - {{$category->nombre}}</option>
 					   	@endforeach
@@ -48,8 +56,8 @@
 	                @endif	                
 	            </div>
 	            
-	            
-	            	<button type="submit" class="btn btn-default">Añadir producto</button>
+	            &nbsp;&nbsp;&nbsp;
+	            	<button type="submit" class="btn btn-primary">Añadir artículo</button>
 	            
 	            <input type="hidden" name="_token" value="{{Session::token()}}">
 	        </form>
@@ -85,11 +93,11 @@
         					<td>{{$linea->articulo_codint}}</td>
         					<td>{{$linea->articulo->nombre}}</td>
         					<td>		
-        						@if ($inventario->estado == 'Pendiente')
+        						@if ($inventario->estado == 'Pendiente' || $inventario->estado == 'Asignado')
         						<form action="{{route('lineaInventario.eliminar', $linea->id)}}" method="POST">
 						             {{ csrf_field() }}
 						             {{ method_field('DELETE') }}
-						        <button class="btn-primary btn-danger">Eliminar</button>
+						        <button class="btn-primary btn-danger">Eliminar Linea</button>
 						        </form>
 						        @else
 						        <label for="">{{$linea->unidades}}</label>

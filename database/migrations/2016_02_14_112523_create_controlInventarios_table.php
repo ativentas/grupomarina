@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateInventariosTable extends Migration
+class CreateControlInventariosTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,15 +12,16 @@ class CreateInventariosTable extends Migration
      */
     public function up()
     {
-        Schema::create('inventarios', function(Blueprint $table) {
+        Schema::create('controlInventarios', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('user_id');
-            $table->string('seccion')->nullable();
             $table->string('restaurante');
-            $table->enum('estado', ['Pendiente','Cerrado','Asignado'])->default('Pendiente');
+            $table->integer('inicial_id');
+            $table->integer('final_id');
+            $table->date('final_fecha');
             $table->string('descripcion');
+            $table->decimal('promedio',4,2)->nullable();
             $table->nullabletimestamps();
-        });    
+        });
     }
 
     /**
@@ -30,6 +31,6 @@ class CreateInventariosTable extends Migration
      */
     public function down()
     {
-        Schema::drop('inventarios');
+        Schema::drop('controlInventarios');
     }
 }
