@@ -14,4 +14,9 @@ class LineaControlInventario extends Model
     {
     	$this->belongsTo('ControlInventario','controlInventarios_id');
     }
+
+    public function articulo()
+    {
+        return $this->belongsTo('Pedidos\Models\Articulo', 'codigoArticulo_id', 'codigo_interno');
+    }
 }

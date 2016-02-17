@@ -29,15 +29,42 @@ class ControlInventarioController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    
     public function create()
-    {
+    {      
         
+        $controles = ControlInventario::all();      
         $inventarios= Inventario::all();
 
-        return view('control.crearControl', compact('inventarios'));
+
+
+        
+        return view('control.crearControl', compact('inventarios','controles'));
         
     }
 
+    public function createFiltrado($filtro)
+    {      
+        
+        switch ($_GET[$filtro]) {
+            case 'MARINA':
+                $controles = ControlInventario::where('restaurante','MARINA')->get();
+                break;
+            case 'CORTES':
+                $controles = ControlInventario::where('restaurante','CORTES')->get();
+                break;
+            case 'RACO':
+                $controles = ControlInventario::where('restaurante','RACO')->get();
+                break;
+            default:
+                $controles = ControlInventario::all();
+        }
+
+        $inventarios= Inventario::all();
+
+        return view('control.crearControl', compact('inventarios','controles'));
+        
+    }
     /**
      * Store a newly created resource in storage.
      *
@@ -60,7 +87,11 @@ class ControlInventarioController extends Controller
         $control->restaurante = $request->restaurante;
         $control->inicial_id = $request->inventario_inic;
         $control->final_id = $request->inventario_final;
+        $control->inicial_fecha = $inventario_inic->updated_at;
         $control->final_fecha = $inventario_final->updated_at;
+        if($control->inicial_fecha > $control->final_fecha){
+            return redirect()->back()->with('info', 'el informe final debe ser posterior');
+        }
         $control->descripcion = $request->descripcion;
         $control->save();
 
@@ -78,6 +109,7 @@ class ControlInventarioController extends Controller
                 'final_uds' => $lineaEquivalenteFinal->unidades,
                 ]);
             }
+        return redirect()->back()->with('info', 'Ya puedes completar el informe');
     }
 
     /**
@@ -88,7 +120,10 @@ class ControlInventarioController extends Controller
      */
     public function show($id)
     {
-        //
+        $control = ControlInventario::where('id', $id)->first();
+        $lineas = LineaControlInventario::where('controlInventarios_id', $id)->get();
+       
+        return view('control.tablaControl', compact('control', 'lineas'));
     }
 
     /**
@@ -99,7 +134,21 @@ class ControlInventarioController extends Controller
      */
     public function edit($id)
     {
-        //
+        $control = ControlInventario::where('id', $id)->first();
+        $lineas = LineaControlInventario::where('controlInventarios_id', $id)->get();
+        
+        $totalInicial = $lineas->sum('inicial_uds');
+        $totalEntradas = $lineas->sum('entradas');
+        $totalVentas = $lineas->sum('ventas');
+        $totalTeorico = $lineas->sum('teorico_uds');
+        $totalFinal = $lineas->sum('final_uds');
+        $totalDesviaciones = $lineas->sum('desviacion_uds');
+
+        $totals = compact('totalInicial', 'totalEntradas', 'totalVentas', 'totalTeorico', 'totalFinal', 'totalDesviaciones');
+
+        return view('control.tablaControlEditable', compact('control', 'lineas', 'totals'));
+    
+
     }
 
     /**
@@ -111,7 +160,45 @@ class ControlInventarioController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        if(isset($_POST['salir'])){
+            return redirect()->route('control.create');
+        }
+        
+        $lineas =LineaControlInventario::where('controlInventarios_id',$id)->get();
+
+        foreach ($lineas as $linea) {
+            $lineaId=$linea->id;
+            $cantidadCompra = "cantidadCompra"."_".$lineaId;
+            $unidadesCompra = $request->input($cantidadCompra);
+            $linea->entradas = $unidadesCompra;            
+            $cantidadVenta = "cantidadVenta"."_".$lineaId;
+            $unidadesVenta = $request->input($cantidadVenta);
+            $linea->ventas = $unidadesVenta;
+            $linea->teorico_uds = $linea->inicial_uds + $unidadesCompra - $unidadesVenta;
+            $linea->desviacion_uds = $linea->final_uds - $linea->teorico_uds;
+            $linea->desviacion_percent = $linea->desviacion_uds / $linea->teorico_uds;
+            $linea->save();
+        }
+
+        //sumar columnas
+        
+        // $totalInicial = $lineas->sum('inicial_uds');
+        // $totalEntradas = $lineas->sum('entradas');
+        // $totalVentas = $lineas->sum('ventas');
+        $totalTeorico = $lineas->sum('teorico_uds');
+        // $totalFinal = $lineas->sum('final_uds'); 
+        $totalDesviaciones = $lineas->sum('desviacion_uds');
+
+        $promedio = $totalDesviaciones / $totalTeorico;
+        $control = ControlInventario::where('id', $id)->first();
+        $control->promedio = $promedio;
+        $control->save();
+
+        
+        // otra forma
+        // $promedio = DB::table('orders')->avg('price');
+        return redirect()->back()->with('info', 'cambios guardados');
+
     }
 
     /**

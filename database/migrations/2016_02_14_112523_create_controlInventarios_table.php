@@ -17,9 +17,10 @@ class CreateControlInventariosTable extends Migration
             $table->string('restaurante');
             $table->integer('inicial_id');
             $table->integer('final_id');
+            $table->date('inicial');
             $table->date('final_fecha');
             $table->string('descripcion');
-            $table->decimal('promedio',4,2)->nullable();
+            $table->decimal('promedio',10,6)->nullable();
             $table->nullabletimestamps();
         });
     }

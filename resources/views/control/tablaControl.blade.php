@@ -8,7 +8,7 @@
 
 <div class="row">
     <div class="col-md-12">
-        <h3>Informe: </h3>
+        <h3>Informe: </h3>{{$control->descripcion}}
     </div>
 </div>
 
@@ -18,10 +18,11 @@
 		<thead class="cf">
             <tr class="bg-success">
                 <th colspan="2" class="text-center">Artículo</th>         
-                <th colspan="1" class="text-center">F. Inicial</th>         
+                
+                <th colspan="1" class="text-center">{{date("d/m/y", strtotime($control->inicial_fecha))}}</th>         
                 <th colspan="2" class="text-center">Movimientos</th>         
                 <th colspan="1" class="text-center">Teórico</th>         
-                <th colspan="1" class="text-center">F. Final</th>         
+                <th colspan="1" class="text-center">{{date("d/m/y", strtotime($control->final_fecha))}}</th>         
                 <th colspan="2" class="text-center">Desviación</th>         
                 </tr>
             <tr>
@@ -37,17 +38,19 @@
 			</tr>
 		</thead>
 		<tbody>
-			<tr>
-                <td class="col-md-1"></td>
-                <td class="col-md-4"></td>
-                <td class="col-md-1"></td>
-                <td class="col-md-1"></td>
-                <td class="col-md-1"></td>
-                <td class="col-md-1"></td>
-                <td class="col-md-1"></td>
-                <td class="col-md-1"></td>
-				<td class="col-md-1"></td>   				
+			@foreach ($lineas as $linea)
+            <tr>
+                <td class="col-md-1">{{$linea->codigoArticulo_id}}</td>
+                <td class="col-md-4">{{$linea->articulo['nombre']}}</td>
+                <td class="col-md-1">{{$linea->inicial_uds}}</td>
+                <td class="col-md-1">{{$linea->entradas}}</td>
+                <td class="col-md-1">{{$linea->ventas}}</td>
+                <td class="col-md-1">{{$linea->teorico_uds}}</td>
+                <td class="col-md-1">{{$linea->final_uds}}</td>
+                <td class="col-md-1">{{$linea->desviacion_uds}}</td>
+				<td class="col-md-1">{{$linea->desviacion_percent}}</td>   				
 			</tr>
+            @endforeach
 		</tbody>
 	</table>
 </div>

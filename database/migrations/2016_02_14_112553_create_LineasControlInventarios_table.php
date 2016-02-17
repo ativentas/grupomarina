@@ -18,11 +18,11 @@ class CreateLineasControlInventariosTable extends Migration
             $table->integer('codigoArticulo_id');
             $table->integer('inicial_uds');
             $table->integer('final_uds');
-            $table->integer('teorico_uds');
             $table->integer('entradas');
             $table->integer('ventas');
+            $table->integer('teorico_uds');
             $table->integer('desviacion_uds');
-            $table->integer('desviacion_percent');
+            $table->decimal('desviacion_percent', 10, 6);
             $table->nullabletimestamps();
         });
     }

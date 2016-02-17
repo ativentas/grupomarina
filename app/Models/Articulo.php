@@ -42,6 +42,9 @@ class Articulo extends Model
         return $this->hasMany('Pedidos\Models\LineaPlantilla', 'articulo_codint', 'codigo_interno');
     }
 
-
+    public function lineasControlInventario()
+    {
+        return $this->hasMany('Pedidos\Models\LineaControlInventario', 'codigoArticulo_id', 'codigo_interno');
+    }
 
 }

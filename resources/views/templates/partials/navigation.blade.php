@@ -52,12 +52,11 @@
                               <li><a href="{{route('control.create')}}">Control</a></li>
                             </ul>
                         </div>
-                        <!-- <li><a href="{{route('inventarios.admin')}}">Inventarios</a></li> -->
-                        <!-- <li><a href="{{route('plantillas.admin')}}">Plantillas</a></li> -->
-                        
+                      
+                    
                     @endif
                     <div class="btn-group">
-                    <li><a href="{{route('auth.signout')}}">Salir</a></li>
+                    <li><button type="button" class="btn btn-default"><a href="{{route('auth.signout')}}">Salir</a></button></li>
                     </div>
                 @else
                     

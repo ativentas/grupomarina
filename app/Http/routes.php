@@ -345,6 +345,10 @@ Route::group(['middleware' => ['web']], function () {
         'uses' => 'FileEntryController@getFile','middleware' => ['auth'],]);
 
 
+	
+	Route::get('control/createFiltrado{filtro}', [
+		'uses' => 'ControlInventarioController@createFiltrado',
+		'as' => 'control.createFiltrado']);
 	Route::resource('control', 'ControlInventarioController');
 
 });

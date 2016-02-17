@@ -4,6 +4,7 @@
 
 <div class="row col-md-12">
     
+    <form style="display:inline" role="form" action="{{route('control.createFiltrado', 'restaurante')}}" method="get">
     <div class="col-md-4 form-group">
         <select class="form-control" id="restaurante" name="restaurante">
             <option value="">RTE: TODOS</option>
@@ -12,8 +13,11 @@
             <option value="RACO">RACO</option>
         </select>                  
     </div>
-    <button type="button" class=btn>Filtrar</button>
+    <button type="submit" class="btn">Filtrar</button>
+    </form>
+   
     <button type="button" class="btn btn-info col-md-offset-1" data-toggle="collapse" data-target="#nuevo">Nuevo Control</button>
+
     <hr>
     
     <div id="nuevo" class="row col-md-6 col-md-offset-3 collapse{{$errors->count()>0 ? ' in' : ''}}">
@@ -79,22 +83,27 @@
         <thead class="cf">
             <tr class="bg-success">
                 <th class="col-md-2">RESTAURANTE.</th>
-                <th class="col-md-5">DESCRIPCION.</th>
+                <th class="col-md-4">DESCRIPCION.</th>
                 <th class="col-md-1">FECHA.</th>
                 <th class="col-md-1 numeric">DESV.</th>
-                <th class="col-md-1"></th>
+                <th class="col-md-2"></th>
 
             </tr>
         </thead>
         <tbody>
+            @foreach ($controles as $control)
             <tr>
-                <td class="col-md-2"></td>
-                <td class="col-md-5"></td>
-                <td class="col-md-1"></td>
-                <td class="col-md-1"></td>
-                <td class="col-md-1"><button type="button" class="btn">Ver</button></td>
+                <td class="col-md-2">{{$control->restaurante}}</td>
+                <td class="col-md-4">{{$control->descripcion}}</td>
+                <td class="col-md-1">{{date("d/m/y", strtotime($control->final_fecha))}}</td>
                 
+                <td class="col-md-1">{{sprintf("%.2f%%", $control->promedio*100)}}</td>
+                <td class="col-md-2">
+                <!-- <button type="button" class="btn btn-default"><a href="{{route('control.show',$control->id)}}">Ver</a></button> -->
+                <button type="button" class="btn btn-default"><a href="{{route('control.edit',$control->id)}}">Detalle</a></button></td>
+              
             </tr>
+            @endforeach
         </tbody>
     </table>
 </div>

@@ -3,7 +3,7 @@
 @section('content')
 	<h3>Introduce tus datos</h3>
 	<div class="row">
-	    <div class="col-lg-4">
+	    <div class="col-md-5">
 	        <form autocomplete="off" class="form-vertical" role="form" method="post" action="{{route('auth.signin')}}">
 	            <div class="form-group{{$errors->has('username') ? ' has-error' : ''}}">
 	                <label for="username" class="control-label">Usuario</label>
