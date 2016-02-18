@@ -81,7 +81,8 @@
 
 
 <div class="row">
-    <p class="bg-success" style="padding:10px;margin-top:20px">Extrapolando, si suponemos un volumen de facturación de 100.000 €/mes, esto equivale a una pérdida de {{number_format($control->promedio*100000, 0, ',', '.')}} €/mes</p>
+    <p class="bg-success" style="padding:10px;margin-top:20px">
+    De acuerdo con estos datos, si se hubiese tikado todo correctamente, los ingresos habrían sido un {{$control->promedio*100*(-1)}} % mayores con los mismos costes, por lo que se puede estimar que para una facturación de 100.000 €/mes del restaurante, el perjuicio sufrido se podría estimar en  {{number_format($control->promedio*100000*(-1), 0, ',', '.')}} €/mes</p>
 </div>
 <!--
 <script>

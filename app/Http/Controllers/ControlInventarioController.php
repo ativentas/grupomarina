@@ -176,7 +176,8 @@ class ControlInventarioController extends Controller
             $linea->ventas = $unidadesVenta;
             $linea->teorico_uds = $linea->inicial_uds + $unidadesCompra - $unidadesVenta;
             $linea->desviacion_uds = $linea->final_uds - $linea->teorico_uds;
-            $linea->desviacion_percent = $linea->desviacion_uds / $linea->teorico_uds;
+            $linea->desviacion_percent = -((($linea->ventas - $linea->desviacion_uds) / $linea->ventas)-1);
+            // $linea->desviacion_percent = $linea->desviacion_uds / $linea->teorico_uds;
             $linea->save();
         }
 
@@ -184,12 +185,13 @@ class ControlInventarioController extends Controller
         
         // $totalInicial = $lineas->sum('inicial_uds');
         // $totalEntradas = $lineas->sum('entradas');
-        // $totalVentas = $lineas->sum('ventas');
+        $totalVentas = $lineas->sum('ventas');
         $totalTeorico = $lineas->sum('teorico_uds');
         // $totalFinal = $lineas->sum('final_uds'); 
         $totalDesviaciones = $lineas->sum('desviacion_uds');
 
-        $promedio = $totalDesviaciones / $totalTeorico;
+        // $promedio = $totalDesviaciones / $totalTeorico;
+        $promedio = -((($totalVentas-$totalDesviaciones) / $totalVentas)-1);
         $control = ControlInventario::where('id', $id)->first();
         $control->promedio = $promedio;
         $control->save();
