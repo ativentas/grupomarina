@@ -11,7 +11,7 @@
     <hr>
     <div id="nuevo" class="row collapse{{$errors->has('restaurante')||$errors->has('seccion')||$errors->has('descripcion') ? ' in' : ''}}">
         <div class="row">   
-            <div class="col-lg-6">
+            <div class="col-md-6">
                 <form role="form" action="{{route('plantilla.nueva')}}" method="post">
                     <div class="form-group{{$errors->has('restaurante') ? ' has-error' : ''}}">
                         <select class="form-control" id="restaurante" name="restaurante">

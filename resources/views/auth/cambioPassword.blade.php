@@ -2,7 +2,7 @@
 
 @section('content')
 	
-<div class="col-lg-6">
+<div class="col-md-5">
     <form class="form-vertical" role="form" method="post" action="{{route('user.cambioPassword')}}">
 
         <div class="form-group">

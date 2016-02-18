@@ -16,7 +16,7 @@
     <button type="submit" class="btn">Filtrar</button>
     </form>
    
-    <button type="button" class="btn btn-info col-md-offset-1" data-toggle="collapse" data-target="#nuevo">Nuevo Control</button>
+    <button type="button" class="btn btn-info col-md-offset-1" data-toggle="collapse" data-target="#nuevo">Nuevo Informe</button>
 
     <hr>
     

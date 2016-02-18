@@ -49,7 +49,7 @@
                             <ul class="dropdown-menu" role="menu">
                               <li><a href="{{route('plantillas.admin')}}">Plantillas</a></li>
                               <li><a href="{{route('inventarios.admin')}}">Inventarios</a></li>
-                              <li><a href="{{route('control.create')}}">Control</a></li>
+                              <li><a href="{{route('control.create')}}">Informes</a></li>
                             </ul>
                         </div>
                       

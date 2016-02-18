@@ -24,7 +24,7 @@
                 <input type="submit" class="btn btn-primary" name ="descargar" value="Descargar">
                 </form>
             </td>
-            <td><button type="button" class="btn btn-info"><a href="/fileentry/detalle/{{ $entry->filename }}" target="_blank">VER</a></button></td>
+            <td><button type="button" class="btn btn-default"><a href="/fileentry/detalle/{{ $entry->filename }}" target="_blank">VER</a></button></td>
           </tr>
         @endforeach
         </tbody>

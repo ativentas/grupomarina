@@ -17,7 +17,7 @@ class CreateControlInventariosTable extends Migration
             $table->string('restaurante');
             $table->integer('inicial_id');
             $table->integer('final_id');
-            $table->date('inicial');
+            $table->date('inicial_fecha');
             $table->date('final_fecha');
             $table->string('descripcion');
             $table->decimal('promedio',10,6)->nullable();
