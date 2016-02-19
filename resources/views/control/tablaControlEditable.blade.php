@@ -68,7 +68,7 @@
               <td style="text-align:right;padding:0 1em 0 0" >{{$totals['totalEntradas']}}</td>
               <td style="text-align:right;padding:0 1em 0 0" >{{$totals['totalVentas']}}</td>
               <td style="text-align:right;padding:0 1em 0 0" >{{$totals['totalTeorico']}}</td>
-              <td style="text-align:right;padding:0 1em 0 0" >{{$totals['totalVentas']}}</td>
+              <td style="text-align:right;padding:0 1em 0 0" >{{$totals['totalFinal']}}</td>
               <td style="text-align:right;padding:0 1em 0 0" >{{$totals['totalDesviaciones']}}</td>
               <td style="text-align:right;font-weight: bold;color:red">{{sprintf("%.2f%%", $control->promedio*100)}}</td>
             </tr>
