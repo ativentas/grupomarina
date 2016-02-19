@@ -34,7 +34,8 @@ class ControlInventarioController extends Controller
     {      
         
         $controles = ControlInventario::all();      
-        $inventarios= Inventario::all();
+        // $inventarios= Inventario::all();
+        $inventarios= Inventario::where('estado', 'Cerrado')->get();
 
 
 
