@@ -138,8 +138,6 @@ class InventarioController extends Controller
 			    // unchecked
 			    return redirect()->back()->with('info', 'Si ya has terminado el inventario, debes marcar la casilla');
 			}	
-
-
 		}
 		if(isset($_POST['cambios'])){
 			return redirect()->back()->with('info', 'Cambios Guardados!!!');
@@ -186,8 +184,6 @@ class InventarioController extends Controller
 			
 			$inventario->save();
 			$info = 'Ya tiene disponible el inventario para cumplimentarlo';
-
-
 		}
 
 		//TODO: está creada la función para cambiar pero no implementada todavía
@@ -195,12 +191,10 @@ class InventarioController extends Controller
 			$inventario->user_id = $_POST['usuario'];
 			$inventario->save();
 			$info = 'Ya está cambiado el usuario';
-
 		}
 
 		return redirect()->route('inventarios.admin')->with('info', $info);
 		// $this->getAdminInventarios();
-
 	}
 
 
