@@ -1,5 +1,6 @@
 <nav class="navbar navbar-default" role="navigation">
     <div class="container">
+        
         <div class="navbar-header">
             <a class="navbar-brand" href="#">Grupo Marina</a>
         </div>
@@ -21,10 +22,10 @@
                     <button type="submit" class="btn btn-default">Buscar</button>
                 </form> -->
             @endif
-            <ul class="nav navbar-nav navbar-right">
+            <ul style="padding-top: 0.5em"class="nav navbar-nav navbar-right">
                 @if (Auth::check())
                     
-                <div class="btn-group">
+                <div style=""class="btn-group">
                     <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
                     {{ Auth::user()->username }} <span class="caret"></span></button>
                     <ul class="dropdown-menu" role="menu">
@@ -33,7 +34,7 @@
                     </ul>
                 </div>
                     @if (Auth::user()->isAdmin())
-                        <div class="btn-group">
+                        <div style=""class="btn-group">
                             <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
                             Usuarios <span class="caret"></span></button>
                             <ul class="dropdown-menu" role="menu">
@@ -43,7 +44,7 @@
                         </div>
 
                         
-                        <div class="btn-group">
+                        <div style=""class="btn-group">
                             <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
                             Inventarios <span class="caret"></span></button>
                             <ul class="dropdown-menu" role="menu">
@@ -55,7 +56,7 @@
                       
                     
                     @endif
-                    <div class="btn-group">
+                    <div style="padding-left: 3em"class="btn-group">
                     <li><button type="button" class="btn btn-default"><a href="{{route('auth.signout')}}">Salir</a></button></li>
                     </div>
                 @else
@@ -64,5 +65,6 @@
                 @endif
             </ul>
         </div>
+
     </div>
 </nav>
