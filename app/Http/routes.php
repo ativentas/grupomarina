@@ -345,10 +345,26 @@ Route::group(['middleware' => ['web']], function () {
         'uses' => 'FileEntryController@getFile','middleware' => ['auth'],]);
 
 
-	
+	//falta middleware
 	Route::get('control/createFiltrado{filtro}', [
 		'uses' => 'ControlInventarioController@createFiltrado',
 		'as' => 'control.createFiltrado']);
 	Route::resource('control', 'ControlInventarioController');
+
+
+	/**
+	 * Cuadrantes
+	 */
+
+	Route::get('cuadrantes', [
+		'uses' =>'CuadranteController@index',
+		'as' => 'cuadrantes',
+		'middleware' => ['auth'],]);
+	Route::get('cuadrante/{id}', [
+		'uses' => 'CuadranteController@mostrarDetalle',
+		'as' => 'cuadrante.detalle',
+		'middleware' => ['auth']
+
+		]);
 
 });

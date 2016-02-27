@@ -12,7 +12,7 @@ class LineaControlInventario extends Model
 
     public function control()
     {
-    	$this->belongsTo('ControlInventario','controlInventarios_id');
+    	$this->belongsTo('Pedidos\Models\ControlInventario','controlInventarios_id');
     }
 
     public function articulo()

@@ -17,13 +17,16 @@ class CreateUsersTable extends Migration
             $table->string('email');
             $table->string('username');
             $table->string('password');
-            $table->string('nombre_completo')->nullable;
-            $table->string('restaurante')->nullable;
+            $table->string('nombre_completo')->nullable();
+            $table->string('restaurante');
+            $table->string('empresa');
+            $table->time('entrada')->nullable();
+            $table->time('salida')->nullable();
             $table->boolean('active')->default(true);
             $table->boolean('is_admin')->default(false);
             $table->boolean('is_supervisor')->default(false);
             $table->boolean('is_root')->default(false);
-            $table->string('remember_token')->nullable;
+            $table->string('remember_token')->nullable();
             $table->nullableTimestamps();
         });
     }

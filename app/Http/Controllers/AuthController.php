@@ -36,10 +36,12 @@ class AuthController extends Controller
 	{
 		$this->validate($request, [
 			'email' => 'required|unique:users|email|max:255',
+			'nombre' => 'required|min:4|max:20',
 			'username' => 'required|alpha_dash|unique:users|max:20',
 			'password' => 'required|min:4|confirmed',
 			'password_confirmation' => 'required',
 			'restaurante' => 'required',
+			'empresa' => 'required',
 		]);
 		
 		$supervisor = 0;
@@ -54,9 +56,11 @@ class AuthController extends Controller
 
 		User::create([
 			'email' => $request->input('email'),
+			'nombre_completo' => $request->input('nombre'),
 			'username' => $request->input('username'),
 			'password' => bcrypt($request->input('password')),
 			'restaurante' => $request->input('restaurante'),
+			'empresa' => $request->input('empresa'),
 			'is_supervisor' => $supervisor,
 			'is_admin' => $administrador,
 		]);
@@ -98,7 +102,9 @@ class AuthController extends Controller
 		
 		$email = $request->input('email');
 		$username = $request->input('username');
+		$nombre = $request->input('nombre');
 		$restaurante = $request->input('restaurante');
+		$empresa = $request->input('empresa');
 		$is_supervisor = $usuario->is_supervisor;
 		$is_admin = $usuario->is_admin;
 
@@ -113,15 +119,15 @@ class AuthController extends Controller
 		
 		$usuario->email = $email;
 		$usuario->username = $username;
+		$usuario->nombre_completo = $nombre;
 		$usuario->restaurante = $restaurante;
-		
-		
+		$usuario->empresa = $empresa;
+			
 		
 		$usuario->save();
 
 		return redirect()->back()->with('info', 'Datos actualizados');
-
-		
+	
 	}
 
 	public function getSignin()

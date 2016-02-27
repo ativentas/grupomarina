@@ -17,7 +17,14 @@
                 <label for="username" class="control-label">Nombre de usuario</label>
                 <input type="text" name="username" class="form-control" id="username" value="{{$usuario->username}}">
                 @if ($errors->has('username'))
-                	<span class="help-block">{{$errors->first('username')}}</span>
+                    <span class="help-block">{{$errors->first('username')}}</span>
+                @endif                  
+            </div>            
+            <div class="form-group{{$errors->has('nombre') ? ' has-error' : ''}}">
+                <label for="username" class="control-label">Nombre Completo</label>
+                <input type="text" name="nombre" class="form-control" id="nombre" value="{{$usuario->nombre_completo}}">
+                @if ($errors->has('nombre'))
+                	<span class="help-block">{{$errors->first('nombre')}}</span>
                 @endif	                
             </div>
             
@@ -30,6 +37,14 @@
 					<option{{$usuario->restaurante=='N/A'?' selected':''}}>N/A</option>
 				</select>
 			</div>
+            <div class="form-group">
+                <label for="empresa" class="control-label">Empresa</label>
+                <select class="form-control" id="empresa" name="empresa">
+                    <option{{$usuario->empresa=='COSTASERVIS'?' selected':''}}>COSTASERVIS</option>
+                    <option{{$usuario->empresa=='VILA MOEMA'?' selected':''}}>VILA MOEMA</option>
+                    <option{{$usuario->empresa=='N/A'?' selected':''}}>N/A</option>
+                </select>
+            </div>
 			@if (Auth::user()->is_root==1)
             <div class="checkbox">
                         <label><input type="checkbox" name="supervisor" id="supervisor" value="yes" {{$usuario->is_supervisor==1?' checked':''}}> Es supervisor de ese Restaurante</label>

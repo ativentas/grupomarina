@@ -13,7 +13,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'username', 'email', 'password', 'nombre_completo', 'restaurante', 'active', 'is_admin', 'is_supervisor',
+        'username', 'email', 'password', 'nombre_completo', 'restaurante', 'empresa','entrada','salida','active', 'is_admin', 'is_supervisor',
     ];
 
     /**
@@ -61,6 +61,10 @@ class User extends Authenticatable
     {
         return (bool) $this->is_supervisor;
     }
-
+    
+    public function lineascuadrantes()
+    {
+        return $this->hasMany('Pedidos\Models\LineaCuadrante','empleado_id');
+    }
 
 }

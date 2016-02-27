@@ -16,7 +16,14 @@
                 <label for="email" class="control-label">Correo electrónico</label>
                 <input type="text" autocomplete="off" name="email" class="form-control" id="email" value="{{Request::old('email') ?: ''}}">
                 @if ($errors->has('email'))
-                	<span class="help-block">{{$errors->first('email')}}</span>
+                    <span class="help-block">{{$errors->first('email')}}</span>
+                @endif
+            </div>
+            <div class="form-group{{$errors->has('nombre') ? ' has-error' : ''}}">
+                <label for="nombre" class="control-label">Nombre Completo</label>
+                <input type="text" autocomplete="off" name="nombre" class="form-control" id="nombre" value="{{Request::old('nombre') ?: ''}}">
+                @if ($errors->has('nombre'))
+                	<span class="help-block">{{$errors->first('nombre')}}</span>
                 @endif
             </div>
             <div class="form-group{{$errors->has('username') ? ' has-error' : ''}}">
@@ -42,17 +49,28 @@
             </div>
             
             <div class="form-group">
-				<!-- <label for="restaurante" class="control-label">Elegir Restaurante</label> -->
-				<select class="form-control" id="restaurante" name="restaurante">
-					<option>Elige un Restaurante</option>
-					<option>MARINA</option>
-					<option>CORTES</option>
-					<option>RACO</option>
-					<option>N/A</option>
-				</select>
-			</div>
+                <!-- <label for="restaurante" class="control-label">Elegir Restaurante</label> -->
+                <select class="form-control" id="restaurante" name="restaurante">
+                    <option>Elige un Restaurante</option>
+                    <option>MARINA</option>
+                    <option>CORTES</option>
+                    <option>RACO</option>
+                    <option>N/A</option>
+                </select>
+            </div>            
+
             <div class="checkbox">
                 <label><input type="checkbox" name="supervisor" id="supervisor" value="1"> Es supervisor de ese Restaurante</label>
+            </div>
+
+            <div class="form-group">
+                <!-- <label for="empresa" class="control-label">Elegir Empresa</label> -->
+                <select class="form-control" id="empresa" name="empresa">
+                    <option>Elige una Empresa</option>
+                    <option>COSTASERVIS</option>
+                    <option>VILA MOEMA</option>
+                    <option>N/A</option>
+                </select>
             </div>
 			<hr>
             @if(Auth::user()->is_root==1) 
