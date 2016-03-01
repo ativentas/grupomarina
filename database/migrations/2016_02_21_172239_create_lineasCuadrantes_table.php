@@ -22,7 +22,9 @@ class CreateLineasCuadrantesTable extends Migration
             $table->time('horaEntradaT')->nullable();
             $table->time('horaSalidaT')->nullable();
             $table->enum('estado',['Pendiente','Requerido','Firmado'])->default('Pendiente');
+            $table->string('email')->nullable();
             $table->string('mensaje_id')->nullable();
+            $table->string('asunto',50)->nullable();
             $table->nullabletimestamps();
         });
     }

@@ -45,6 +45,12 @@
                     <option{{$usuario->empresa=='N/A'?' selected':''}}>N/A</option>
                 </select>
             </div>
+            <div class="form-group">
+                <label for="entrada" class="control-label">Hora Entrada</label>
+                <input type="time" name="entrada" id="entrada" value={{date('G:i',strtotime($usuario->entrada))}}>
+                <label for="entrada" class="control-label">Hora Salida</label>
+                <input type="time" name="salida" id="salida" value={{date("G:i",strtotime($usuario->salida))}}>
+            </div>
 			@if (Auth::user()->is_root==1)
             <div class="checkbox">
                         <label><input type="checkbox" name="supervisor" id="supervisor" value="yes" {{$usuario->is_supervisor==1?' checked':''}}> Es supervisor de ese Restaurante</label>

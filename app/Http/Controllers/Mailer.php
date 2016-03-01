@@ -16,7 +16,6 @@ class Mailer extends Controller
 	{
 		
 		$message = new Message($this->mailer);
-		extract($data);
 
 		require $template;
 

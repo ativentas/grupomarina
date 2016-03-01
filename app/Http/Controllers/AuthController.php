@@ -105,6 +105,8 @@ class AuthController extends Controller
 		$nombre = $request->input('nombre');
 		$restaurante = $request->input('restaurante');
 		$empresa = $request->input('empresa');
+		$entrada = $request->input('entrada');
+		$salida = $request->input('salida');
 		$is_supervisor = $usuario->is_supervisor;
 		$is_admin = $usuario->is_admin;
 
@@ -122,6 +124,8 @@ class AuthController extends Controller
 		$usuario->nombre_completo = $nombre;
 		$usuario->restaurante = $restaurante;
 		$usuario->empresa = $empresa;
+		$usuario->entrada = $entrada;
+		$usuario->salida = $salida;
 			
 		
 		$usuario->save();

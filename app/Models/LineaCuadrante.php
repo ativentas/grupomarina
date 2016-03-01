@@ -11,7 +11,7 @@ class LineaCuadrante extends Model
 
     public function cuadrante()
     {
-    	$this->belongsTo('Pedidos\Models\Cuadrante','cuadrante_id');
+    	return $this->belongsTo('Pedidos\Models\Cuadrante','cuadrante_id');
     }
 
     public function empleado()

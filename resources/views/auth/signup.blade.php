@@ -182,7 +182,8 @@
             	<table class="table table-striped">
     			    <thead>
     			    	<tr>  		
-        					<th>Nombre</td>
+                            <th>Nombre</td>
+        					<th>Empresa</td>
                             <th>Restaurante</th>   					
     			    		<th>Estado</th>
     			        	<th></th>
@@ -192,6 +193,7 @@
             	@foreach ($usuariosNormales as $usuario)
     					<tr>						
                             <td>{{$usuario->username}}</td>
+                            <td>{{$usuario->empresa}}</td>
         					<td>{{$usuario->restaurante}}</td>
                             @if ($usuario->active=='1')
                             <td>

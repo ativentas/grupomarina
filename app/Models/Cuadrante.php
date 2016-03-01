@@ -11,7 +11,7 @@ class Cuadrante extends Model
 
     public function lineas()
     {
-    	$this->hasMany('Pedidos\Models\LineaCuadrante','cuadrante_id');
+    	return 	$this->hasMany('Pedidos\Models\LineaCuadrante','cuadrante_id');
     }
 
     public function getDates()

@@ -5,10 +5,11 @@
 <h3>Crear nuevo o consultar</h3>
 
 <div class="col-sm-4 row">
-<form role="form">
+<form role="form" action="{{route('cuadrante.generar')}}" method="post">
+  {{ csrf_field() }}
   <div class="form-group">
     <label for="fecha">Fecha</label>
-    <input type="date" class="form-control" id="fecha" value={{Date('d-m-Y')}}>
+    <input type="date" name="fecha" class="form-control" id="fecha" value={{date('d-m-Y')}}>
   </div>
   
 	<div class="form-group">

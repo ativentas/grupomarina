@@ -359,12 +359,21 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('cuadrantes', [
 		'uses' =>'CuadranteController@index',
 		'as' => 'cuadrantes',
-		'middleware' => ['auth'],]);
-	Route::get('cuadrante/{id}', [
+		'middleware' => ['auth'],
+		]);
+	Route::get('cuadrante/detallle/{id}', [
 		'uses' => 'CuadranteController@mostrarDetalle',
 		'as' => 'cuadrante.detalle',
-		'middleware' => ['auth']
-
+		'middleware' => ['auth']]);
+	Route::post('cuadrante/requerir/{id}', [
+		'uses' => 'CuadranteController@requerirConfirmacion',
+		'as' => 'cuadrante.requerir',
+		'middleware' => ['auth'],
+		]);
+	Route::post('/cuadrante/nuevo', [
+		'uses' => '\Pedidos\Http\Controllers\CuadranteController@generarCuadrante',
+		'as' => 'cuadrante.generar',
+		'middleware' => ['auth'],
 		]);
 
 });
