@@ -25,13 +25,13 @@
 			@if ($linea->horaEntradaM == null)
 			<input type="time" name="entrada" id="entrada" value="">
 			@else
-			<input type="time" name="entrada" id="entrada" value={{date("G:i",strtotime($linea->horaEntradaM))}}>
+			<input type="time" name="entrada" id="entrada" value={{date('H:i',strtotime($linea->horaEntradaM))}}>
 			@endif</td>
 			<td>
 			@if ($linea->horaSalidaM == null)
 			<input type="time" name="salida" id="salida" value="">
 			@else
-			<input type="time" name="salida" id="salida" value={{date('G:i',strtotime($linea->horaSalidaM))}}>
+			<input type="time" name="salida" id="salida" value={{date('H:i',strtotime($linea->horaSalidaM))}}>
 			@endif</td>
 			<td><p class="bg-success small">{{$linea->asunto}}</p></td>
 			<td>{{$linea->empleado->email}}</td>
