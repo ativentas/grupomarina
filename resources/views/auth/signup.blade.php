@@ -51,7 +51,7 @@
             <div class="form-group">
                 <!-- <label for="restaurante" class="control-label">Elegir Restaurante</label> -->
                 <select class="form-control" id="restaurante" name="restaurante">
-                    <option>Elige un Restaurante</option>
+                    <option value="">Elige un Restaurante</option>
                     <option>MARINA</option>
                     <option>CORTES</option>
                     <option>RACO</option>
@@ -66,7 +66,7 @@
             <div class="form-group">
                 <!-- <label for="empresa" class="control-label">Elegir Empresa</label> -->
                 <select class="form-control" id="empresa" name="empresa">
-                    <option>Elige una Empresa</option>
+                    <option value="">Elige una Empresa</option>
                     <option>COSTASERVIS</option>
                     <option>VILA MOEMA</option>
                     <option>N/A</option>

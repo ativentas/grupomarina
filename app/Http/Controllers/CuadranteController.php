@@ -24,7 +24,9 @@ class CuadranteController extends Controller
 		// return view('controlHorario.gestionCuadrantes',compact('cuadrantes'));
 
 		define('APPLICATION_NAME', 'Gmail API PHP Quickstart');
-		define('CREDENTIALS_PATH', __DIR__ . '/.credentials/gmail-php-quickstart.json');
+		// define('CREDENTIALS_PATH', __DIR__ . '/.credentials/gmail-php-quickstart.json');
+
+		define('CREDENTIALS_PATH', base_path().'/storage/app/.credentials/gmail-php-quickstart.json');
 		define('CLIENT_SECRET_PATH', __DIR__ . '/client_secret.json');
 		// If modifying these scopes, delete your previously saved credentials
 		// at ~/.credentials/gmail-php-quickstart.json
@@ -45,7 +47,8 @@ class CuadranteController extends Controller
 
 		  // Load previously authorized credentials from a file.
 		  $credentialsPath = CREDENTIALS_PATH;
-		  // dd($credentialsPath);
+
+		 
 		  if (file_exists($credentialsPath)) {
 		   
 		    $accessToken = file_get_contents($credentialsPath);
@@ -120,7 +123,11 @@ class CuadranteController extends Controller
 
 	public function generarCuadrante(Request $request)
 	{
-		
+
+		$this->validate($request, [
+			'empresa' => 'required',
+			'fecha' => 'required|date_format:d-m-Y'
+			]);
 		$fecha = date('Y-m-d',strtotime($request->fecha));
 		
 		$cuadrante = Cuadrante::whereDate('fecha','=', $fecha)->where('empresa', $request->empresa)->first();
@@ -169,7 +176,8 @@ class CuadranteController extends Controller
 		//google API
 		//mensajes de ese día
 		define('APPLICATION_NAME', 'Gmail API PHP Quickstart');
-		define('CREDENTIALS_PATH', __DIR__ . '/.credentials/gmail-php-quickstart.json');
+		// define('CREDENTIALS_PATH', __DIR__ . '/.credentials/gmail-php-quickstart.json');
+		define('CREDENTIALS_PATH', base_path().'/storage/app/.credentials/gmail-php-quickstart.json');
 		define('CLIENT_SECRET_PATH', __DIR__ . '/client_secret.json');
 		// If modifying these scopes, delete your previously saved credentials
 		// at ~/.credentials/gmail-php-quickstart.json

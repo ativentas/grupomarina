@@ -51,7 +51,6 @@ class User extends Authenticatable
         return $this->hasMany('Pedidos\Models\Fileentry', 'user_id');
     }
 
-
     public function isAdmin()
     {
         return (bool) $this->is_admin;

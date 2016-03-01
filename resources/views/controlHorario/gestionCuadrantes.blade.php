@@ -15,7 +15,7 @@
 	<div class="form-group">
 	    <!-- <label for="empresa" class="control-label">Elegir Empresa</label> -->
 	    <select class="form-control" id="empresa" name="empresa">
-	        <option>Elige una Empresa</option>
+	        <option value="">Elige una Empresa</option>
 	        <option>COSTASERVIS</option>
 	        <option>VILA MOEMA</option>
 	    </select>
