@@ -19,7 +19,7 @@
 	</head>
 	<body>
 		@include('templates.partials.navigation')
-		<div class="container">
+		<div class="container-fluid">
 			@include('templates.partials.alerts')
 			@yield('content')
 		</div>

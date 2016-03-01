@@ -7,18 +7,24 @@
 <div class="col-sm-4 row">
 <form role="form" action="{{route('cuadrante.generar')}}" method="post">
   {{ csrf_field() }}
-  <div class="form-group">
+  <div class="form-group{{$errors->has('fecha') ? ' has-error' : ''}}">
     <label for="fecha">Fecha</label>
     <input type="date" name="fecha" class="form-control" id="fecha" value={{date('d-m-Y')}}>
+		@if ($errors->has('fecha'))
+			<span class="help-block">{{$errors->first('fecha')}}</span>
+		@endif
   </div>
   
-	<div class="form-group">
+	<div class="form-group{{$errors->has('empresa') ? ' has-error' : ''}}">
 	    <!-- <label for="empresa" class="control-label">Elegir Empresa</label> -->
 	    <select class="form-control" id="empresa" name="empresa">
 	        <option value="">Elige una Empresa</option>
 	        <option>COSTASERVIS</option>
 	        <option>VILA MOEMA</option>
 	    </select>
+		@if ($errors->has('empresa'))
+			<span class="help-block">{{$errors->first('empresa')}}</span>
+		@endif	
 	</div>
 
   <button type="submit" class="btn btn-default">Generar</button>
