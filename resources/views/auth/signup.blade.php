@@ -9,7 +9,7 @@
     <hr>
     
 	
-<div id="nuevo" class="row collapse{{$errors->has('email')||$errors->has('username')||$errors->has('password')||$errors->has('password_confirmation') ? ' in' : ''}}">
+<div id="nuevo" class="row collapse{{$errors->count() ? ' in' : ''}}">
     <div class="col-lg-6">
         <form autocomplete="off" class="form-vertical" role="form" method="post" action="{{route('auth.signup')}}">
             <div class="form-group{{$errors->has('email') ? ' has-error' : ''}}">
@@ -48,7 +48,7 @@
                 @endif	                
             </div>
             
-            <div class="form-group">
+            <div class="form-group{{$errors->has('restaurante') ? ' has-error' : ''}}">
                 <!-- <label for="restaurante" class="control-label">Elegir Restaurante</label> -->
                 <select class="form-control" id="restaurante" name="restaurante">
                     <option value="">Elige un Restaurante</option>
@@ -57,13 +57,16 @@
                     <option>RACO</option>
                     <option>N/A</option>
                 </select>
+                @if ($errors->has('restaurante'))
+                    <span class="help-block">{{$errors->first('restaurante')}}</span>
+                @endif  
             </div>            
 
             <div class="checkbox">
                 <label><input type="checkbox" name="supervisor" id="supervisor" value="1"> Es supervisor de ese Restaurante</label>
             </div>
 
-            <div class="form-group">
+            <div class="form-group{{$errors->has('empresa') ? ' has-error' : ''}}">
                 <!-- <label for="empresa" class="control-label">Elegir Empresa</label> -->
                 <select class="form-control" id="empresa" name="empresa">
                     <option value="">Elige una Empresa</option>
@@ -71,6 +74,9 @@
                     <option>VILA MOEMA</option>
                     <option>N/A</option>
                 </select>
+                @if ($errors->has('empresa'))
+                    <span class="help-block">{{$errors->first('empresa')}}</span>
+                @endif 
             </div>
 			<hr>
             @if(Auth::user()->is_root==1) 

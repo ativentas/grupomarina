@@ -36,7 +36,7 @@ class AuthController extends Controller
 	{
 		$this->validate($request, [
 			'email' => 'required|unique:users|email|max:255',
-			'nombre' => 'required|min:4|max:20',
+			'nombre' => 'required|min:4|max:35',
 			'username' => 'required|alpha_dash|unique:users|max:20',
 			'password' => 'required|min:4|confirmed',
 			'password_confirmation' => 'required',
@@ -53,7 +53,7 @@ class AuthController extends Controller
 			$administrador = 1;
 		}
 
-
+		
 		User::create([
 			'email' => $request->input('email'),
 			'nombre_completo' => $request->input('nombre'),
