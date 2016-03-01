@@ -126,7 +126,7 @@ class CuadranteController extends Controller
 
 		$this->validate($request, [
 			'empresa' => 'required',
-			'fecha' => 'required|date_format:d-m-Y'
+			'fecha' => 'required|date',
 			]);
 		$fecha = date('Y-m-d',strtotime($request->fecha));
 		
