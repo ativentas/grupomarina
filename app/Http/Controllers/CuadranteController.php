@@ -12,7 +12,7 @@ use Google_Service_Gmail;
 use Google_Service_Gmail_ModifyMessageRequest;
 use Google_Client;
 use PHPMailer;
-
+use View;
 
 
 class CuadranteController extends Controller
@@ -21,109 +21,11 @@ class CuadranteController extends Controller
 	{
 		//los cuadrantes de hoy y los pendientes
 		$cuadrantes = Cuadrante::whereDate('fecha', '=', date('Y-m-d'))->orwhere('estado', 'Pendiente')->orderBy('fecha','ASC')->get();
-		// return view('controlHorario.gestionCuadrantes',compact('cuadrantes'));
-
-		define('APPLICATION_NAME', 'Gmail API PHP Quickstart');
-		// define('CREDENTIALS_PATH', __DIR__ . '/.credentials/gmail-php-quickstart.json');
-
-		define('CREDENTIALS_PATH', base_path().'/storage/app/.credentials/gmail-php-quickstart.json');
-		define('CLIENT_SECRET_PATH', __DIR__ . '/client_secret.json');
-		// If modifying these scopes, delete your previously saved credentials
-		// at ~/.credentials/gmail-php-quickstart.json
-		define('SCOPES', implode(' ', array(
-		  Google_Service_Gmail::GMAIL_MODIFY)
-		));
-		/**
-		 * Returns an authorized API client.
-		 * @return Google_Client the authorized client object
-		 */
-		function getClient() {
-		  $client = new Google_Client();
-		  $client->setApplicationName(APPLICATION_NAME);
-		  $client->setScopes(SCOPES);
-		  $client->setAuthConfigFile(CLIENT_SECRET_PATH);
-		  $client->setAccessType('offline');
-		  $client->setApprovalPrompt('force');//esta linea la he añadido yo
-
-		  // Load previously authorized credentials from a file.
-		  $credentialsPath = CREDENTIALS_PATH;
-
-		 
-		  if (file_exists($credentialsPath)) {
-		   
-		    $accessToken = file_get_contents($credentialsPath);
-		   
-		  } else {
-		    // Request authorization from the user.
-		    dd('no hay autorización, habrá que modificar el código');
-		    $authUrl = $client->createAuthUrl();
-		    printf("Open the following link in your browser:\n%s\n", $authUrl);
-		    print 'Enter verification code: ';
-		    $authCode = trim(fgets(STDIN));
-
-		    // Exchange authorization code for an access token.
-		    $accessToken = $client->authenticate($authCode);
-
-		    // Store the credentials to disk.
-		    if(!file_exists(dirname($credentialsPath))) {
-		      mkdir(dirname($credentialsPath), 0700, true);
-		    }
-		    file_put_contents($credentialsPath, $accessToken);
-		    // printf("Credentials saved to %s\n", $credentialsPath);
-		  }
-		  
-		  $client->setAccessToken($accessToken);
-			
-		  // Refresh the token if it's expired.
-		  if ($client->isAccessTokenExpired()) {
-		    // $prueba=$client->getRefreshToken();
-		    // dd($prueba);
-		    $client->refreshToken($client->getRefreshToken());
-		    
-		    file_put_contents($credentialsPath, $client->getAccessToken());
-		  }
-		  return $client;
-		}
-		// Get the API client and construct the service object.
-		$client = getClient();
-		$service = new Google_Service_Gmail($client);
-
-		$userId ='me';
-
-		function listMessages($service, $userId) {
-		  $pageToken = NULL;
-		  $messages = array();
-		  $opt_param = array();
-		  $opt_param['q'] = 'subject:'.date('d-m-y');//solo los mensajes de hoy
-
-		  do {
-		    try {
-		      if ($pageToken) {
-		        $opt_param['pageToken'] = $pageToken;
-		      }
-		      $messagesResponse = $service->users_messages->listUsersMessages($userId, $opt_param);
-		      if ($messagesResponse->getMessages()) {
-		        $messages = array_merge($messages, $messagesResponse->getMessages());
-		        $pageToken = $messagesResponse->getNextPageToken();
-		      }
-		    } catch (Exception $e) {
-		      print 'An error occurred: ' . $e->getMessage();
-		    }
-		  } while ($pageToken);
-			
-		  return $messages;
-
-		}
-		$messages = listMessages($service, $userId);
-		// dd($messages);
-		
-		return view('controlHorario.gestionCuadrantes',compact('cuadrantes','messages'));		
+		return view('controlHorario.gestionCuadrantes',compact('cuadrantes'));		
 	}
-
 
 	public function generarCuadrante(Request $request)
 	{
-
 		$this->validate($request, [
 			'empresa' => 'required',
 			'fecha' => 'required|date',
@@ -132,9 +34,7 @@ class CuadranteController extends Controller
 		
 		$cuadrante = Cuadrante::whereDate('fecha','=', $fecha)->where('empresa', $request->empresa)->first();
 		
-		//si existe uno ya hecho, se muestra el detalle
-		// dd($repetido->id);
-		
+		//si no existe ya uno hecho, se crea		
 		if (!$cuadrante){
 			$cuadrante = new Cuadrante;
 			$cuadrante->fecha = $fecha;
@@ -142,8 +42,7 @@ class CuadranteController extends Controller
 			$cuadrante->estado = 'Pendiente';
 			$cuadrante->save();
 			
-			$empleados = User::where('empresa', $request->empresa)->get();
-			
+			$empleados = User::where('empresa', $request->empresa)->get();			
 			foreach ($empleados as $empleado) {
 				$linea = new LineaCuadrante;
 				$linea->cuadrante_id = $cuadrante->id;
@@ -152,18 +51,14 @@ class CuadranteController extends Controller
 				$linea->horaEntradaM = $empleado->entrada;
 				$linea->horaSalidaM = $empleado->salida;
 				$linea->save();
-
 			}
 			$lineas = LineaCuadrante::where('cuadrante_id', $cuadrante->id)->get();
-			return redirect()->route('cuadrante.detalle', $cuadrante->id);
-			// return view ('controlHorario.detalleCuadrante', compact('cuadrante','lineas'))->with('info', 'ya puedes confeccionar el horario');
-		}elseif($cuadrante->count()){
+			return redirect()->route('cuadrante.detalle', $cuadrante->id)->with('info', 'ya puedes confeccionar el horario');
+
+		} elseif ($cuadrante->count()){
 			$lineas = LineaCuadrante::where('cuadrante_id', $cuadrante->id)->get();
 			return view ('controlHorario.detalleCuadrante', compact('cuadrante', 'lineas'))->with('info', 'Ya existe un Cuadrante para ese día!!! Puedes modificarlo o salir para crear otro diferente');
 		}
-
-
-
 	}
 
 	public function mostrarDetalle($cuadrante_id){
@@ -173,14 +68,10 @@ class CuadranteController extends Controller
 		$fecha = $cuadrante->fecha;
 		$fecha = date_format($fecha,'d-m-Y');
 
-		//google API
-		//mensajes de ese día
 		define('APPLICATION_NAME', 'Gmail API PHP Quickstart');
-		// define('CREDENTIALS_PATH', __DIR__ . '/.credentials/gmail-php-quickstart.json');
 		define('CREDENTIALS_PATH', base_path().'/storage/app/.credentials/gmail-php-quickstart.json');
 		define('CLIENT_SECRET_PATH', __DIR__ . '/client_secret.json');
 		// If modifying these scopes, delete your previously saved credentials
-		// at ~/.credentials/gmail-php-quickstart.json
 		define('SCOPES', implode(' ', array(
 		  Google_Service_Gmail::GMAIL_MODIFY)
 		));
@@ -199,10 +90,8 @@ class CuadranteController extends Controller
 		  // Load previously authorized credentials from a file.
 		  $credentialsPath = CREDENTIALS_PATH;
 		  // dd($credentialsPath);
-		  if (file_exists($credentialsPath)) {
-		   
-		    $accessToken = file_get_contents($credentialsPath);
-		   
+		  if (file_exists($credentialsPath)) {		   
+		    $accessToken = file_get_contents($credentialsPath);		   
 		  } else {
 		    // Request authorization from the user.
 		    dd('no hay autorización, habrá que modificar el código');
@@ -240,7 +129,6 @@ class CuadranteController extends Controller
 		// $results = $service->users_labels->listUsersLabels($userId);
 		// dd($results);
 
-
 		function listMessages($service, $userId, $fecha, $email) {
 		  $pageToken = NULL;
 		  $messages = array();
@@ -266,8 +154,6 @@ class CuadranteController extends Controller
 		  return $messages;
 
 		}
-		// $messages = listMessages($service, $userId, $fecha);
-		// dd($messages);
 		
 		function modifyMessage($service, $userId, $messageId, $labelsToAdd, $labelsToRemove) {
 		  $mods = new Google_Service_Gmail_ModifyMessageRequest();
@@ -304,14 +190,6 @@ class CuadranteController extends Controller
 					$linea->mensaje_id = $mensaje[0]->id;
 					$detalle_mensaje = $service->users_messages->get($userId,$mensaje[0]->id);
 					$headers= $detalle_mensaje->getPayload()->getHeaders();
-					
-					// function getHeader($headers, $name) {
-					//   	foreach($headers as $header) {
-					//     	if($header['name'] == $name) {
-					//       		return $header['value'];
-				 //    		}
-				 //  		}
-					// }
 
 					$subject = getHeader($headers, 'Subject');
 
@@ -329,9 +207,6 @@ class CuadranteController extends Controller
 		}		
 		return view('controlHorario.detalleCuadrante', compact('cuadrante', 'lineas'));
 	}
-
-
-
 
 	public function updateCuadrante (Request $request, $cuadrante_id)
 	{		
@@ -356,14 +231,21 @@ class CuadranteController extends Controller
 		if($requerir == true){
 			$linea->estado = 'Requerido';
 			//enviar email
-			$this->enviarMensaje($linea->email,$fecha.', de '.$linea->horaEntradaM.' a '.$linea->horaSalidaM,'Responde al mensaje si estás conforme con el horario que pone en el asunto');
+			$to = $linea->email;
+			$subject = $fecha.', de '.$linea->horaEntradaM.' a '.$linea->horaSalidaM;
+
+			
+			$view = View::make('templates.mail.confirmacionHorario', ['subject' => $subject]);
+			$body = $view->render();
+
+			$this->enviarMensaje($to,$subject,$body);
+			
 			$linea->save();			
 		}
 	}
 	
 	public function requerirConfirmacion(Request $request, $cuadrante_id)
 	{		
-
 		$linea_id = $_POST['requerir'];
 		
 		if($linea_id == 0){
@@ -384,36 +266,27 @@ class CuadranteController extends Controller
 
 	public function enviarMensaje($to, $subject, $body)
 	{
-		// dd($to,$subject,$body);
 		$mail = new PHPMailer;
 		// $mail->SMTPDebug = 3;                               // Enable verbose debug output
 		$mail->isSMTP();                                      // Set mailer to use SMTP
 		$mail->Host = 'smtp.gmail.com';  // Specify main and backup SMTP servers
 		$mail->SMTPAuth = true;                               // Enable SMTP authentication
-		$mail->Username = 'costaservishorarios@gmail.com';                 // SMTP username
+		$mail->Username = 'costaservishorarios@gmail.com';        // SMTP username
 		$mail->Password = '654654901';                           // SMTP password
-		$mail->SMTPSecure = 'tls';                // Enable TLS encryption, `ssl` also accepted
+		$mail->SMTPSecure = 'tls';              // Enable TLS encryption, `ssl` also accepted
 		$mail->Port = 587;
 		$mail->isHTML(true);
 
-		//si uso las clases, habrá que hacer esto de manera diferente
-		$mail->setFrom('costaservishorarios@gmail.com');
 		$mail->addAddress($to);
-		$mail->addReplyTo('costaservishorarios@gmail.com');
 		$mail->Subject = $subject;
 		$mail->Body = $body;
+		// $mail->setFrom('costaservishorarios@gmail.com');
+		// $mail->addReplyTo('costaservishorarios@gmail.com');
+
 		if(!$mail->send()) {
 			echo 'No se pudo enviar el mensaje. ';
 			echo 'Error Mailer: ' . $mail->ErrorInfo;
-		} else {
-			// echo 'Mensaje enviado';			
-		}
+		} 
 
-		//esto es para usar las clases de Codecourse, pero de momento no me aclaro...
-		// $mail = new Mailer($mail);
-		// $mail->send(function($m){.
-		// 	$m->to($to);
-		// 	$m->subject($subject);
-		// });
 	}
 }

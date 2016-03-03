@@ -3,7 +3,7 @@
 @section('content')
 
 
-<h2>{{$cuadrante->fecha->format('d/m/Y')}}</h2>
+<h3>Parte Horario. Fecha: {{$cuadrante->fecha->format('d/m/Y')}} - Empresa: {{$cuadrante->empresa}}</h3>
 
 	<table class="table table-bordered">
 		<thead>
