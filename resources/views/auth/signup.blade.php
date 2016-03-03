@@ -78,6 +78,12 @@
                     <span class="help-block">{{$errors->first('empresa')}}</span>
                 @endif 
             </div>
+            <div class="form-group">
+                <label for="entrada" class="control-label">Hora Entrada</label>
+                <input type="text" name="entrada" id="entrada">
+                <label for="salida" class="control-label">Hora Salida</label>
+                <input type="text" name="salida" id="salida">
+            </div>
 			<hr>
             @if(Auth::user()->is_root==1) 
             <div class="checkbox">

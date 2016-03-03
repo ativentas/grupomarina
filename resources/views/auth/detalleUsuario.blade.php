@@ -47,9 +47,9 @@
             </div>
             <div class="form-group">
                 <label for="entrada" class="control-label">Hora Entrada</label>
-                <input type="time" name="entrada" id="entrada" value={{date('G:i',strtotime($usuario->entrada))}}>
-                <label for="entrada" class="control-label">Hora Salida</label>
-                <input type="time" name="salida" id="salida" value={{date("G:i",strtotime($usuario->salida))}}>
+                <input type="text" name="entrada" id="entrada" value={{date('H:i',strtotime($usuario->entrada))}}>
+                <label for="salida" class="control-label">Hora Salida</label>
+                <input type="text" name="salida" id="salida" value={{date("H:i",strtotime($usuario->salida))}}>
             </div>
 			@if (Auth::user()->is_root==1)
             <div class="checkbox">

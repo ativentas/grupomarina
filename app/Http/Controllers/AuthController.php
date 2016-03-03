@@ -27,9 +27,7 @@ class AuthController extends Controller
 				;
 		}
 		
-
-		return redirect()->route('auth.signout');
-		
+		return redirect()->route('auth.signout');		
 	}
 
 	public function postSignup(Request $request)
@@ -63,6 +61,8 @@ class AuthController extends Controller
 			'empresa' => $request->input('empresa'),
 			'is_supervisor' => $supervisor,
 			'is_admin' => $administrador,
+			'entrada' => $request->input('entrada'),
+			'salida' => $request->input('salida'),
 		]);
 
 		return redirect()
