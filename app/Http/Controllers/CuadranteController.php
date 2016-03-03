@@ -233,7 +233,6 @@ class CuadranteController extends Controller
 			//enviar email
 			$to = $linea->email;
 			$subject = $fecha.', de '.$linea->horaEntradaM.' a '.$linea->horaSalidaM;
-
 			
 			$view = View::make('templates.mail.confirmacionHorario', ['subject' => $subject]);
 			$body = $view->render();
@@ -280,7 +279,7 @@ class CuadranteController extends Controller
 		$mail->addAddress($to);
 		$mail->Subject = $subject;
 		$mail->Body = $body;
-		// $mail->setFrom('costaservishorarios@gmail.com');
+		$mail->setFrom('costaservishorarios@gmail.com');
 		// $mail->addReplyTo('costaservishorarios@gmail.com');
 
 		if(!$mail->send()) {
