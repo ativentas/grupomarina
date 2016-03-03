@@ -10,7 +10,7 @@
     
 	
 <div id="nuevo" class="row collapse{{$errors->count() ? ' in' : ''}}">
-    <div class="col-lg-6">
+    <div class="col-md-6">
         <form autocomplete="off" class="form-vertical" role="form" method="post" action="{{route('auth.signup')}}">
             <div class="form-group{{$errors->has('email') ? ' has-error' : ''}}">
                 <label for="email" class="control-label">Correo electrónico</label>
@@ -78,11 +78,14 @@
                     <span class="help-block">{{$errors->first('empresa')}}</span>
                 @endif 
             </div>
-            <div class="form-group">
+            <div class="form-group{{$errors->has('entrada')|$errors->has('salida') ? ' has-error' : ''}}">
                 <label for="entrada" class="control-label">Hora Entrada</label>
-                <input type="text" name="entrada" id="entrada">
+                <input type="text" name="entrada" id="entrada" value="{{Request::old('entrada') ?: ''}}">
                 <label for="salida" class="control-label">Hora Salida</label>
-                <input type="text" name="salida" id="salida">
+                <input type="text" name="salida" id="salida" value="{{Request::old('salida') ?: ''}}">
+                @if ($errors->has('empresa'))
+                    <span class="help-block">{{$errors->first('entrada')}} {{$errors->first('salida')}}</span>
+                @endif 
             </div>
 			<hr>
             @if(Auth::user()->is_root==1) 

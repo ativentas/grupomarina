@@ -4,7 +4,7 @@
 	
 <h3 style="" class"">Usuario: {{$usuario->username}}</h3>
 <hr>
-    <div class="col-lg-6">
+    <div class="col-md-6">
         <form class="form-vertical" role="form" method="post" action="{{route('usuarios.modificar', $usuario->id)}}">
             <div class="form-group{{$errors->has('email') ? ' has-error' : ''}}">
                 <label for="email" class="control-label">Correo electrónico</label>
@@ -45,11 +45,14 @@
                     <option{{$usuario->empresa=='N/A'?' selected':''}}>N/A</option>
                 </select>
             </div>
-            <div class="form-group">
+            <div class="form-group{{$errors->has('entrada')|$errors->has('salida') ? ' has-error' : ''}}">
                 <label for="entrada" class="control-label">Hora Entrada</label>
                 <input type="text" name="entrada" id="entrada" value={{date('H:i',strtotime($usuario->entrada))}}>
                 <label for="salida" class="control-label">Hora Salida</label>
                 <input type="text" name="salida" id="salida" value={{date("H:i",strtotime($usuario->salida))}}>
+                @if ($errors->has('entrada')|$errors->has('salida'))
+                    <span class="help-block">{{$errors->first('entrada')}} {{$errors->first('salida')}}</span>
+                @endif  
             </div>
 			@if (Auth::user()->is_root==1)
             <div class="checkbox">

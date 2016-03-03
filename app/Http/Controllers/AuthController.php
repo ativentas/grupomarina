@@ -40,6 +40,8 @@ class AuthController extends Controller
 			'password_confirmation' => 'required',
 			'restaurante' => 'required',
 			'empresa' => 'required',
+			'entrada' => 'date_format:H:i',
+			'salida' => 'date_format:H:i',
 		]);
 		
 		$supervisor = 0;
@@ -50,7 +52,6 @@ class AuthController extends Controller
 		if(isset($_POST['administrador'])){
 			$administrador = 1;
 		}
-
 		
 		User::create([
 			'email' => $request->input('email'),
@@ -79,6 +80,16 @@ class AuthController extends Controller
 
 	public function postModificar(Request $request, $usuarioId)
 	{
+
+		$this->validate($request, [
+			'email' => 'required|email|max:255|unique:users,email,'.$usuarioId,
+			'nombre' => 'required|min:4|max:35',
+			'restaurante' => 'required',
+			'empresa' => 'required',
+			'entrada' => 'date_format:H:i',
+			'salida' => 'date_format:H:i',
+		]);
+
 		$usuario=User::where('id', $usuarioId)->first();
 		if(isset($_POST['estado'])){
 			
@@ -90,8 +101,7 @@ class AuthController extends Controller
 		}
 
 		if(isset($_POST['password'])){
-			
-			
+					
 			$random = random_int(1000, 9999);
 			$usuario->password = bcrypt($random);
 			$usuario->save();
