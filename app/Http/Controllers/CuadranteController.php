@@ -50,8 +50,8 @@ class CuadranteController extends Controller
 				$linea->email = $empleado->email;
 				$linea->entrada = $empleado->entrada;
 				$linea->salida = $empleado->salida;
-				$linea->turno_partido = $empleado->turno_partido;
-				if ($linea->turno_partido == 1) {
+				if ($empleado->turno_partido == 1){
+					$linea->tipo = 'Partido';
 					$linea->entrada2 = $empleado->entrada2;
 					$linea->salida2 = $empleado->salida2;
 				}
@@ -262,7 +262,7 @@ class CuadranteController extends Controller
 			$to = $linea->email;
 			// Text before new line.%0D%0AText after new line.
 
-			if($linea->turno_partido == true && $linea->entrada2 !=null && $linea->salida2 !=null){
+			if($linea->tipo == 'Partido' && $linea->entrada2 !=null && $linea->salida2 !=null){
 				$subject = $fecha.', de '.$linea->entrada.' a '.$linea->salida.', y de '.$linea->entrada2.' a '.$linea->salida2;
 			} else {
 				$subject = $fecha.', de '.$linea->entrada.' a '.$linea->salida;		

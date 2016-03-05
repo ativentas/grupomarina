@@ -8,8 +8,10 @@
 		<thead>
 			<tr>
 			<th>Empleado</th>
+			<th></th>
 			<th style = "">Entrada</th>
 			<th style = "">Salida</th>
+
 			<th>Confirmacion</th>
 			<th>email</th>
 
@@ -30,13 +32,19 @@
 			<form action="{{route('cuadrante.requerir', $cuadrante->id)}}" method="POST">
 			{{csrf_field()}}
 			<td>{{$linea->empleado->nombre_completo}}</td>
+			<td>
+			<div class="checkbox">
+                <label><input type="checkbox" name="turnoPartido" id="turnoPartido" value="1" {{$linea->tipo=='Partido'?' checked':''}}> <strong>T.P.</strong></label>
+            </div>
+			</td>
+
 			<td class="">
 			@if ($linea->entrada == null)
 			<input type="text" name="entrada" id="entrada" size="5" value="">
 			@else
 			<input type="text" name="entrada" id="entrada" size="5" value={{date('H:i',strtotime($linea->entrada))}}>
 			@endif
-			@if ($linea->turno_partido == 1)
+			@if ($linea->tipo == 'Partido')
 			<br><input type="text" size="5" name="entrada2" id="entrada2" value="{{$linea->entrada2 ? date('H:i',strtotime($linea->entrada2)) : ''}}">
 			@endif
 			</td>
@@ -46,10 +54,13 @@
 			@else
 			<input type="text" size="5" name="salida" id="salida" value={{date('H:i',strtotime($linea->salida))}}>
 			@endif
-			@if ($linea->turno_partido == 1)
+
+			@if ($linea->tipo == 'Partido')
+
 			<br><input type="text" size="5" name="salida2" id="salida2" value="{{$linea->salida2 ? date('H:i',strtotime($linea->salida2)):''}}">
 			@endif
 			</td>
+
 
 			@if ($linea->estado == 'Requerido')			
 			<td><p class="bg-warning small">Esperando...</p></td>
