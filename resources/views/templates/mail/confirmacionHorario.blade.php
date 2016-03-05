@@ -2,3 +2,4 @@
 <a href="mailto:costaservishorarios@gmail.com?subject={{$subject}}&body=Confirmo el horario reseñado en el asunto de este mensaje">Confirmar</a>
 
 
+<!-- Text before new line.%0D%0AText after new line. -->

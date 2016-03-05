@@ -47,9 +47,9 @@
             </div>
             <div class="form-group{{$errors->has('entrada')|$errors->has('salida') ? ' has-error' : ''}}">
                 <label for="entrada" class="control-label">Hora Entrada</label>
-                <input type="text" name="entrada" id="entrada" value={{date('H:i',strtotime($usuario->entrada))}}>
+                <input type="text" name="entrada" id="entrada" size=5 value="{{$usuario->entrada? date('H:i',strtotime($usuario->entrada)) :''}}" placeholder="00:00">
                 <label for="salida" class="control-label">Hora Salida</label>
-                <input type="text" name="salida" id="salida" value={{date("H:i",strtotime($usuario->salida))}}>
+                <input type="text" name="salida" id="salida" size=5 value="{{$usuario->salida? date("H:i",strtotime($usuario->salida)) :''}}" placeholder="00:00">
                 @if ($errors->has('entrada')|$errors->has('salida'))
                     <span class="help-block">{{$errors->first('entrada')}} {{$errors->first('salida')}}</span>
                 @endif  
@@ -59,7 +59,30 @@
                         <label><input type="checkbox" name="supervisor" id="supervisor" value="yes" {{$usuario->is_supervisor==1?' checked':''}}> Es supervisor de ese Restaurante</label>
             </div>
             @endif
-            <hr>
+            <div class="checkbox">
+                <label><input type="checkbox" name="turnoPartido" id="turnoPartido" value="1" {{$usuario->turno_partido==1?' checked':''}}> <strong>¿Turno Partido?</strong></label>
+            </div>
+            <script>
+            $("#turnoPartido").change(function() {
+                if(this.checked) {
+                    $("#horariosPartidos").show();
+                }else {
+                    $("#horariosPartidos").hide();
+                }
+            });
+            </script>
+            
+            <br>
+            <div {{$usuario->turno_partido == 0 ? 'hidden' :''}} id="horariosPartidos" class="form-group{{$errors->has('entrada2')|$errors->has('salida2') ? ' has-error' : ''}}">
+                <label for="entrada2" class="control-label">Hora Entrada 2</label>
+                <input type="text" size=5 name="entrada2" id="entrada2" value="{{$usuario->entrada2? date('H:i',strtotime($usuario->entrada2)) :''}}" placeholder="00:00">
+                <label for="salida2" class="control-label">Hora Salida 2</label>
+                <input type="text" size=5 name="salida2" id="salida2" value="{{$usuario->salida2? date('H:i',strtotime($usuario->salida2))  :''}}" placeholder="00:00">
+                @if ($errors->has('entrada2')|$errors->has('salida2'))
+                    <span class="help-block">{{$errors->first('entrada2')}} {{$errors->first('salida2')}}</span>
+                @endif 
+            </div>
+            
             @if (Auth::user()->is_root==1)
             <div class="checkbox">
 			<label><input type="checkbox" name="administrador" id="administrador" value="yes" {{$usuario->is_admin==1?' checked':''}}> Es Administrador</label>

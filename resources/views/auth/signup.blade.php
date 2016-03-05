@@ -8,9 +8,13 @@
 </div>
     <hr>
     
-	
+@if ($errors->count()>0)
+    <div class="alert alert-danger">Error al dar de alta. Revisa abajo los datos erroneos y vuelve a intentarlo</div>
+@endif	
+<div class="container">
 <div id="nuevo" class="row collapse{{$errors->count() ? ' in' : ''}}">
-    <div class="col-md-6">
+    
+    <div class="row col-md-5">
         <form autocomplete="off" class="form-vertical" role="form" method="post" action="{{route('auth.signup')}}">
             <div class="form-group{{$errors->has('email') ? ' has-error' : ''}}">
                 <label for="email" class="control-label">Correo electrónico</label>
@@ -65,11 +69,13 @@
             <div class="checkbox">
                 <label><input type="checkbox" name="supervisor" id="supervisor" value="1"> Es supervisor de ese Restaurante</label>
             </div>
-
+    </div>
+    <div class="row col-md-5 col-md-offset-1">
             <div class="form-group{{$errors->has('empresa') ? ' has-error' : ''}}">
                 <!-- <label for="empresa" class="control-label">Elegir Empresa</label> -->
+                <label for="empresa"> &nbsp;</label>
                 <select class="form-control" id="empresa" name="empresa">
-                    <option value="">Elige una Empresa</option>
+                    <option value="">¿En qué empresa está de alta?</option>
                     <option>COSTASERVIS</option>
                     <option>VILA MOEMA</option>
                     <option>N/A</option>
@@ -80,14 +86,39 @@
             </div>
             <div class="form-group{{$errors->has('entrada')|$errors->has('salida') ? ' has-error' : ''}}">
                 <label for="entrada" class="control-label">Hora Entrada</label>
-                <input type="text" name="entrada" id="entrada" value="{{Request::old('entrada') ?: ''}}">
+                <input type="text" size=5 name="entrada" id="entrada" value="{{Request::old('entrada') ?: ''}}" placeholder="00:00">
                 <label for="salida" class="control-label">Hora Salida</label>
-                <input type="text" name="salida" id="salida" value="{{Request::old('salida') ?: ''}}">
-                @if ($errors->has('empresa'))
+                <input type="text" size=5 name="salida" id="salida" value="{{Request::old('salida') ?: ''}}" placeholder="00:00">
+                @if ($errors->has('entrada')|$errors->has('salida'))
                     <span class="help-block">{{$errors->first('entrada')}} {{$errors->first('salida')}}</span>
                 @endif 
             </div>
-			<hr>
+         
+            <div class="checkbox">
+                <label><input type="checkbox" name="turnoPartido" id="turnoPartido" value="1"> <strong>¿Turno Partido?</strong></label>
+            </div>
+            <script>
+            $("#turnoPartido").change(function() {
+                if(this.checked) {
+                    $("#horariosPartidos").show();
+                }else {
+                    $("#horariosPartidos").hide();
+                }
+            });
+            </script>
+            
+            <br>
+            <div hidden id="horariosPartidos" class="form-group{{$errors->has('entrada2')|$errors->has('salida2') ? ' has-error' : ''}}">
+                <label for="entrada2" class="control-label">Hora Entrada 2</label>
+                <input type="text" size=5 name="entrada2" id="entrada2" value="{{Request::old('entrada2') ?: ''}}" placeholder="00:00">
+                <label for="salida2" class="control-label">Hora Salida 2</label>
+                <input type="text" size=5 name="salida2" id="salida2" value="{{Request::old('salida2') ?: ''}}" placeholder="00:00">
+                @if ($errors->has('entrada2')|$errors->has('salida2'))
+                    <span class="help-block">{{$errors->first('entrada2')}} {{$errors->first('salida2')}}</span>
+                @endif 
+            </div>
+
+			
             @if(Auth::user()->is_root==1) 
             <div class="checkbox">
 	    		<label><input type="checkbox" name="administrador" id="administrador" value="1"> Es administrador</label>
@@ -96,10 +127,11 @@
             <div class="form-group">
                 <button type="submit" class="btn btn-default">Registrar</button>
             </div>
-            
+            <br><br>
             <input type="hidden" name="_token" value="{{Session::token()}}">
         </form>
     </div>
+</div>
 </div>
 
 <div class="row">

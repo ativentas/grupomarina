@@ -21,7 +21,10 @@ class CreateUsersTable extends Migration
             $table->string('restaurante');
             $table->string('empresa');
             $table->time('entrada')->nullable();
-            $table->time('salida')->nullable();
+            $table->time('entrada')->nullable();
+            $table->boolean('turno_partido')->default(false);
+            $table->time('entrada2')->nullable();
+            $table->time('salida2')->nullable();
             $table->boolean('active')->default(true);
             $table->boolean('is_admin')->default(false);
             $table->boolean('is_supervisor')->default(false);

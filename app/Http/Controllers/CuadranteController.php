@@ -48,8 +48,14 @@ class CuadranteController extends Controller
 				$linea->cuadrante_id = $cuadrante->id;
 				$linea->empleado_id = $empleado->id;
 				$linea->email = $empleado->email;
-				$linea->horaEntradaM = $empleado->entrada;
-				$linea->horaSalidaM = $empleado->salida;
+				$linea->entrada = $empleado->entrada;
+				$linea->salida = $empleado->salida;
+				$linea->turno_partido = $empleado->turno_partido;
+				if ($linea->turno_partido == 1) {
+					$linea->entrada2 = $empleado->entrada2;
+					$linea->salida2 = $empleado->salida2;
+				}
+
 				$linea->save();
 			}
 			$lineas = LineaCuadrante::where('cuadrante_id', $cuadrante->id)->get();
@@ -62,23 +68,6 @@ class CuadranteController extends Controller
 	}
 
 	public function mostrarDetalle($cuadrante_id){
-		$cuadrante = Cuadrante::where('id', $cuadrante_id)->first();
-		$lineas = LineaCuadrante::where('cuadrante_id', $cuadrante_id)->get();
-		
-		$fecha = $cuadrante->fecha;
-		$fecha = date_format($fecha,'d-m-Y');
-
-		define('APPLICATION_NAME', 'Gmail API PHP Quickstart');
-		define('CREDENTIALS_PATH', base_path().'/storage/app/.credentials/gmail-php-quickstart.json');
-		define('CLIENT_SECRET_PATH', __DIR__ . '/client_secret.json');
-		// If modifying these scopes, delete your previously saved credentials
-		define('SCOPES', implode(' ', array(
-		  Google_Service_Gmail::GMAIL_MODIFY)
-		));
-		/**
-		 * Returns an authorized API client.
-		 * @return Google_Client the authorized client object
-		 */
 		function getClient() {
 		  $client = new Google_Client();
 		  $client->setApplicationName(APPLICATION_NAME);
@@ -120,15 +109,6 @@ class CuadranteController extends Controller
 		  }
 		  return $client;
 		}
-		// Get the API client and construct the service object.
-		$client = getClient();
-		$service = new Google_Service_Gmail($client);
-		$userId ='me';
-		
-		//lista de labels con ids
-		// $results = $service->users_labels->listUsersLabels($userId);
-		// dd($results);
-
 		function listMessages($service, $userId, $fecha, $email) {
 		  $pageToken = NULL;
 		  $messages = array();
@@ -149,10 +129,8 @@ class CuadranteController extends Controller
 		    } catch (Exception $e) {
 		      print 'An error occurred: ' . $e->getMessage();
 		    }
-		  } while ($pageToken);
-			// dd($messages);		
+		  } while ($pageToken);		
 		  return $messages;
-
 		}
 		
 		function modifyMessage($service, $userId, $messageId, $labelsToAdd, $labelsToRemove) {
@@ -168,8 +146,6 @@ class CuadranteController extends Controller
 		  }
 		}
 
-		$messages = listMessages($service, $userId, $fecha, null);
-		
 		function getHeader($headers, $name) {
 		  	foreach($headers as $header) {
 		    	if($header['name'] == $name) {
@@ -178,30 +154,63 @@ class CuadranteController extends Controller
 	  		}
 		}
 
-		if($messages){
-			foreach ($lineas as $linea) {
-				$email = $linea->empleado->email;
-				$mensaje = listMessages($service,$userId,$fecha,$email);		
+		$cuadrante = Cuadrante::where('id', $cuadrante_id)->first();
+		$lineas = LineaCuadrante::where('cuadrante_id', $cuadrante_id)->get();
+		
+		$fecha = $cuadrante->fecha;
+		$fecha = date_format($fecha,'d-m-Y');
 
-				$labelsToAdd = ['Label_1'];
-				$labelsToRemove= ['INBOX'];
-				// dd(count($mensaje));
-				if (count($mensaje)==1){
-					$linea->mensaje_id = $mensaje[0]->id;
-					$detalle_mensaje = $service->users_messages->get($userId,$mensaje[0]->id);
-					$headers= $detalle_mensaje->getPayload()->getHeaders();
+		if($cuadrante->estado == 'Pendiente') {
 
-					$subject = getHeader($headers, 'Subject');
+			define('APPLICATION_NAME', 'Gmail API PHP Quickstart');
+			define('CREDENTIALS_PATH', base_path().'/storage/app/.credentials/gmail-php-quickstart.json');
+			define('CLIENT_SECRET_PATH', __DIR__ . '/client_secret.json');
+			// If modifying these scopes, delete your previously saved credentials
+			define('SCOPES', implode(' ', array(
+			  Google_Service_Gmail::GMAIL_MODIFY)
+			));
+			/**
+			 * Returns an authorized API client.
+			 * @return Google_Client the authorized client object
+			 */
+			
+			// Get the API client and construct the service object.
+			$client = getClient();
+			$service = new Google_Service_Gmail($client);
+			$userId ='me';
+			
+			//lista de labels con ids
+			// $results = $service->users_labels->listUsersLabels($userId);
+			// dd($results);
+			
+			$messages = listMessages($service, $userId, $fecha, null);
 
-					$linea->asunto = $subject;
-					
-					$linea->save();
-					modifyMessage($service,$userId,$linea->mensaje_id,$labelsToAdd,$labelsToRemove);
+			if($messages){
+				foreach ($lineas as $linea) {
+					$email = $linea->empleado->email;
+					$mensaje = listMessages($service,$userId,$fecha,$email);		
 
-				}else if (count($mensaje) > 1){
-					dd('hay mas de un mensaje de '.$email.' para el día '.$fecha.'. BORRA EL MAS ANTIGUO Y VUELVE A INTENTARLO');
-				}else if (!count($mensaje)){
-					// dd('no hay ninguno');
+					$labelsToAdd = ['Label_1'];
+					$labelsToRemove= ['INBOX'];
+					// dd(count($mensaje));
+					if (count($mensaje)==1){
+						$linea->mensaje_id = $mensaje[0]->id;
+						$detalle_mensaje = $service->users_messages->get($userId,$mensaje[0]->id);
+						$headers= $detalle_mensaje->getPayload()->getHeaders();
+
+						$subject = getHeader($headers, 'Subject');
+
+						$linea->asunto = $subject;
+						$linea->estado = 'Firmado';
+						
+						$linea->save();
+						modifyMessage($service,$userId,$linea->mensaje_id,$labelsToAdd,$labelsToRemove);
+
+					}else if (count($mensaje) > 1){
+						dd('hay mas de un mensaje de '.$email.' para el día '.$fecha.'. ENTRA EN GMAIL, BORRA EL REPETIDO Y VUELVE A REFRESCAR LA PAGINA');
+					}else if (!count($mensaje)){
+						// dd('no hay ninguno');
+					}
 				}
 			}
 		}		
@@ -214,25 +223,50 @@ class CuadranteController extends Controller
 		return redirect()->back()->with('info', 'Cambios guardados');
 	}
 	
-	public function updateLineaHorarios($linea_id, $entrada, $salida, $requerir){
+	public function updateLineaHorarios($linea_id, $entrada, $salida, $entrada2, $salida2, $requerir){
 		$linea= LineaCuadrante::where('id', $linea_id)->first();
 		if ($entrada == null) {
-			$linea->horaEntradaM = null;
+			$linea->entrada = null;
 		}else {
-			$linea->horaEntradaM = date("G:i",strtotime($entrada));
+			$linea->entrada = date("H:i",strtotime($entrada));
 		}
 		if ($salida == null) {
-			$linea->horaSalidaM = null;
+			$linea->salida = null;
 		}else {
-			$linea->horaSalidaM = date("G:i",strtotime($salida));	
+			$linea->salida = date("H:i",strtotime($salida));	
 		}
+
+		if ($entrada2 == null) {
+			$linea->entrada2 = null;
+		}else {
+			$linea->entrada2 = date("H:i",strtotime($entrada2));
+		}
+		if ($salida2 == null) {
+			$linea->salida2 = null;
+		}else {
+			$linea->salida2 = date("H:i",strtotime($salida2));	
+		}
+
+
 		$linea->save();
 		$fecha = $linea->cuadrante->fecha->format('d/m/Y');
 		if($requerir == true){
+			
+			if ($linea->entrada == null || $linea->salida == null){
+				return false;
+				//falta hacer esto....no se porque no redirecciona y sigue ejecutando la funcion original
+			}
+			
 			$linea->estado = 'Requerido';
 			//enviar email
 			$to = $linea->email;
-			$subject = $fecha.', de '.$linea->horaEntradaM.' a '.$linea->horaSalidaM;
+			// Text before new line.%0D%0AText after new line.
+
+			if($linea->turno_partido == true && $linea->entrada2 !=null && $linea->salida2 !=null){
+				$subject = $fecha.', de '.$linea->entrada.' a '.$linea->salida.', y de '.$linea->entrada2.' a '.$linea->salida2;
+			} else {
+				$subject = $fecha.', de '.$linea->entrada.' a '.$linea->salida;		
+			}
 			
 			$view = View::make('templates.mail.confirmacionHorario', ['subject' => $subject]);
 			$body = $view->render();
@@ -256,7 +290,11 @@ class CuadranteController extends Controller
 		//cambiar estado de la linea a Requerido
 			$entrada = $request->entrada;
 			$salida = $request->salida;
-			$this->updateLineaHorarios($linea_id, $entrada, $salida, true);
+			$entrada2 = $request->entrada2;
+			$salida2 = $request->salida2;
+			
+			$this->updateLineaHorarios($linea_id, $entrada, $salida, $entrada2, $salida2, true);
+			//TODO: if updateLineaHorarios false....
 			return redirect()->back()->withInput()->with('info', 'confirmación solicitada');
 		}else{
 			return view('controlHorario.detalleCuadrante', $cuadrante_id)->with('info', 'no se han encontrado registros');

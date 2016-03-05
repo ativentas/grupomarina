@@ -42,15 +42,22 @@ class AuthController extends Controller
 			'empresa' => 'required',
 			'entrada' => 'date_format:H:i',
 			'salida' => 'date_format:H:i',
+			'entrada2' => 'date_format:H:i',
+			'salida2' => 'date_format:H:i',
+			
 		]);
 		
 		$supervisor = 0;
 		$administrador = 0;
+		$turno_partido = 0;
 		if(isset($_POST['supervisor'])){
 			$supervisor = 1;
 		}
 		if(isset($_POST['administrador'])){
 			$administrador = 1;
+		}		
+		if($_POST['turnoPartido']==1){
+			$turno_partido = 1;
 		}
 		
 		User::create([
@@ -64,6 +71,9 @@ class AuthController extends Controller
 			'is_admin' => $administrador,
 			'entrada' => $request->input('entrada'),
 			'salida' => $request->input('salida'),
+			'turno_partido' => $turno_partido,
+			'entrada2' => $request->input('entrada2'),
+			'salida2' => $request->input('salida2'),
 		]);
 
 		return redirect()
@@ -77,10 +87,8 @@ class AuthController extends Controller
 		return view('auth.detalleUsuario')->with('usuario', $usuario);
 	}
 
-
 	public function postModificar(Request $request, $usuarioId)
 	{
-
 		$this->validate($request, [
 			'email' => 'required|email|max:255|unique:users,email,'.$usuarioId,
 			'nombre' => 'required|min:4|max:35',
@@ -88,6 +96,8 @@ class AuthController extends Controller
 			'empresa' => 'required',
 			'entrada' => 'date_format:H:i',
 			'salida' => 'date_format:H:i',
+			'entrada2' => 'date_format:H:i',
+			'salida2' => 'date_format:H:i',
 		]);
 
 		$usuario=User::where('id', $usuarioId)->first();
@@ -117,8 +127,16 @@ class AuthController extends Controller
 		$empresa = $request->input('empresa');
 		$entrada = $request->input('entrada');
 		$salida = $request->input('salida');
+		$entrada2 = $request->input('entrada2');
+		$salida2 = $request->input('salida2');
 		$is_supervisor = $usuario->is_supervisor;
 		$is_admin = $usuario->is_admin;
+
+		if($_POST['turnoPartido']==1){
+			$turno_partido = 1;
+		} else {
+			$turno_partido = 0;
+		}
 
 		if(isset($_POST['supervisor'])){
 			$is_supervisor = 1;
@@ -136,11 +154,13 @@ class AuthController extends Controller
 		$usuario->empresa = $empresa;
 		$usuario->entrada = $entrada;
 		$usuario->salida = $salida;
-			
+		$usuario->turno_partido = $turno_partido;
+		$usuario->entrada2 = $entrada2;	
+		$usuario->salida2 = $salida2;	
 		
 		$usuario->save();
 
-		return redirect()->back()->with('info', 'Datos actualizados');
+		return redirect()->route('auth.signup')->with('info', 'Datos actualizados');
 	
 	}
 
