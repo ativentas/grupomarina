@@ -376,4 +376,5 @@ Route::group(['middleware' => ['web']], function () {
 		'middleware' => ['auth'],
 		]);
 
+
 });

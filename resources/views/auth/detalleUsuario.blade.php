@@ -59,9 +59,11 @@
                         <label><input type="checkbox" name="supervisor" id="supervisor" value="yes" {{$usuario->is_supervisor==1?' checked':''}}> Es supervisor de ese Restaurante</label>
             </div>
             @endif
-            <div class="checkbox">
-                <label><input type="checkbox" name="turnoPartido" id="turnoPartido" value="1" {{$usuario->turno_partido==1?' checked':''}}> <strong>¿Turno Partido?</strong></label>
-            </div>
+            <select class="form-control" id="empresa" name="empresa">
+                    <option{{$usuario->empresa=='COSTASERVIS'?' selected':''}}>COSTASERVIS</option>
+                    <option{{$usuario->empresa=='VILA MOEMA'?' selected':''}}>VILA MOEMA</option>
+                    <option{{$usuario->empresa=='N/A'?' selected':''}}>N/A</option>
+            </select>
             <script>
             $("#turnoPartido").change(function() {
                 if(this.checked) {

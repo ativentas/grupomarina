@@ -16,7 +16,7 @@ class CreateCuadrantesTable extends Migration
             $table->increments('id');
             $table->date('fecha');
             $table->string('empresa');
-            $table->enum('estado',['Pendiente','Completado'])->default('Pendiente');
+            $table->enum('estado',['Pendiente','Validado','Completado'])->default('Pendiente');
             $table->nullabletimestamps();
         });
     }
