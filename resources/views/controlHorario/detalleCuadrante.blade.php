@@ -3,7 +3,13 @@
 @section('content')
 
 
-<h3>Parte Horario. Fecha: {{$cuadrante->fecha->format('d/m/Y')}} - Empresa: {{$cuadrante->empresa}}</h3>
+<h3>Parte Horario. Fecha: {{$cuadrante->fecha->format('d/m/Y')}} - Empresa: {{$cuadrante->empresa}}
+	&nbsp;&nbsp;&nbsp;
+	<div style="display:inline"class="center-block">
+		<a href="{{route('cuadrantes')}}"><button type="button" class="btn btn-success" name="">Volver</button></a>
+	</div>
+</h3>
+
 	<table class="table table-bordered">
 		<thead>
 			<tr>
