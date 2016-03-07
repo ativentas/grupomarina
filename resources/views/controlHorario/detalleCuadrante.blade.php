@@ -20,9 +20,9 @@
 		<tfoot>
 			<tr>
 				<td style="visibility:hidden;"></td>
-				<td colspan="3"><button class="center-block" type="submit" name="action" value="actualizarTodos" form="cuadrante">Actualizar Datos</button></td>
+				<td colspan="3"><button class="center-block" type="submit" name="action" value="actualizarTodos" form="cuadrante">Validar Datos</button></td>
 				<td style="visibility:hidden;"></td>
-				<td colspan="2"><div class=""><button @if($cuadrante->estado!='Validado')style="display:none;" @endif class="center-block" type="submit" name="action" value="requerirTodos" form="cuadrante">Requerir TODOS</button></div></td>
+				<td colspan="2"><div class=""><button @if($cuadrante->estado!='poner aqui Validado')style="display:none;" @endif class="center-block" type="submit" name="action" value="requerirTodos" form="cuadrante">Requerir TODOS</button></div></td>
 			</tr>
 		</tfoot>
 		<form id="cuadrante" action="{{route('cuadrante.requerir', $cuadrante->id)}}" method="POST">
@@ -87,7 +87,7 @@
             		$("#entrada2{{$linea->id}}").hide();
             		$("#salida2{{$linea->id}}").hide();
             		$("#asunto{{$linea->id}}").text('{{$linea->asunto}}');
-            		$("#requerir{{$linea->id}}").show();
+            		// $("#requerir{{$linea->id}}").show();
 
             		break;	
             	case 'Partido':
@@ -96,7 +96,7 @@
             		$("#entrada2{{$linea->id}}").show();
             		$("#salida2{{$linea->id}}").show();
             		$("#asunto{{$linea->id}}").text('{{$linea->asunto}}');
-            		$("#requerir{{$linea->id}}").show();
+            		// $("#requerir{{$linea->id}}").show();
             		break;
             	case 'Vacaciones':
             		$("#entrada{{$linea->id}}").hide();

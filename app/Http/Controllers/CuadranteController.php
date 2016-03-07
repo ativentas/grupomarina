@@ -20,7 +20,7 @@ class CuadranteController extends Controller
 	public function index()
 	{
 		//los cuadrantes de hoy y los pendientes
-		$cuadrantes = Cuadrante::whereDate('fecha', '=', date('Y-m-d'))->orwhere('estado', 'Pendiente')->orderBy('fecha','ASC')->get();
+		$cuadrantes = Cuadrante::whereDate('fecha', '=', date('Y-m-d'))->orwhere('estado','!=', 'Completado')->orderBy('fecha','ASC')->get();
 		return view('controlHorario.gestionCuadrantes',compact('cuadrantes'));		
 	}
 
@@ -160,7 +160,7 @@ class CuadranteController extends Controller
 		$fecha = $cuadrante->fecha;
 		$fecha = date_format($fecha,'d-m-Y');
 
-		if($cuadrante->estado == 'Pendiente') {
+		if($cuadrante->estado == 'Validado') {
 
 			define('APPLICATION_NAME', 'Gmail API PHP Quickstart');
 			define('CREDENTIALS_PATH', base_path().'/storage/app/.credentials/gmail-php-quickstart.json');
@@ -228,27 +228,27 @@ class CuadranteController extends Controller
 			$salida = 'salida'.$linea->id;
 			$entrada2 = 'entrada2'.$linea->id;
 			$salida2 = 'salida2'.$linea->id;
+
 			$linea->tipo = $request->$tipo;
-			$linea->save();
 			
 			switch ($linea->tipo) {
 				case 'Normal':					
-					$this->updateLineaHorarios($linea->id,$request->$entrada,$request->$salida,null,null,false);
+					$this->updateLineaHorarios($linea->id,$request->$tipo,$request->$entrada,$request->$salida,null,null,false);
 					break;
 				case 'Partido':
-					$this->updateLineaHorarios($linea->id,$request->$entrada,$request->$salida,$request->$entrada2,$request->$salida2,false);
+					$this->updateLineaHorarios($linea->id,$request->$tipo,$request->$entrada,$request->$salida,$request->$entrada2,$request->$salida2,false);
 					break;
 				case 'Libre':
-					$this->updateLineaHorarios($linea->id,null,null,null,null,false);
+					$this->updateLineaHorarios($linea->id,$request->$tipo,null,null,null,null,false);
 					break;
 				case 'Vacaciones':
-					$this->updateLineaHorarios($linea->id,null,null,null,null,false);
+					$this->updateLineaHorarios($linea->id,$request->$tipo,null,null,null,null,false);
 					break;				
 				case 'Baja':
-					$this->updateLineaHorarios($linea->id,null,null,null,null,false);
+					$this->updateLineaHorarios($linea->id,$request->$tipo,null,null,null,null,false);
 					break;				
 				case 'Falta':
-					$this->updateLineaHorarios($linea->id,null,null,null,null,false);
+					$this->updateLineaHorarios($linea->id,$request->$tipo,null,null,null,null,false);
 					break;
 
 				
@@ -262,7 +262,7 @@ class CuadranteController extends Controller
 		return redirect()->back()->with('info', 'Cambios guardados');
 	}
 	
-	public function updateLineaHorarios($linea_id, $entrada, $salida, $entrada2, $salida2, $requerir){
+	public function updateLineaHorarios($linea_id, $tipo, $entrada, $salida, $entrada2, $salida2, $requerir){
 		$linea= LineaCuadrante::where('id', $linea_id)->first();
 		if ($entrada == null) {
 			$linea->entrada = null;
@@ -285,14 +285,17 @@ class CuadranteController extends Controller
 		}else {
 			$linea->salida2 = date("H:i",strtotime($salida2));	
 		}
+		$linea->tipo = $tipo;
 
 		$linea->save();
 		$fecha = $linea->cuadrante->fecha->format('d/m/Y');
-		if($requerir == true){
-			
+		if($requerir == true){			
 			if ($linea->entrada == null || $linea->salida == null){
 				return false;
 				//falta hacer esto....no se porque no redirecciona y sigue ejecutando la funcion original (requerirConfirmacion())
+			}
+			if ($linea->tipo == 'Partido' && ($linea->entrada2==null || $linea->salida2==Null)){
+				return false;
 			}
 			
 			$linea->estado = 'Requerido';
@@ -329,14 +332,16 @@ class CuadranteController extends Controller
 			return redirect()->back()->with('info', 'Si ya son correctos todos los datos, puedes requerir que confirmen el horario');
 		}elseif($linea_id > 0){
 		//update la linea $request->linea_id
-		//cambiar estado de la linea a Requerido
 			$entrada = 'entrada'.$linea_id;
 			$salida = 'salida'.$linea_id;
 			$entrada2 = 'entrada2'.$linea_id;
 			$salida2 = 'salida2'.$linea_id;
+			$tipo = 'tipo'.$linea_id;
 			
-			$this->updateLineaHorarios($linea_id, $request->$entrada, $request->$salida, $request->$entrada2, $request->$salida2, true);
-			//TODO: if updateLineaHorarios false....
+			$resultado = $this->updateLineaHorarios($linea_id, $request->$tipo, $request->$entrada, $request->$salida, $request->$entrada2, $request->$salida2, true);
+			if($resultado===false){
+				return redirect()->back()->withInput()->with('info', 'Revisa los horarios');
+			}
 			return redirect()->back()->withInput()->with('info', 'confirmación solicitada');
 		}else{
 			return view('controlHorario.detalleCuadrante', $cuadrante_id)->with('info', 'no se han encontrado registros');
