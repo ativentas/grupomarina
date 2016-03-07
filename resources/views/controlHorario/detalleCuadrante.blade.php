@@ -170,6 +170,8 @@
 
             $("#tipo{{$linea->id}}").change(function() {
             var caso = $("#tipo{{$linea->id}}").val();
+            var estadoCuadrante = "{{$cuadrante->estado}}";
+
             switch (caso){
             	case 'Normal':
             		$("#entrada{{$linea->id}}").show();
@@ -177,7 +179,8 @@
             		$("#entrada2{{$linea->id}}").hide();
             		$("#salida2{{$linea->id}}").hide();
             		$("#asunto{{$linea->id}}").text('{{$linea->asunto}}');
-            		$("#requerir{{$linea->id}}").show();
+            		if (estadoCuadrante=='Validado'){
+            			$("#requerir{{$linea->id}}").show();}
             		break;	
             	case 'Partido':
             		$("#entrada{{$linea->id}}").show();
@@ -185,7 +188,8 @@
             		$("#entrada2{{$linea->id}}").show();
             		$("#salida2{{$linea->id}}").show();
             		$("#asunto{{$linea->id}}").text('{{$linea->asunto}}');
-             		$("#requerir{{$linea->id}}").show();           		
+             		if (estadoCuadrante=='Validado'){
+            			$("#requerir{{$linea->id}}").show();}          		
             		break;
             	case 'Vacaciones':
             		$("#entrada{{$linea->id}}").hide();
