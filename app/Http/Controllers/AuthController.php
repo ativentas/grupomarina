@@ -56,7 +56,7 @@ class AuthController extends Controller
 		if(isset($_POST['administrador'])){
 			$administrador = 1;
 		}		
-		if($_POST['turnoPartido']==1){
+		if(isset($_POST['turnoPartido'])){
 			$turno_partido = 1;
 		}
 		
