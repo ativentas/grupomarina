@@ -48,21 +48,24 @@ class CuadranteController extends Controller
 				$linea->cuadrante_id = $cuadrante->id;
 				$linea->empleado_id = $empleado->id;
 				$linea->email = $empleado->email;
-				$linea->entrada = $empleado->entrada;
-				$linea->salida = $empleado->salida;
-				if ($empleado->turno_partido == 1){
-					$linea->tipo = 'Partido';
-					$linea->entrada2 = $empleado->entrada2;
-					$linea->salida2 = $empleado->salida2;
-				}
-
+				//TODO: Si el empleado está de vacaciones (intentar crear método para esto){
+				// $linea->tipo = 'Vacaciones';
+				// } else{
+					$linea->entrada = $empleado->entrada;
+					$linea->salida = $empleado->salida;
+					if ($empleado->turno_partido == 1){
+						$linea->tipo = 'Partido';
+						$linea->entrada2 = $empleado->entrada2;
+						$linea->salida2 = $empleado->salida2;
+					}
+				// }
 				$linea->save();
 			}
 			$lineas = LineaCuadrante::where('cuadrante_id', $cuadrante->id)->get();
 			return redirect()->route('cuadrante.detalle', $cuadrante->id)->with('info', 'ya puedes confeccionar el horario');
 
 		} elseif ($cuadrante->count()){
-			$lineas = LineaCuadrante::where('cuadrante_id', $cuadrante->id)->get();
+			$lineas = LineaCuadrante::where('cuadrante_id', $cuadrante->id)->orderBy('salida','asc')->get();
 			return view ('controlHorario.detalleCuadrante', compact('cuadrante', 'lineas'))->with('info', 'Ya existe un Cuadrante para ese día!!! Puedes modificarlo o salir para crear otro diferente');
 		}
 	}
@@ -152,10 +155,43 @@ class CuadranteController extends Controller
 		      		return $header['value'];
 	    		}
 	  		}
+		}		
+
+		function getHeaders($headers, $campos) {
+		  	foreach($headers as $header) {
+		    	for ($i=0; $i < count($campos) ; $i++) { 
+		    		if($header['name'] == $campos[$i]) {
+		      		$results[$campos[$i]] = $header['value'];
+	    			}	    		
+		    	}		    	
+	  		}
+	  		return $results;
+		}
+
+		// function getBody($partes){
+		// 	foreach($partes as $parte){
+		// 		if($parte['name'] == 'body')
+		// 	}
+
+		// }
+
+		/*
+		 * Decode the body.
+		 * @param : encoded body  - or null
+		 * @return : the body if found, else FALSE;
+		 */
+		function decodeBody($body) {
+		    $rawData = $body;
+		    $sanitizedData = strtr($rawData,'-_', '+/');
+		    $decodedMessage = base64_decode($sanitizedData);
+		    if(!$decodedMessage){
+		        $decodedMessage = FALSE;
+		    }
+		    return $decodedMessage;
 		}
 
 		$cuadrante = Cuadrante::where('id', $cuadrante_id)->first();
-		$lineas = LineaCuadrante::where('cuadrante_id', $cuadrante_id)->get();
+		$lineas = LineaCuadrante::where('cuadrante_id', $cuadrante_id)->orderBy('tipo','asc')->orderBy('salida','asc')->get();
 		
 		$fecha = $cuadrante->fecha;
 		$fecha = date_format($fecha,'d-m-Y');
@@ -178,8 +214,8 @@ class CuadranteController extends Controller
 			$client = getClient();
 			$service = new Google_Service_Gmail($client);
 			$userId ='me';
-			
-			//lista de labels con ids
+
+			// lista de labels con ids
 			// $results = $service->users_labels->listUsersLabels($userId);
 			// dd($results);
 			
@@ -190,26 +226,46 @@ class CuadranteController extends Controller
 					$email = $linea->empleado->email;
 					$mensaje = listMessages($service,$userId,$fecha,$email);		
 
-					$labelsToAdd = ['Label_1'];
+					// $labelsToAdd = ['Label_1'];
 					$labelsToRemove= ['INBOX'];
-					// dd(count($mensaje));
+				
 					if (count($mensaje)==1){
+						// dd('hay uno');
 						$linea->mensaje_id = $mensaje[0]->id;
 						$detalle_mensaje = $service->users_messages->get($userId,$mensaje[0]->id);
 						$headers= $detalle_mensaje->getPayload()->getHeaders();
 
-						$subject = getHeader($headers, 'Subject');
+						$partsBody = $detalle_mensaje->getPayload()->getParts();
+						$body = decodeBody($partsBody[0]['body']['data']);
+											
+						$campos = array('Subject','Date');
+						$results = getHeaders($headers,$campos);
+						$linea->asunto = $results['Subject'];
+						
+						$fechaLocal = date("Y-m-d H:i:s", strtotime($results['Date']));
 
-						$linea->asunto = $subject;
+						$linea->fechaMensaje = $fechaLocal;
+						$linea->body = $body;
+
+						// $subject = getHeader($headers, 'Subject');
+						// $linea->asunto = $subject;
 						$linea->estado = 'Firmado';
 						
 						$linea->save();
-						modifyMessage($service,$userId,$linea->mensaje_id,$labelsToAdd,$labelsToRemove);
+						// modifyMessage($service,$userId,$linea->mensaje_id,$labelsToAdd,$labelsToRemove);
+						modifyMessage($service,$userId,$linea->mensaje_id,['Label_1'],$labelsToRemove);
 
-					}else if (count($mensaje) > 1){
-						dd('hay mas de un mensaje de '.$email.' para el día '.$fecha.'. ENTRA EN GMAIL, BORRA EL REPETIDO Y VUELVE A REFRESCAR LA PAGINA');
+					}else if (count($mensaje) > 1){ //archivo en duplicados(Label_2) los antiguos
+						// dd(count($mensaje));	
+						for ($i=1; $i <count($mensaje) ; $i++) { 
+							$detalle_mensaje = $service->users_messages->get($userId,$mensaje[$i]->id);
+							$headers= $detalle_mensaje->getPayload()->getHeaders();
+							$subject = getHeader($headers, 'Subject');
+							modifyMessage($service,$userId,$mensaje[$i]->id,['Label_2'],$labelsToRemove);							
+						}
+
 					}else if (!count($mensaje)){
-						// dd('no hay ninguno');
+						// no hay ninguno y continua el foreach
 					}
 				}
 			}
@@ -372,5 +428,26 @@ class CuadranteController extends Controller
 			echo 'Error Mailer: ' . $mail->ErrorInfo;
 		} 
 
+	}
+
+	public function imprimirPdf ($cuadrante_id) {
+		$lineas =LineaCuadrante::where('cuadrante_id',$cuadrante_id)->orderBy('tipo','asc')->orderBy('salida','asc')->get();
+		$cuadrante = Cuadrante::where('id',$cuadrante_id)->first();
+		
+		$empresa = $cuadrante->empresa;
+		$fecha = $cuadrante->fecha;
+
+		// $data = array('name'=>'John Smith', 'date'=>'1/29/15');
+
+		$data = array(
+			'cuadrante_id' => $cuadrante_id,
+			'empresa' => $empresa,
+			'lineas' => $lineas,
+			'fecha' => $fecha,
+			'cuadrante' => $cuadrante,
+			);
+
+		$pdf = PDF::loadView('controlHorario.detalleImprimir',$data);
+		return $pdf->stream('temp.pdf');
 	}
 }

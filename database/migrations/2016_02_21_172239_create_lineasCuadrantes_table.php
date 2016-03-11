@@ -25,6 +25,8 @@ class CreateLineasCuadrantesTable extends Migration
             $table->string('email')->nullable();
             $table->string('mensaje_id')->nullable();
             $table->string('asunto',50)->nullable();
+            $table->string('fechaMensaje',50)->nullable();
+            $table->text('body')->nullable();
             $table->nullabletimestamps();
         });
     }

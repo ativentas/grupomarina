@@ -59,7 +59,25 @@ class AuthController extends Controller
 		if(isset($_POST['turnoPartido'])){
 			$turno_partido = 1;
 		}
-		
+		// dd($request->input('entrada'));
+
+		if ($request->input('entrada') == null) {
+			$entrada = null;
+		}else {
+			$entrada = date("H:i",strtotime($request->input('entrada')));}
+		if ($request->input('salida') == null) {
+			$salida = null;
+		}else {
+			$salida = date("H:i",strtotime($request->input('salida')));}
+		if ($request->input('entrada2') == null) {
+			$entrada2 = null;
+		}else {
+			$entrada2 = date("H:i",strtotime($request->input('entrada2')));}
+		if ($request->input('salida2') == null) {
+			$salida2 = null;
+		}else {
+			$salida2 = date("H:i",strtotime($request->input('salida2')));}
+
 		User::create([
 			'email' => $request->input('email'),
 			'nombre_completo' => $request->input('nombre'),
@@ -69,11 +87,11 @@ class AuthController extends Controller
 			'empresa' => $request->input('empresa'),
 			'is_supervisor' => $supervisor,
 			'is_admin' => $administrador,
-			'entrada' => $request->input('entrada'),
-			'salida' => $request->input('salida'),
+			'entrada' => $entrada,
+			'salida' => $salida,
 			'turno_partido' => $turno_partido,
-			'entrada2' => $request->input('entrada2'),
-			'salida2' => $request->input('salida2'),
+			'entrada2' => $entrada,
+			'salida2' => $salida2,
 		]);
 
 		return redirect()

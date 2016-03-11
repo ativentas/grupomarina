@@ -375,6 +375,11 @@ Route::group(['middleware' => ['web']], function () {
 		'as' => 'cuadrante.generar',
 		'middleware' => ['auth'],
 		]);
+	Route::get('/imprimirCuadrante/{cuadrante_id}', [
+		'uses' => '\Pedidos\Http\Controllers\CuadranteController@imprimirPdf',
+		'as' => 'imprimirCuadrante',	
+		'middleware' => ['auth'],
+	]);
 
 
 });

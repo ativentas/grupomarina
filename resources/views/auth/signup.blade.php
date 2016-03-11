@@ -86,9 +86,9 @@
             </div>
             <div class="form-group{{$errors->has('entrada')|$errors->has('salida') ? ' has-error' : ''}}">
                 <label for="entrada" class="control-label">Hora Entrada</label>
-                <input type="text" size=5 name="entrada" id="entrada" value="{{Request::old('entrada') ?: ''}}" placeholder="00:00">
+                <input type="text" size=5 name="entrada" id="entrada" value="{{Request::old('entrada') ?: NULL}}" placeholder="00:00">
                 <label for="salida" class="control-label">Hora Salida</label>
-                <input type="text" size=5 name="salida" id="salida" value="{{Request::old('salida') ?: ''}}" placeholder="00:00">
+                <input type="text" size=5 name="salida" id="salida" value="{{Request::old('salida') ?: NULL}}" placeholder="00:00">
                 @if ($errors->has('entrada')|$errors->has('salida'))
                     <span class="help-block">{{$errors->first('entrada')}} {{$errors->first('salida')}}</span>
                 @endif 
