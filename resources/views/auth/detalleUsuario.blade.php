@@ -64,6 +64,9 @@
                     <option{{$usuario->empresa=='VILA MOEMA'?' selected':''}}>VILA MOEMA</option>
                     <option{{$usuario->empresa=='N/A'?' selected':''}}>N/A</option>
             </select>
+            <div class="checkbox">
+                <input type="checkbox" name="turnoPartido" id="turnoPartido" value="1" {{$usuario->turno_partido==1?' checked':''}}> <strong>¿Turno Partido?</strong>
+            </div>
             <script>
             $("#turnoPartido").change(function() {
                 if(this.checked) {

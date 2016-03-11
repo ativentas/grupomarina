@@ -150,20 +150,18 @@ class AuthController extends Controller
 		$is_supervisor = $usuario->is_supervisor;
 		$is_admin = $usuario->is_admin;
 
-		if($_POST['turnoPartido']==1){
+		if(isset($_POST['turnoPartido'])){
 			$turno_partido = 1;
-		} else {
-			$turno_partido = 0;
-		}
-
+			$usuario->turno_partido = $turno_partido;
+		}else{$usuario->turno_partido = 0;}
 		if(isset($_POST['supervisor'])){
 			$is_supervisor = 1;
 			$usuario->is_supervisor = $is_supervisor;
-		}
+		}else{$usuario->is_supervisor = 0;}
 		if(isset($_POST['administrador'])){
 			$is_admin = 1;
 			$usuario->is_admin = $is_admin;
-		}
+		}else{$usuario->is_admin = 0;}
 		
 		$usuario->email = $email;
 		$usuario->username = $username;
@@ -172,7 +170,6 @@ class AuthController extends Controller
 		$usuario->empresa = $empresa;
 		$usuario->entrada = $entrada;
 		$usuario->salida = $salida;
-		$usuario->turno_partido = $turno_partido;
 		$usuario->entrada2 = $entrada2;	
 		$usuario->salida2 = $salida2;	
 		
