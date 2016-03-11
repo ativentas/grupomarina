@@ -412,7 +412,7 @@ class CuadranteController extends Controller
 		$mail->Host = 'smtp.gmail.com';  // Specify main and backup SMTP servers
 		$mail->SMTPAuth = true;                               // Enable SMTP authentication
 		$mail->Username = 'costaservishorarios@gmail.com';        // SMTP username
-		$mail->Password = '654654901';                           // SMTP password
+		$mail->Password = 'costaservis';                           // SMTP password
 		$mail->SMTPSecure = 'tls';              // Enable TLS encryption, `ssl` also accepted
 		$mail->Port = 587;
 		$mail->isHTML(true);
