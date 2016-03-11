@@ -157,11 +157,11 @@ class AuthController extends Controller
 		if(isset($_POST['supervisor'])){
 			$is_supervisor = 1;
 			$usuario->is_supervisor = $is_supervisor;
-		}else{$usuario->is_supervisor = 0;}
+		}
 		if(isset($_POST['administrador'])){
 			$is_admin = 1;
 			$usuario->is_admin = $is_admin;
-		}else{$usuario->is_admin = 0;}
+		}
 		
 		$usuario->email = $email;
 		$usuario->username = $username;
