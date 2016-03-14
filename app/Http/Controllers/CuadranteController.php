@@ -5,6 +5,7 @@ namespace Pedidos\Http\Controllers;
 use PDF;
 use Auth;
 use Pedidos\Models\User;
+use Pedidos\Models\Event;
 use Pedidos\Models\Cuadrante;
 use Pedidos\Models\LineaCuadrante;
 use Illuminate\Http\Request;
@@ -13,6 +14,7 @@ use Google_Service_Gmail_ModifyMessageRequest;
 use Google_Client;
 use PHPMailer;
 use View;
+
 
 
 class CuadranteController extends Controller
@@ -33,7 +35,10 @@ class CuadranteController extends Controller
 		$fecha = date('Y-m-d',strtotime($request->fecha));
 		
 		$cuadrante = Cuadrante::whereDate('fecha','=', $fecha)->where('empresa', $request->empresa)->first();
-		
+		$eventos = Event::where('finalDay','>=',$request->fecha)->where('start_time','<=','fecha')->get();
+		$listaIdEmpleados = $eventos->lists('title','empleado_id')->toArray();
+
+		// dd($listaIdEmpleados[2]);
 		//si no existe ya uno hecho, se crea		
 		if (!$cuadrante){
 			$cuadrante = new Cuadrante;
@@ -42,22 +47,43 @@ class CuadranteController extends Controller
 			$cuadrante->estado = 'Pendiente';
 			$cuadrante->save();
 			
-			$empleados = User::where('empresa', $request->empresa)->get();			
+			$empleados = User::where('empresa', $request->empresa)->get();
+			// dd($empleados);
+		
 			foreach ($empleados as $empleado) {
 				$linea = new LineaCuadrante;
 				$linea->cuadrante_id = $cuadrante->id;
 				$linea->empleado_id = $empleado->id;
 				$linea->email = $empleado->email;
-				//TODO: Si el empleado está de vacaciones (intentar crear método para esto){
-				// $linea->tipo = 'Vacaciones';
-				// } else{
+				if (array_key_exists($empleado->id, $listaIdEmpleados)){
+					$tipo = $listaIdEmpleados[$empleado->id];
+					$evento = Event::where('empleado_id',$empleado->id)->first();
+					// dd($listaIdEmpleados[$empleado->id]);
+					if($tipo == 'Baja'){
+						$linea->tipo = 'Baja';
+						$linea->estado = 'Bloqueado';
+						$linea->fecha_inicio = $evento->start_time;
+						$linea->fecha_fin = $evento->finalDay;}
+					if($tipo == 'Vacaciones'){
+						$linea->tipo = 'Vacaciones';
+						$linea->estado = 'Bloqueado';
+						$linea->fecha_inicio = $evento->start_time;
+						$linea->fecha_fin = $evento->finalDay;}						
+					if($tipo == 'Falta'){
+						$linea->tipo = 'Falta';
+						$linea->estado = 'Bloqueado';
+						$linea->fecha_inicio = $evento->start_time;
+						$linea->fecha_fin = $evento->finalDay;}					
+				} 
+				else{	
 					$linea->entrada = $empleado->entrada;
 					$linea->salida = $empleado->salida;
-					if ($empleado->turno_partido == 1){
+					if ($empleado->turno_partido == 1) { 
 						$linea->tipo = 'Partido';
 						$linea->entrada2 = $empleado->entrada2;
 						$linea->salida2 = $empleado->salida2;
 					}
+				}
 				// }
 				$linea->save();
 			}
@@ -306,8 +332,7 @@ class CuadranteController extends Controller
 				case 'Falta':
 					$this->updateLineaHorarios($linea->id,$request->$tipo,null,null,null,null,false);
 					break;
-
-				
+			
 				default:
 					# code...
 					break;

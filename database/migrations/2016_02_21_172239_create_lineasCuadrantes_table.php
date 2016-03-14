@@ -21,7 +21,9 @@ class CreateLineasCuadrantesTable extends Migration
             $table->time('salida')->nullable();
             $table->time('entrada2')->nullable();
             $table->time('salida2')->nullable();
-            $table->enum('estado',['Pendiente','Requerido','Firmado'])->default('Pendiente');
+            $table->enum('estado',['Pendiente','Requerido','Firmado','Bloqueado'])->default('Pendiente');
+            $table->date('fecha_inicio')->nullable();
+            $table->date('fecha_fin')->nullable();
             $table->string('email')->nullable();
             $table->string('mensaje_id')->nullable();
             $table->string('asunto',50)->nullable();

@@ -40,6 +40,7 @@
                             <ul class="dropdown-menu" role="menu">
                                 <li><a href="{{route('auth.signup')}}">Gestión Usuarios</a></li>
                                 <li><a href="{{route('fileentry')}}">Nominas</a></li>
+                                <li><a href="{{url('events/calendario')}}">Vacaciones</a></li>
                                 <li><a href="{{route('cuadrantes')}}">Horarios</a></li>
                             </ul>
                         </div>
@@ -58,7 +59,10 @@
                     
                     @endif
                     <div style="padding-left: 3em"class="btn-group">
-                    <li><button type="button" class="btn btn-default"><a href="{{route('auth.signout')}}">Salir</a></button></li>
+                    <li><button type="button" class="btn btn-default"><a href="{{route('home')}}">Home</a></button></li>
+                    </div>
+                    <div style="padding-left: 3em"class="btn-group">
+                    <li><a href="{{route('auth.signout')}}">Log out</a></li>
                     </div>
                 @else
                     

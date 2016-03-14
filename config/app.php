@@ -156,6 +156,7 @@ return [
         Pedidos\Providers\EventServiceProvider::class,
         Pedidos\Providers\RouteServiceProvider::class,
         Barryvdh\DomPDF\ServiceProvider::class,
+        Pedidos\Providers\CheckRoomAvailability::class,
       
         
        

@@ -4,6 +4,7 @@ namespace Pedidos\Http\Controllers;
 
 use Auth;
 use Pedidos\Models\User;
+use Pedidos\Models\Event;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Input;
@@ -102,7 +103,8 @@ class AuthController extends Controller
 	public function getmodificar($id)
 	{
 		$usuario = User::where('id', $id)->first();
-		return view('auth.detalleUsuario')->with('usuario', $usuario);
+		$eventos = Event::where('empleado_id',$id)->get();
+		return view('auth.detalleUsuario')->with('usuario', $usuario)->with('eventos',$eventos);
 	}
 
 	public function postModificar(Request $request, $usuarioId)

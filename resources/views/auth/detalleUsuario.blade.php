@@ -4,7 +4,7 @@
 	
 <h3 style="" class"">Usuario: {{$usuario->username}}</h3>
 <hr>
-    <div class="col-md-6">
+    <div class="col-sm-6">
         <form class="form-vertical" role="form" method="post" action="{{route('usuarios.modificar', $usuario->id)}}">
             <div class="form-group{{$errors->has('email') ? ' has-error' : ''}}">
                 <label for="email" class="control-label">Correo electrónico</label>
@@ -100,7 +100,33 @@
             <input type="hidden" name="_token" value="{{Session::token()}}">
         </form>
     </div>
-</div>
+    <div class="col-sm-6">
+    @if (!$eventos->count())
+    <h3>No hay Partes registrados!</h3>
+    @else
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+            <th>Asunto</th>
+            <th>Comienzo</th>
+            <th>Fin</th>
+            <th>Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($eventos as $evento)
+            <tr>
+            <td>{{$evento->title}}</td>
+            <td>{{date('d/m/Y',strtotime($evento->start_time))}}</td>
+            <td>{{date('d/m/Y',strtotime($evento->end_time))}}</td>
+            <td>CONFIRMADO</td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
+    @endif
+    </div>
+
 
 
 @stop

@@ -380,6 +380,33 @@ Route::group(['middleware' => ['web']], function () {
 		'as' => 'imprimirCuadrante',	
 		'middleware' => ['auth'],
 	]);
+/**
+ * EVENTOS CALENDARIO
+ */
+		
+	Route::get('/events/calendario', function () {
+	$data = [
+		'page_title' => 'Calendario',
+	];
+    return view('event/index', $data);
+	});
 
+	Route::resource('events', 'EventController');
+
+	Route::get('/api', function () {
+	$events = DB::table('events')->select('id', 'name', 'title', 'start_time as start', 'end_time as end','finalDay','allDay')->get();
+
+	foreach($events as $event)
+	{
+		$start = date('d/m',strtotime($event->start));
+		$end = date('d/m',strtotime($event->finalDay));
+		$event->title = $event->title . ' - ' .$event->name. ' (' .$start. ' A '.$end.')';
+		$event->url = url('events/' . $event->id);
+		if($event->allDay==0){
+				$event->allDay = false;
+			}else{$event->allDay = true;}
+	}
+	return $events;
+	});
 
 });

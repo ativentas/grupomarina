@@ -42,7 +42,7 @@
 			@foreach ($lineas as $linea)
 			<tr>
 
-			<td>{{$linea->empleado->nombre_completo}}</td>
+			<td><a target = '_blank' href={{url('usuarios/modificar')}}/{{$linea->empleado->id}}>{{$linea->empleado->nombre_completo}}</a></td>
 			<td>
 			<select class="form-control" id="tipo{{$linea->id}}" name="tipo{{$linea->id}}">
 				<option value = "Normal" {{$linea->tipo=='Normal'?' selected':''}}>Normal</option>
@@ -56,6 +56,7 @@
 
 
 			<td class="">
+			<label id="start{{$linea->id}}"for="">{{date('d/m/Y',strtotime($linea->fecha_inicio))}}</label>
 			@if ($linea->entrada == null)
 			<input type="text" name="entrada{{$linea->id}}" pattern="([01]?[0-9]|2[0-3]):[0-5][0-9]" id="entrada{{$linea->id}}" size="5" placeholder="00:00" value="">
 			@else
@@ -68,6 +69,7 @@
 			@endif
 			</td>
 			<td>
+			<label id="end{{$linea->id}}"for="">{{date('d/m/Y',strtotime($linea->fecha_fin))}}</label>
 			@if ($linea->salida == null)
 			<input type="text" size="5" name="salida{{$linea->id}}" pattern="([01]?[0-9]|2[0-3]):[0-5][0-9]" id="salida{{$linea->id}}" placeholder="00:00" value="">
 			@else
@@ -143,6 +145,9 @@
 	            		$("#salida2{{$linea->id}}").hide();
 	            		$("#asunto{{$linea->id}}").text('*** VACACIONES ***');
 	            		$("#requerir{{$linea->id}}").hide();
+	            		$("#start{{$linea->id}}").show();
+	            		$("#end{{$linea->id}}").show();
+
 	            		break;
 	            	case 'Libre':
 	            		$("#entrada{{$linea->id}}").hide();
@@ -194,6 +199,13 @@
 	        			$("#salida{{$linea->id}}").prop('disabled', true);
 	        			$("#entrada2{{$linea->id}}").prop('disabled', true);
 	        			$("#salida2{{$linea->id}}").prop('disabled', true);
+	        			$("#tipo{{$linea->id}}").prop('disabled', true);
+	            		break;
+	            	case 'Bloqueado':
+	        			// $("#entrada{{$linea->id}}").prop('disabled', true);
+	        			// $("#salida{{$linea->id}}").prop('disabled', true);
+	        			// $("#entrada2{{$linea->id}}").prop('disabled', true);
+	        			// $("#salida2{{$linea->id}}").prop('disabled', true);
 	        			$("#tipo{{$linea->id}}").prop('disabled', true);
 	            		break;
 	            }	
