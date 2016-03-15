@@ -56,7 +56,7 @@
 
 
 			<td class="">
-			<label id="start{{$linea->id}}"for="">{{date('d/m/Y',strtotime($linea->fecha_inicio))}}</label>
+			<label id="start{{$linea->id}}">{{date('d/m/Y',strtotime($linea->fecha_inicio))}}</label>
 			@if ($linea->entrada == null)
 			<input type="text" name="entrada{{$linea->id}}" pattern="([01]?[0-9]|2[0-3]):[0-5][0-9]" id="entrada{{$linea->id}}" size="5" placeholder="00:00" value="">
 			@else
@@ -127,6 +127,8 @@
 	            		$("#entrada2{{$linea->id}}").hide();
 	            		$("#salida2{{$linea->id}}").hide();
 	            		$("#asunto{{$linea->id}}").text('{{$linea->asunto}}');
+	            		$("#start{{$linea->id}}").hide();
+	            		$("#end{{$linea->id}}").hide();
 	            		// $("#requerir{{$linea->id}}").show();
 
 	            		break;	
@@ -136,6 +138,8 @@
 	            		$("#entrada2{{$linea->id}}").show();
 	            		$("#salida2{{$linea->id}}").show();
 	            		$("#asunto{{$linea->id}}").text('{{$linea->asunto}}');
+	            		$("#start{{$linea->id}}").hide();
+	            		$("#end{{$linea->id}}").hide();
 	            		// $("#requerir{{$linea->id}}").show();
 	            		break;
 	            	case 'Vacaciones':
@@ -147,7 +151,6 @@
 	            		$("#requerir{{$linea->id}}").hide();
 	            		$("#start{{$linea->id}}").show();
 	            		$("#end{{$linea->id}}").show();
-
 	            		break;
 	            	case 'Libre':
 	            		$("#entrada{{$linea->id}}").hide();
@@ -164,6 +167,8 @@
 	            		$("#salida2{{$linea->id}}").hide();
 	            		$("#asunto{{$linea->id}}").text('*** BAJA MEDICA ***');
 	            		$("#requerir{{$linea->id}}").hide();
+	            		$("#start{{$linea->id}}").show();
+	            		$("#end{{$linea->id}}").show();
 	            		break;
 	            	case 'Falta':
 	            		$("#entrada{{$linea->id}}").hide();
@@ -172,10 +177,14 @@
 	            		$("#salida2{{$linea->id}}").hide();
 	            		$("#asunto{{$linea->id}}").text('*** FALTA ***');
 	            		$("#requerir{{$linea->id}}").hide();
+	            		$("#start{{$linea->id}}").show();
+	            		$("#end{{$linea->id}}").show();
 	            		break;
 	            	default:
 	            		$("#entrada2{{$linea->id}}").hide();
 	            		$("#salida2{{$linea->id}}").hide();
+	            		$("#start{{$linea->id}}").hide();
+	            		$("#end{{$linea->id}}").hide();
 	            		break;	
 	            }
 
