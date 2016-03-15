@@ -73,6 +73,11 @@ class EventController extends Controller
 		$finalDay = Carbon::createFromFormat($format,$time[1])->startOfDay()->addDay()->format($format);
 		$event->end_time = $this->change_date_format($finalDay);
 		$event->allDay = 1;
+
+		$first_date = new DateTime($event->start_time);
+		$second_date = new DateTime($event->end_time);
+
+		$event->durationDays = $this->format_interval($first_date->diff($second_date));	 
 		
 		$event->save();	
 

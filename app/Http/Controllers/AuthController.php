@@ -104,6 +104,7 @@ class AuthController extends Controller
 	{
 		$usuario = User::where('id', $id)->first();
 		$eventos = Event::where('empleado_id',$id)->get();
+	
 		return view('auth.detalleUsuario')->with('usuario', $usuario)->with('eventos',$eventos);
 	}
 

@@ -110,6 +110,7 @@
             <th>Asunto</th>
             <th>Comienzo</th>
             <th>Fin</th>
+            <th>días</th>
             <th>Estado</th>
             </tr>
         </thead>
@@ -118,7 +119,8 @@
             <tr>
             <td>{{$evento->title}}</td>
             <td>{{date('d/m/Y',strtotime($evento->start_time))}}</td>
-            <td>{{date('d/m/Y',strtotime($evento->end_time))}}</td>
+            <td>{{date('d/m/Y',strtotime($evento->finalDay))}}</td>
+            <td>{{$evento->durationDays}}</td>
             <td>CONFIRMADO</td>
             </tr>
             @endforeach

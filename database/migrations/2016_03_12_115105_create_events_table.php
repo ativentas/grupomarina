@@ -20,6 +20,7 @@ class CreateEventsTable extends Migration
             $table->timestamp('start_time');
             $table->timestamp('end_time')->nullable();
             $table->date('finalDay')->nullable();
+            $table->integer('durationDays')->nullable();
             $table->timestamps();
             $table->boolean('allDay');
         });
