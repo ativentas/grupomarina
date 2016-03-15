@@ -36,7 +36,7 @@
 			header: {
 				left: 'prev,next today',
 				center: 'title',
-				right: 'month,basicWeek',
+				right: 'basicDay,month,basicWeek',
 
 			},
 			defaultView: 'basicWeek',
@@ -49,7 +49,9 @@
 					alert("cannot load json");
 				}
 			}
+
 		});
+
 	});
 </script>
 @endsection
