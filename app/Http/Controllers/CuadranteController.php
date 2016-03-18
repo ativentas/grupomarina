@@ -14,7 +14,11 @@ use Google_Service_Gmail_ModifyMessageRequest;
 use Google_Client;
 use PHPMailer;
 use View;
-
+use DateTime;
+use DateInterval;
+use DatePeriod;
+use Illuminate\Support\Facades\DB;
+use JavaScript;
 
 
 class CuadranteController extends Controller
@@ -221,6 +225,13 @@ class CuadranteController extends Controller
 		
 		$fecha = $cuadrante->fecha;
 		$fecha = date_format($fecha,'d-m-Y');
+		
+
+		$valores = $this->empleadosTrabajando($cuadrante_id);
+		Javascript::put([
+			'valores' => $valores
+			]);
+		
 
 		if($cuadrante->estado == 'Validado') {
 
@@ -301,8 +312,11 @@ class CuadranteController extends Controller
 
 	public function updateCuadrante ($request, $cuadrante_id)
 	{		
+		
+
+
 		//update las lineas
-	
+		
 		$lineas = LineaCuadrante::where('cuadrante_id', $cuadrante_id)->get();
 		foreach ($lineas as $linea) {
 			$tipo = 'tipo'.$linea->id;
@@ -340,7 +354,11 @@ class CuadranteController extends Controller
 			
 			# code...
 		}
+		
+		
+
 		return redirect()->back()->with('info', 'Cambios guardados');
+		
 	}
 	
 	public function updateLineaHorarios($linea_id, $tipo, $entrada, $salida, $entrada2, $salida2, $requerir){
@@ -355,7 +373,6 @@ class CuadranteController extends Controller
 		}else {
 			$linea->salida = date("H:i",strtotime($salida));	
 		}
-
 		if ($entrada2 == null) {
 			$linea->entrada2 = null;
 		}else {
@@ -410,6 +427,8 @@ class CuadranteController extends Controller
 			$cuadrante=Cuadrante::where('id',$cuadrante_id)->first();
 			$cuadrante->estado = 'Validado';
 			$cuadrante->save();
+
+		
 			return redirect()->back()->with('info', 'Si ya son correctos todos los datos, puedes requerir que confirmen el horario');
 		}elseif($linea_id > 0){
 		//update la linea $request->linea_id
@@ -452,6 +471,62 @@ class CuadranteController extends Controller
 			echo 'No se pudo enviar el mensaje. ';
 			echo 'Error Mailer: ' . $mail->ErrorInfo;
 		} 
+
+	}
+		/**
+		 * PHP add 15 Minutes to a Time with Loop
+		 *
+		 * @link http://stackoverflow.com/a/19399907/367456
+		 */
+
+	public function empleadosTrabajando ($cuadrante_id){
+
+		//TODO: Buscar la hora mínima y la hora máxima
+
+		$begin = new DateTime("07:30:00");
+		$end   = new DateTime("23:30:00");
+
+		$interval = DateInterval::createFromDateString('30 min');
+
+		$times    = new DatePeriod($begin, $interval, $end);
+
+		// $lineas = DB::table('lineasCuadrantes')->where('cuadrante_id', $cuadrante_id)->where('tipo','Normal')->get();//$lineas es un array
+		$matchThese = ['cuadrante_id' => $cuadrante_id, 'tipo' => 'Normal'];
+		$orMatchThese = ['cuadrante_id' => $cuadrante_id, 'tipo' => 'Partido'];
+		$lineas = LineaCuadrante::where($matchThese)->orWhere($orMatchThese)->get();
+		// $lineas = $lineas->where('tipo','Normal')->orWhere('tipo','Partido')->get();//$lineas es un array
+		// dd($lineas);
+
+
+		foreach ($times as $time) {
+			$hora = $time->format('H:i:s');
+			$count = 0;
+			$empleados ="";
+			foreach ($lineas as $linea) {			
+				if($linea->entrada <= $hora && $linea->salida > $hora || $linea->entrada2 <= $hora && $linea->salida2 > $hora){
+					$count++;
+					$empleados = $empleados.$linea->empleado->username.', ';//TODO: aqui se podrían poner los nombres de los empleados con el horario
+				}				
+			}
+
+			// $valores[]= array(
+		 //        'hora' => $hora, 
+		 //        'numEmpleados' => $count,
+		 //        'empleados' => rtrim($empleados,' ,')
+		 //    );
+		    
+		    $valores[]=array($time->format('H:i'),$count,$count,rtrim($empleados,', '));
+		    // dd($valores);
+
+		    // echo $time->format('H:i'), '-', 
+		    //      $time->add($interval)->format('H:i'), "\n"
+		    //      ;
+		}
+		// dd($valores2);
+
+		return $valores;
+		
+
 
 	}
 

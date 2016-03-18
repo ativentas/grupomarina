@@ -1,8 +1,8 @@
 @extends('templates.default')
-
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 @section('content')
 
-
+<div class="row">
 <h3>Parte Horario. Fecha: {{$cuadrante->fecha->format('d/m/Y')}} - Empresa: {{$cuadrante->empresa}}
 	&nbsp;&nbsp;&nbsp;
 	<div style="display:inline"class="center-block">
@@ -12,9 +12,82 @@
 			<form style="display: inline" action="{{route('imprimirCuadrante',$cuadrante->id)}}" method="GET">
 			<button type="" class="btn btn-success">Imprimir</button>
 			</form>
-	</div>
-</h3>
+	</div>&nbsp;&nbsp;&nbsp;
 
+	<div style="display: inline" class="center-block">
+	<button class="btn btn-success" data-toggle="collapse" data-target="#chart_div">Grafico</button></div>
+
+</h3>
+</div>
+<div class="row col-sm-12 col-md-12 col-lg-12">
+	<!-- <div id="grafico" class="collapse"> -->
+	<div id="chart_div" class=""></div>
+	
+</div>
+
+
+
+
+
+<!-- <p class=""><a href="#" id="-grafico" class="" data-toggle="modal" data-target="#grafico">Grafico</a></p>
+			<div class="modal fade" id="grafico" role="dialog">
+			    <div class="modal-dialog modal-lg" style="width:100%">
+			      <div class="modal-content" style="width:100%">
+			       
+			        <div class="modal-header">
+
+			          <button type="button" class="close" data-dismiss="modal">&times;</button>
+			          
+			        </div>
+			        <div class="modal-body" style="width:100%">
+			          <div id="chart_div" style="width:400"></div>
+			        </div>
+			        <div class="modal-footer">
+			          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			        </div>
+			      </div>
+			    </div>
+			</div> -->
+
+
+	
+<script type="text/javascript">
+google.charts.load('current', {packages: ['corechart', 'bar']});
+google.charts.setOnLoadCallback(drawMultSeries);
+
+function drawMultSeries() {
+
+      var data = new google.visualization.DataTable();
+      data.addColumn('string', 'hora');
+      data.addColumn('number', 'C');
+      data.addColumn({type:'number', role: 'annotation' });
+
+      data.addColumn({type: 'string', role: 'tooltip'});
+      data.addRows(valores);
+
+      var options = {
+        // 'width':900,
+        // 'height':300,
+        title: 'Empleados trabajando',
+        hAxis: {
+          title: '',
+          // format: 'h:mm a',
+          // viewWindow: {
+          //   min: [7, 30, 0],
+          //   max: [17, 30, 0]
+          // }
+        },
+        vAxis: {
+          title: ''
+        }
+      };
+
+      var chart = new google.visualization.ColumnChart(
+        document.getElementById('chart_div'));
+
+      chart.draw(data, options);
+    }
+</script>
 	<table class="table table-bordered">
 		<thead>
 			<tr>
@@ -91,6 +164,7 @@
 			    <div class="modal-dialog modal-lg">
 			      <div class="modal-content">
 			        <div class="modal-header">
+
 			          <button type="button" class="close" data-dismiss="modal">&times;</button>
 			          <h4>Recibido: {{$linea->fechaMensaje}}</h4>
 			          <h4>De: {{$linea->email}}</h4>

@@ -14,6 +14,13 @@ use Pedidos\Http\Controllers\Controller;
 
 class ControlInventarioController extends Controller
 {
+    
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
+
     /**
      * Display a listing of the resource.
      *

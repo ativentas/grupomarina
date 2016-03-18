@@ -18,7 +18,7 @@
     <link href="{{ url('_asset/css') }}/style.css?v=<?=time();?>" rel="stylesheet">
     <!-- <link href="{{ url('_asset/css') }}/style.css" rel="stylesheet"> -->
   	<link href="{{ url('_asset/css') }}/daterangepicker.css" rel="stylesheet">
-  	<link href="{{ url('_asset/fullcalendar') }}/fullcalendar.min.css" rel="stylesheet">
+  	<link href="{{ url('_asset/fullcalendar') }}/fullcalendar.css?v=<?=time();?>" rel="stylesheet">
 	
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>

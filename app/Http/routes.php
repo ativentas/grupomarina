@@ -345,7 +345,7 @@ Route::group(['middleware' => ['web']], function () {
         'uses' => 'FileEntryController@getFile','middleware' => ['auth'],]);
 
 
-	//falta middleware
+	//middleware auth en el Controller
 	Route::get('control/createFiltrado{filtro}', [
 		'uses' => 'ControlInventarioController@createFiltrado',
 		'as' => 'control.createFiltrado']);
@@ -379,7 +379,11 @@ Route::group(['middleware' => ['web']], function () {
 		'uses' => '\Pedidos\Http\Controllers\CuadranteController@imprimirPdf',
 		'as' => 'imprimirCuadrante',	
 		'middleware' => ['auth'],
-	]);
+		]);
+	// Route::get('/apiChart', [
+	// 	'uses' => '\Pedidos\Http\Controllers\CuadranteController@empleadosTrabajando',
+	// 	'middleware' => ['auth'],
+	// 	]);
 /**
  * EVENTOS CALENDARIO
  */

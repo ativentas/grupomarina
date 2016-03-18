@@ -6,8 +6,8 @@
 	<div clss="col-lg-12">
 		<ol class="breadcrumb">
 			<li><a href="{{ url('events/calendario') }}">Calendario</a></li>
-			<li><a href="{{ url('/events') }}">Eventos</a></li>
-			<li class="active">Nuevo Evento</li>
+			<li><a href="{{ url('/events') }}">Vacac/Bajas</a></li>
+			<li class="active">Nuevo Vacac/Bajas</li>
 		</ol>
 	</div>
 </div>

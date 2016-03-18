@@ -40,7 +40,7 @@
                             <ul class="dropdown-menu" role="menu">
                                 <li><a href="{{route('auth.signup')}}">Gestión Usuarios</a></li>
                                 <li><a href="{{route('fileentry')}}">Nominas</a></li>
-                                <li><a href="{{url('events/calendario')}}">Vacaciones</a></li>
+                                <li><a href="{{url('events/calendario')}}">Vacac/Bajas</a></li>
                                 <li><a href="{{route('cuadrantes')}}">Horarios</a></li>
                             </ul>
                         </div>
