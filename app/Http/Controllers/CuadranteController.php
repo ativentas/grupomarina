@@ -486,7 +486,7 @@ class CuadranteController extends Controller
 		$begin = new DateTime("07:30:00");
 		$end   = new DateTime("23:30:00");
 
-		$interval = DateInterval::createFromDateString('30 min');
+		$interval = DateInterval::createFromDateString('15 min');
 
 		$times    = new DatePeriod($begin, $interval, $end);
 
@@ -501,11 +501,19 @@ class CuadranteController extends Controller
 		foreach ($times as $time) {
 			$hora = $time->format('H:i:s');
 			$count = 0;
-			$empleados ="";
+			$horaTip = $time->format('H:i');
+			$empleados = $horaTip."\r\n";
+			
+
 			foreach ($lineas as $linea) {			
-				if($linea->entrada <= $hora && $linea->salida > $hora || $linea->entrada2 <= $hora && $linea->salida2 > $hora){
+				if($linea->entrada <= $hora && $linea->salida > $hora){
 					$count++;
 					$empleados = $empleados.$linea->empleado->username.', ';//TODO: aqui se podrían poner los nombres de los empleados con el horario
+				}
+				if($linea->entrada2 <= $hora && $linea->salida2 > $hora){
+					// dd($hora.'si');
+					$count++;
+					$empleados = $empleados.$linea->empleado->username.', ';
 				}				
 			}
 
@@ -515,18 +523,28 @@ class CuadranteController extends Controller
 		 //        'empleados' => rtrim($empleados,' ,')
 		 //    );
 		    
-		    $valores[]=array($time->format('H:i'),$count,$count,rtrim($empleados,', '));
+		    // $valores[]=array($time->format('H:i'),$count,$count,rtrim($empleados,', '));
+		    // dd($time);
+		    // dd(idate('h',strtotime($time->format('H:i'))));
+		    $timeF = strtotime($time->format('H:i'));
+		    $valores[]=array(array(
+		    	idate('H',$timeF),
+		    	idate('i',$timeF),
+		    	0),
+		    	$count,
+		    	$count,
+		    	rtrim($empleados,', ')
+		    	);
+		    // $valores[]=array(array(10,15,0),$count,$count,rtrim($empleados,', '));
 		    // dd($valores);
 
 		    // echo $time->format('H:i'), '-', 
 		    //      $time->add($interval)->format('H:i'), "\n"
 		    //      ;
 		}
-		// dd($valores2);
+		// dd($valores);
 
 		return $valores;
-		
-
 
 	}
 

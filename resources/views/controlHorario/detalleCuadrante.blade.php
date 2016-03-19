@@ -53,31 +53,33 @@
 	
 <script type="text/javascript">
 google.charts.load('current', {packages: ['corechart', 'bar']});
-google.charts.setOnLoadCallback(drawMultSeries);
+google.charts.setOnLoadCallback(drawBasic);
 
-function drawMultSeries() {
+function drawBasic() {
 
       var data = new google.visualization.DataTable();
-      data.addColumn('string', 'hora');
+      // data.addColumn('string', 'hora');
+      data.addColumn('timeofday', 'time');
       data.addColumn('number', 'C');
       data.addColumn({type:'number', role: 'annotation' });
-
       data.addColumn({type: 'string', role: 'tooltip'});
+
       data.addRows(valores);
 
       var options = {
-        // 'width':900,
-        // 'height':300,
         title: 'Empleados trabajando',
+        bar: {groupWidth: '100%'},
         hAxis: {
           title: '',
-          // format: 'h:mm a',
-          // viewWindow: {
-          //   min: [7, 30, 0],
-          //   max: [17, 30, 0]
-          // }
+          format: 'H:mm',
+          viewWindow: {
+            min: [7, 30, 0],
+            max: [23, 30, 0]
+          }
         },
         vAxis: {
+          gridlines: { count: 8 },
+          ticks: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
           title: ''
         }
       };
