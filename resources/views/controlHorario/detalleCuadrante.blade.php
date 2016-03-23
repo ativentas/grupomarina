@@ -21,7 +21,7 @@
 </div>
 <div class="row col-sm-12 col-md-12 col-lg-12">
 	<!-- <div id="grafico" class="collapse"> -->
-	<div id="chart_div" class=""></div>
+	<div id="chart_div" class="collapse in"></div>
 	
 </div>
 
@@ -133,9 +133,9 @@ function drawBasic() {
 			<td class="">
 			<label id="start{{$linea->id}}">{{date('d/m/Y',strtotime($linea->fecha_inicio))}}</label>
 			@if ($linea->entrada == null)
-			<input type="text" name="entrada{{$linea->id}}" pattern="([01]?[0-9]|2[0-3]):[0-5][0-9]" id="entrada{{$linea->id}}" size="5" placeholder="00:00" value="">
+			<input type="text" tabindex="1" name="entrada{{$linea->id}}" pattern="([01]?[0-9]|2[0-3]):[0-5][0-9]" id="entrada{{$linea->id}}" size="5" placeholder="00:00" value="">
 			@else
-			<input type="text" name="entrada{{$linea->id}}" pattern="([01]?[0-9]|2[0-3]):[0-5][0-9]" id="entrada{{$linea->id}}" size="5" placeholder="00:00" value={{date('H:i',strtotime($linea->entrada))}}>
+			<input type="text" tabindex="1" name="entrada{{$linea->id}}" pattern="([01]?[0-9]|2[0-3]):[0-5][0-9]" id="entrada{{$linea->id}}" size="5" placeholder="00:00" value={{date('H:i',strtotime($linea->entrada))}}>
 			@endif
 			@if ($linea->entrada2 == null)
 			<br><input type="text" size="5" name="entrada2{{$linea->id}}" pattern="([01]?[0-9]|2[0-3]):[0-5][0-9]" id="entrada2{{$linea->id}}" placeholder="00:00" value="">
@@ -146,9 +146,9 @@ function drawBasic() {
 			<td>
 			<label id="end{{$linea->id}}"for="">{{date('d/m/Y',strtotime($linea->fecha_fin))}}</label>
 			@if ($linea->salida == null)
-			<input type="text" size="5" name="salida{{$linea->id}}" pattern="([01]?[0-9]|2[0-3]):[0-5][0-9]" id="salida{{$linea->id}}" placeholder="00:00" value="">
+			<input type="text" size="5" tabindex="1" name="salida{{$linea->id}}" pattern="([01]?[0-9]|2[0-3]):[0-5][0-9]" id="salida{{$linea->id}}" placeholder="00:00" value="">
 			@else
-			<input type="text" size="5" name="salida{{$linea->id}}" pattern="([01]?[0-9]|2[0-3]):[0-5][0-9]" id="salida{{$linea->id}}" placeholder="00:00" value={{date('H:i',strtotime($linea->salida))}}>
+			<input type="text" size="5" tabindex="1" name="salida{{$linea->id}}" pattern="([01]?[0-9]|2[0-3]):[0-5][0-9]" id="salida{{$linea->id}}" placeholder="00:00" value={{date('H:i',strtotime($linea->salida))}}>
 			@endif
 			@if ($linea->salida2 == null)
 			<br><input type="text" size="5" pattern="([01]?[0-9]|2[0-3]):[0-5][0-9]" name="salida2{{$linea->id}}" id="salida2{{$linea->id}}" placeholder="00:00"  value="">
@@ -261,6 +261,7 @@ function drawBasic() {
 	            		$("#salida2{{$linea->id}}").hide();
 	            		$("#start{{$linea->id}}").hide();
 	            		$("#end{{$linea->id}}").hide();
+	            		
 	            		break;	
 	            }
 

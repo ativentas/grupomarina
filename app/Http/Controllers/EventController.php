@@ -10,6 +10,7 @@ use Pedidos\Models\Event;
 use Pedidos\Models\User;
 use DateTime;
 use Carbon\Carbon;
+use Auth;
 
 class EventController extends Controller
 {
@@ -19,8 +20,6 @@ class EventController extends Controller
         $this->middleware('auth');
     }
 
-
-
     /**
      * Display a listing of the resource.
      *
@@ -29,24 +28,31 @@ class EventController extends Controller
     public function index()
     {
 		$data = [
-			'page_title' => 'Events',
-			'events'	 => Event::orderBy('start_time')->get(),
+			'page_title' => 'Listado',
+			'events'	 => Event::orderBy('estado')->orderBy('start_time')->get(),
 		];
 		
 		return view('event/list', $data);
     }
-
+    public function listadoVacaciones()
+    {
+    	$data = [
+			'page_title' => 'Vacaciones',
+			'events'	 => Event::where('empleado_id',Auth::user()->id)->orderBy('estado')->orderBy('start_time')->get(),
+		];
+    	return view('event.listadoVacaciones',$data);
+    }
     /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
      */
     public function create()
-    {
-        
+    {        
 		$data = [
 			'page_title' => 'Nuevo Vacac/Baja',
-			'empleados' => User::where('empresa', 'COSTASERVIS')->get(),
+			'empleados' => User::NoRoot()->get(),
+			// 'empleados' => User::where('empresa', 'COSTASERVIS')->get(),
 		];
 
 		return view('event/create', $data);
@@ -60,6 +66,7 @@ class EventController extends Controller
      */
     public function store(Request $request)
     {
+
 		$this->validate($request, [
 			'empleado'	=> 'required',
 			'title' => 'required|min:3|max:100',
@@ -89,7 +96,10 @@ class EventController extends Controller
 		
 		$event->save();	
 
-		$request->session()->flash('success', 'Evento guardado!');
+		$request->session()->flash('success', 'Guardado!');
+		if (isset($_POST['solicitudEmpleado'])){
+			return redirect()->back();
+		}
 		return redirect('events/create');
     }
 
@@ -162,10 +172,15 @@ class EventController extends Controller
 		$format = 'd/m/Y';
 		$finalDay = Carbon::createFromFormat($format,$time[1])->startOfDay()->addDay()->format($format);
 		$event->end_time = $this->change_date_format($finalDay);
-
 		$event->save();
 
-
+		return redirect('events');
+    }
+    public function confirmarVacaciones($id)
+    {
+		$event = Event::findOrFail($id);
+		$event->estado = 'Confirmado';
+		$event->save();
 		return redirect('events');
     }
 
@@ -175,11 +190,13 @@ class EventController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
+        
         $event = Event::find($id);
 		$event->delete();
-		
+		if (isset($_POST['solicitudEmpleado'])){
+			return redirect('events/listadoVacaciones');}
 		return redirect('events');
     }
 	

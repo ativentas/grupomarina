@@ -4,7 +4,7 @@
 	
 <div style="display:inline" align="center">
         <button type="button" style="display:inline" class="btn btn-info" data-toggle="collapse" data-target="#nuevo">Alta Nuevo Usuario</button>
-        <h3 style="" class"">Mantenimiento Usuarios</h3>
+        <!-- <h3 style="" class"">Mantenimiento Usuarios</h3> -->
 </div>
     <hr>
     

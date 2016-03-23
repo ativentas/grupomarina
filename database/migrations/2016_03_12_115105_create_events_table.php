@@ -17,6 +17,7 @@ class CreateEventsTable extends Migration
             $table->integer('empleado_id')->default(0);
             $table->string('name', 15);
             $table->string('title', 100);
+            $table->enum('estado',['Pendiente','Confirmado'])->default('Pendiente');
             $table->timestamp('start_time');
             $table->timestamp('end_time')->nullable();
             $table->date('finalDay')->nullable();

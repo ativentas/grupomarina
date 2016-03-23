@@ -90,9 +90,6 @@ Route::group(['middleware' => ['web']], function () {
 	]);
 
 
-
-
-
 	/**
 	 * Pedidos
 	 */
@@ -389,13 +386,24 @@ Route::group(['middleware' => ['web']], function () {
  */
 		
 	Route::get('/events/calendario', function () {
-	$data = [
-		'page_title' => 'Calendario',
-	];
-    return view('event/index', $data);
-	});
+		$data = [
+			'page_title' => 'Vacaciones',
+		];
+	    return view('event/index', $data);
+		});
+	
+	Route::get('events/listadoVacaciones', [
+		'uses' => '\Pedidos\Http\Controllers\EventController@listadoVacaciones',
+		'as' => 'listadoVacaciones',
+		]);
+	Route::any('vacaciones/{id}', [
+		'uses' => '\Pedidos\Http\Controllers\EventController@confirmarVacaciones',
+		'as' => 'confirmarVacaciones',
+		]);
 
 	Route::resource('events', 'EventController');
+
+
 
 	Route::get('/api', function () {
 	$events = DB::table('events')->select('id', 'name', 'title', 'start_time as start', 'end_time as end','finalDay','allDay')->get();
@@ -412,5 +420,6 @@ Route::group(['middleware' => ['web']], function () {
 	}
 	return $events;
 	});
+
 
 });

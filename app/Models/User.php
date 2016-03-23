@@ -30,6 +30,10 @@ class User extends Authenticatable
     {
         return $query->where('is_admin',false)->where('active', true);
     }
+    public function scopeNoRoot($query)
+    {
+        return $query->where('is_root',false)->where('active', true);
+    }
     
     public function scopeAdministradores($query)
     {

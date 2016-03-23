@@ -121,7 +121,7 @@
             <td>{{date('d/m/Y',strtotime($evento->start_time))}}</td>
             <td>{{date('d/m/Y',strtotime($evento->finalDay))}}</td>
             <td>{{$evento->durationDays}}</td>
-            <td>CONFIRMADO</td>
+            <td>{{$evento->estado}}</td>
             </tr>
             @endforeach
         </tbody>

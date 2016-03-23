@@ -4,15 +4,24 @@
         <div class="navbar-header">
             <a class="navbar-brand" href="#">Grupo Marina</a>
         </div>
-        <div class="collapse navbar-collapse">
+        <div style="position: relative; left: 3em;" class="collapse navbar-collapse">
             @if (Auth::check())
-                <ul class="nav navbar-nav">
-                    <!-- <li><a href="{{route('pedidos.abiertos')}}">Pedidos Abiertos</a></li>
-                    <li><a href="{{route('pedidos.completos')}}">Ultimos</a></li> -->
+                <ul style="padding-top: 0.5em" class="nav navbar-nav">
+                    <div style=""class="btn-group">
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                    Pedidos <span class="caret"></span></button>
+                    <ul class="dropdown-menu" role="menu">
+                    <li><a href="{{route('pedidos.abiertos')}}">Pedidos Abiertos</a></li>
+                    <li><a href="{{route('pedidos.completos')}}">Ultimos</a></li>
+                    </ul></div>
                     @if(!Auth::user()->isAdmin())
-                    <li><a href="{{route('inventarios.pendientes')}}">Inventario</a></li>
+                    <div style="position: relative; left: 1.5em;"class="btn-group">
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                    Inventarios <span class="caret"></span></button>
+                    <ul class="dropdown-menu" role="menu">
+                    <li><a href="{{route('inventarios.pendientes')}}">Pendientes</a></li>
                     <li><a href="{{route('inventarios.completos')}}">Ultimos</a></li>
-                    <li><a href="{{route('nominasEmpleado')}}">Nominas</a></li>
+                    </ul></div>
                     @endif
                 </ul>
 <!--                 <form class="navbar-form navbar-left" role="search" action="#">
@@ -29,7 +38,9 @@
                     <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
                     {{ Auth::user()->username }} <span class="caret"></span></button>
                     <ul class="dropdown-menu" role="menu">
-                    <li><a href="#">Perfil</a></li>
+                    <li><a href="#">Perfil</a></li>                 
+                    <li><a href="{{route('nominasEmpleado')}}">Nominas</a></li>
+                    <li><a href="{{route('listadoVacaciones')}}">Vacaciones</a></li>
                     <li><a href="{{route('user.cambioPassword')}}">Cambio Password</a></li>
                     </ul>
                 </div>
@@ -40,7 +51,7 @@
                             <ul class="dropdown-menu" role="menu">
                                 <li><a href="{{route('auth.signup')}}">Gestión Usuarios</a></li>
                                 <li><a href="{{route('fileentry')}}">Nominas</a></li>
-                                <li><a href="{{url('events/calendario')}}">Vacac/Bajas</a></li>
+                                <li><a href="{{ url('/events')}}">Vacac/Bajas</a></li>
                                 <li><a href="{{route('cuadrantes')}}">Horarios</a></li>
                             </ul>
                         </div>

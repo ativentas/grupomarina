@@ -96,7 +96,8 @@ class CuadranteController extends Controller
 
 		} elseif ($cuadrante->count()){
 			$lineas = LineaCuadrante::where('cuadrante_id', $cuadrante->id)->orderBy('salida','asc')->get();
-			return view ('controlHorario.detalleCuadrante', compact('cuadrante', 'lineas'))->with('info', 'Ya existe un Cuadrante para ese día!!! Puedes modificarlo o salir para crear otro diferente');
+			return redirect()->route('cuadrante.detalle',$cuadrante->id)->with('info','Ya existe un Cuadrante para ese día!!! Puedes modificarlo o Volver para crear otro diferente');
+			// return view ('controlHorario.detalleCuadrante', compact('cuadrante', 'lineas'))->with('info', 'Ya existe un Cuadrante para ese día!!! Puedes modificarlo o salir para crear otro diferente');
 		}
 	}
 

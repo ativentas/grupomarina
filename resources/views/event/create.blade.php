@@ -74,7 +74,7 @@
 <script type="text/javascript">
 $(function () {
 	$('input[name="time"]').daterangepicker({
-		"minDate": moment('<?php echo date('Y-m-d G')?>'),
+		// "minDate": moment('<?php echo date('Y-m-d G')?>'),
 		"autoApply": true,
 		"locale": {
 			"format": "DD/MM/YYYY",
