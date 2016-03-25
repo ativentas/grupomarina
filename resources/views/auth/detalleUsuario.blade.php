@@ -30,19 +30,28 @@
             
             <div class="form-group">
 				<label for="restaurante" class="control-label">Restaurante</label>
-				<select class="form-control" id="restaurante" name="restaurante">
+                <select class="form-control" id="restaurante" name="restaurante">
+                    @foreach ($restaurantes as $restaurante)
+                    <option {{$restaurante->id==$usuario->restaurante_id ?' selected':''}} value={{$restaurante->id}}>{{$restaurante->nombre}}</option>
+                    @endforeach
+                    <option{{$usuario->restaurante_id==0?' selected':''}} value="">N/A</option>
+                </select>				
+<!--                 <select class="form-control" id="restaurante" name="restaurante">
 					<option{{$usuario->restaurante=='MARINA'?' selected':''}}>MARINA</option>
 					<option{{$usuario->restaurante=='CORTES'?' selected':''}}>CORTES</option>
 					<option{{$usuario->restaurante=='RACO'?' selected':''}}>RACO</option>
 					<option{{$usuario->restaurante=='N/A'?' selected':''}}>N/A</option>
-				</select>
+				</select> -->
 			</div>
             <div class="form-group">
                 <label for="empresa" class="control-label">Empresa</label>
                 <select class="form-control" id="empresa" name="empresa">
-                    <option{{$usuario->empresa=='COSTASERVIS'?' selected':''}}>COSTASERVIS</option>
+                    @foreach ($empresas as $empresa)
+                    <option{{$empresa->id==$usuario->empresa_id ?' selected':''}} value={{$empresa->id}}>{{$empresa->nombre}}</option>
+                    @endforeach
+                    <option{{$usuario->empresa_id==0?' selected':''}} value="">N/A</option>       <!-- <option{{$usuario->empresa=='COSTASERVIS'?' selected':''}}>COSTASERVIS</option>
                     <option{{$usuario->empresa=='VILA MOEMA'?' selected':''}}>VILA MOEMA</option>
-                    <option{{$usuario->empresa=='N/A'?' selected':''}}>N/A</option>
+                    <option{{$usuario->empresa=='N/A'?' selected':''}}>N/A</option> -->
                 </select>
             </div>
             <div class="form-group{{$errors->has('entrada')|$errors->has('salida') ? ' has-error' : ''}}">
@@ -59,11 +68,11 @@
                         <label><input type="checkbox" name="supervisor" id="supervisor" value="yes" {{$usuario->is_supervisor==1?' checked':''}}> Es supervisor de ese Restaurante</label>
             </div>
             @endif
-            <select class="form-control" id="empresa" name="empresa">
+<!--             <select class="form-control" id="empresa" name="empresa">
                     <option{{$usuario->empresa=='COSTASERVIS'?' selected':''}}>COSTASERVIS</option>
                     <option{{$usuario->empresa=='VILA MOEMA'?' selected':''}}>VILA MOEMA</option>
                     <option{{$usuario->empresa=='N/A'?' selected':''}}>N/A</option>
-            </select>
+            </select> -->
             <div class="checkbox">
                 <input type="checkbox" name="turnoPartido" id="turnoPartido" value="1" {{$usuario->turno_partido==1?' checked':''}}> <strong>¿Turno Partido?</strong>
             </div>

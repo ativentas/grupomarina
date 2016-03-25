@@ -15,8 +15,13 @@ class Cuadrante extends Model
     }
 
     public function getDates()
-{
+	{
     return ['created_at','updated_at','fecha'];
-}
+	}
+
+	public function centro()
+	{
+		return $this->belongsTo('Pedidos\Models\Centro', 'centro_id');
+	}
 
 }

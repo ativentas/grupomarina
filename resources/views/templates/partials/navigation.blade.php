@@ -38,7 +38,9 @@
                     <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
                     {{ Auth::user()->username }} <span class="caret"></span></button>
                     <ul class="dropdown-menu" role="menu">
-                    <li><a href="#">Perfil</a></li>                 
+                    @if (Auth::user()->isAdmin())
+                    <li><a href="{{url('usuarios/modificar/' . Auth::user()->id)}}">Perfil</a></li>
+                    @endif                 
                     <li><a href="{{route('nominasEmpleado')}}">Nominas</a></li>
                     <li><a href="{{route('listadoVacaciones')}}">Vacaciones</a></li>
                     <li><a href="{{route('user.cambioPassword')}}">Cambio Password</a></li>

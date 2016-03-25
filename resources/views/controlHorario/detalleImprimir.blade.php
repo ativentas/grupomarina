@@ -25,7 +25,7 @@
 
 
 
-<h3>Parte Horario. Fecha: {{$cuadrante->fecha->format('d/m/Y')}} - Empresa: {{$cuadrante->empresa}}</h3>
+<h3>Parte Horario. Fecha: {{$cuadrante->fecha->format('d/m/Y')}} - Centro de Trabajo: {{$cuadrante->centro->nombre}}</h3>
 
 
 	<table>

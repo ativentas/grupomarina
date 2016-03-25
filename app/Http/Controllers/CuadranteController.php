@@ -6,6 +6,7 @@ use PDF;
 use Auth;
 use Pedidos\Models\User;
 use Pedidos\Models\Event;
+use Pedidos\Models\Centro;
 use Pedidos\Models\Cuadrante;
 use Pedidos\Models\LineaCuadrante;
 use Illuminate\Http\Request;
@@ -27,18 +28,19 @@ class CuadranteController extends Controller
 	{
 		//los cuadrantes de hoy y los pendientes
 		$cuadrantes = Cuadrante::whereDate('fecha', '=', date('Y-m-d'))->orwhere('estado','!=', 'Completado')->orderBy('fecha','ASC')->get();
-		return view('controlHorario.gestionCuadrantes',compact('cuadrantes'));		
+		$centros = Centro::all();
+		return view('controlHorario.gestionCuadrantes',compact('cuadrantes','centros'));		
 	}
 
 	public function generarCuadrante(Request $request)
 	{
 		$this->validate($request, [
-			'empresa' => 'required',
+			'centro' => 'required',
 			'fecha' => 'required|date',
 			]);
 		$fecha = date('Y-m-d',strtotime($request->fecha));
 		
-		$cuadrante = Cuadrante::whereDate('fecha','=', $fecha)->where('empresa', $request->empresa)->first();
+		$cuadrante = Cuadrante::whereDate('fecha','=', $fecha)->where('centro_id', $request->centro)->first();
 		$eventos = Event::where('finalDay','>=',$request->fecha)->where('start_time','<=','fecha')->get();
 		$listaIdEmpleados = $eventos->lists('title','empleado_id')->toArray();
 
@@ -47,11 +49,11 @@ class CuadranteController extends Controller
 		if (!$cuadrante){
 			$cuadrante = new Cuadrante;
 			$cuadrante->fecha = $fecha;
-			$cuadrante->empresa = $request->empresa;
+			$cuadrante->centro_id = $request->centro;
 			$cuadrante->estado = 'Pendiente';
 			$cuadrante->save();
 			
-			$empleados = User::where('empresa', $request->empresa)->get();
+			$empleados = User::where('empresa_id', $request->centro)->orWhere('restaurante_id', $request->centro)->get();
 			// dd($empleados);
 		
 			foreach ($empleados as $empleado) {

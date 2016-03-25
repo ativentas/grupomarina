@@ -39,6 +39,14 @@ Route::group(['middleware' => ['web']], function () {
 	 * Authentication
 	 */
 
+	Route::get('usuarios/createFiltrado{filtro}', [
+	'uses' => 'AuthController@createFiltrado',
+	'as' => 'usuarios.createFiltrado',
+	'middleware' => ['auth'],
+	]);
+
+
+
 	Route::get('/signup', [
 		'uses' => '\Pedidos\Http\Controllers\AuthController@getSignup',
 		'as' => 'auth.signup',

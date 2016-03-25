@@ -3,8 +3,24 @@
 @section('content')
 	
 <div style="display:inline" align="center">
+        
+       <form style="display:inline" role="form" action="{{route('usuarios.createFiltrado', 'centro')}}" method="get">
+        <div class="col-md-4 form-group">
+            <select class="form-control" id="centro" name="centro">
+                <option value="">TODOS</option>
+                @foreach ($centros as $centro)
+                <option value="{{$centro->id}}">{{$centro->nombre}}</option>
+                @endforeach
+            </select>                  
+        </div>
+        <button type="submit" class="btn">Filtrar</button>
+        </form>
+
         <button type="button" style="display:inline" class="btn btn-info" data-toggle="collapse" data-target="#nuevo">Alta Nuevo Usuario</button>
         <!-- <h3 style="" class"">Mantenimiento Usuarios</h3> -->
+
+
+
 </div>
     <hr>
     
@@ -56,10 +72,10 @@
                 <!-- <label for="restaurante" class="control-label">Elegir Restaurante</label> -->
                 <select class="form-control" id="restaurante" name="restaurante">
                     <option value="">Elige un Restaurante</option>
-                    <option>MARINA</option>
-                    <option>CORTES</option>
-                    <option>RACO</option>
-                    <option>N/A</option>
+                    @foreach ($restaurantes as $restaurante)
+                    <option value={{$restaurante->id}}>{{$restaurante->nombre}}</option>
+                    @endforeach
+                    <option {{Request::old('restaurante')==0?' selected':''}} value="">N/A</option>
                 </select>
                 @if ($errors->has('restaurante'))
                     <span class="help-block">{{$errors->first('restaurante')}}</span>
@@ -76,9 +92,10 @@
                 <label for="empresa"> &nbsp;</label>
                 <select class="form-control" id="empresa" name="empresa">
                     <option value="">¿En qué empresa está de alta?</option>
-                    <option>COSTASERVIS</option>
-                    <option>VILA MOEMA</option>
-                    <option>N/A</option>
+                    @foreach ($empresas as $empresa)
+                    <option value={{$empresa->id}}>{{$empresa->nombre}}</option>
+                    @endforeach
+                    <option {{Request::old('empresa')==0?' selected':''}} value="">N/A</option>
                 </select>
                 @if ($errors->has('empresa'))
                     <span class="help-block">{{$errors->first('empresa')}}</span>
@@ -130,102 +147,20 @@
             <br><br>
             <input type="hidden" name="_token" value="{{Session::token()}}">
         </form>
+
+
     </div>
 </div>
 </div>
 
-<div class="row">
-    <div class="col-lg-8">
-        
-        @if (!$usuariosAdministradores)
-        	<p>No hay ningun administrador todavía</p>
-        @else
-        	<h3>Administradores</h3>
-        	<table class="table table-striped">
-			    <thead>
-			    	<tr>  		
-    					<th>Nombre</td>
-                           					
-			    		<th>Estado</th>
-			        	<th></th>
-			    	</tr>
-			    </thead>
-			    <tbody>
-        	@foreach ($usuariosAdministradores as $usuario)
-					<tr>						
-                        <td>{{$usuario->username}}</td>
-    					
-    					@if ($usuario->active=='1')
-    					<td>
-						<label for="" style="color:green">ACTIVO</label>
-    					</td>
-                        <td>
-                            @if(Auth::user()->is_root==1 && !$usuario->is_root==1)
-                            <form action="{{route('usuarios.modificar', $usuario->id)}}" method="POST">
-                                 {{ csrf_field() }}
-                                <button class="btn-warning" name="estado" value="0">Suspender</button>
-                            </form>
-                            @endif
-                        </td>
-                        @elseif ($usuario->active=='0')
-                        <td>
-                        <label for="" style="color:red">SUSPENDIDO</label>
-                        </td>
-                        <td>
-                            @if(Auth::user()->is_root==1 && $usuario->is_root==0)
-                            <form action="{{route('usuarios.modificar', $usuario->id)}}" method="POST">
-                                 {{ csrf_field() }}
-                                <button class="btn-success" name="estado" value="1">Reactivar</button>
-                            </form>
-                            @endif
-                        </td>
-                        @endif
-                        
-                        @if (Auth::user()->is_root==1 && $usuario->is_root==0)	    					
-   					
-    					<td>
-    						
-                            <form action="{{route('usuarios.modificar', $usuario->id)}}" method="POST">
-					             {{ csrf_field() }}
-					            <button class="btn-danger" name="password" value="reset">Reset Pwd</button>
-					        </form>
-                            
-					    </td>
-    					<td>
-    						
-                            <form action="{{route('usuarios.modificar', $usuario->id)}}" method="GET">
-					             {{ csrf_field() }}
-					            <button class="btn-info">Modificar</button>
-					        </form>                            
-					    </td>
-                        @elseif (Auth::user()->is_root ==0 && Auth::user()->id == $usuario->id)
-					    <td>
-                            
-                            <form action="{{route('usuarios.modificar', $usuario->id)}}" method="GET">
-                                 {{ csrf_field() }}
-                                <button class="btn-info">Modificar</button>
-                            </form>                            
-                        </td>
-                        @else
-                        <td>
-                                                    
-                        </td>
-                        @endif
-    					    					    					       					
-					</tr>
-        	@endforeach
-        		</tbody>
-				</table>
-        @endif
-    </div>
-    </div>
+
     <div class="row">
         <div class="col-lg-8">
-            
+           
             @if (!$usuariosNormales)
             	<p>No hay ningun usuario todavía</p>
             @else
-            	<h3>Usuarios</h3>
+<!--             	<h3>Usuarios</h3> -->
             	<table class="table table-striped">
     			    <thead>
     			    	<tr>  		
@@ -240,34 +175,36 @@
             	@foreach ($usuariosNormales as $usuario)
     					<tr>						
                             <td>{{$usuario->username}}</td>
-                            <td>{{$usuario->empresa}}</td>
-        					<td>{{$usuario->restaurante}}</td>
+                            <td>{{$usuario->empresa['nombre']}}</td>
+        					<td>{{$usuario->restaurante['nombre']}}</td>
                             @if ($usuario->active=='1')
                             <td>
                             <label for="" style="color:green">ACTIVO</label>
                             </td>
-                            @if (Auth::user()->is_root==1 || Auth::user()->is_admin==1)                          
+                            @if (Auth::user()->isRoot() || Auth::user()->isAdmin())                          
                             <td>
-                                
+                                @if(!$usuario->isAdmin() && !$usuario->isRoot())
                                 <form action="{{route('usuarios.modificar', $usuario->id)}}" method="POST">
                                      {{ csrf_field() }}
                                     <button class="btn-warning" name="estado" value="0">Suspender</button>
                                 </form>
-                                
+                                @endif
                             </td>                       
                             <td>
-                                
+                                @if(!$usuario->isAdmin() && !$usuario->isRoot())
                                 <form action="{{route('usuarios.modificar', $usuario->id)}}" method="POST">
                                      {{ csrf_field() }}
                                     <button class="btn-danger" name="password" value="reset">Reset Pwd</button>
                                 </form>
-                                
+                                @endif
                             </td>
                             <td>
+                                @if(!$usuario->isAdmin() && !$usuario->isRoot())
                                 <form action="{{route('usuarios.modificar', $usuario->id)}}" method="GET">
                                      {{ csrf_field() }}
                                     <button class="btn-info">Modificar</button>
                                 </form>
+                                @endif
                             </td>
                             @endif
                             @else

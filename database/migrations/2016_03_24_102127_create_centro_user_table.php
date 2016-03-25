@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateCuadrantesTable extends Migration
+class CreateCentroUserTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,12 +12,9 @@ class CreateCuadrantesTable extends Migration
      */
     public function up()
     {
-        Schema::create('cuadrantes', function (Blueprint $table) {
-            $table->increments('id');
-            $table->date('fecha');
+        Schema::create('centro_user', function (Blueprint $table) {
             $table->integer('centro_id');
-            $table->enum('estado',['Pendiente','Validado','Completado'])->default('Pendiente');
-            $table->nullabletimestamps();
+            $table->integer('user_id');
         });
     }
 
@@ -28,6 +25,6 @@ class CreateCuadrantesTable extends Migration
      */
     public function down()
     {
-        Schema::drop('cuadrantes');
+        Schema::drop('centro_user');
     }
 }

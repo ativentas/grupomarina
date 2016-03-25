@@ -78,15 +78,17 @@ function drawMultSeries() {
 		@endif
   </div>
   
-	<div class="form-group{{$errors->has('empresa') ? ' has-error' : ''}}">
+	<div class="form-group{{$errors->has('centro') ? ' has-error' : ''}}">
 	    <!-- <label for="empresa" class="control-label">Elegir Empresa</label> -->
-	    <select class="form-control" id="empresa" name="empresa">
-	        <option value="">Elige una Empresa</option>
-	        <option>COSTASERVIS</option>
-	        <option>VILA MOEMA</option>
+	    <select class="form-control" id="centro" name="centro">
+	        <option value="">Elige Empresa/Restaurante</option>
+	        @foreach ($centros as $centro)
+          <option value={{$centro->id}}>{{$centro->nombre}}</option>
+          @endforeach
+
 	    </select>
-		@if ($errors->has('empresa'))
-			<span class="help-block">{{$errors->first('empresa')}}</span>
+		@if ($errors->has('centro'))
+			<span class="help-block">{{$errors->first('centro')}}</span>
 		@endif	
 	</div>
 
@@ -103,7 +105,7 @@ function drawMultSeries() {
 	<thead>
 		<tr>
 		<th>Fecha</th>
-		<th>Empresa</th>
+		<th>Empresa/Restaurante</th>
 		<th>Estado</th>
 		<th></th>
 		</tr>
@@ -112,7 +114,7 @@ function drawMultSeries() {
 		@foreach ($cuadrantes as $cuadrante)
 		<tr>
 		<td>{{$cuadrante->fecha->format('d-m-Y')}}</td>
-		<td>{{$cuadrante->empresa}}</td>
+		<td>{{$cuadrante->centro->nombre}}</td>
 		<td>{{$cuadrante->estado}}</td>
 		<td><a href="{{route('cuadrante.detalle',$cuadrante->id	)}}">Detalle</a></td>
 		</tr>

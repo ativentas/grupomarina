@@ -4,6 +4,7 @@ namespace Pedidos\Http\Controllers;
 
 use Auth;
 use Pedidos\Models\User;
+use Pedidos\Models\Centro;
 use Pedidos\Models\Event;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -16,38 +17,73 @@ class AuthController extends Controller
 {
 	public function getSignup()
 	{
-		if (Auth::user()->is_admin == 1)
+		if (Auth::user()->isAdmin())
 		{
-			$usuarios=User::all();
-			
-			$usuariosAdministradores=User::where('is_admin',1)->where('is_root',0)->get();
-			$usuariosNormales=User::where('is_admin',0)->where('is_root',0)->get();
+			// $usuarios=User::all();			
+			// $usuariosAdministradores=User::where('is_admin',1)->where('is_root',0)->get();
+			// $usuariosNormales=User::where('is_admin',0)->where('is_root',0)->get();
+			$usuariosNormales=User::where('is_root',0)->get();
+			// dd($usuariosNormales);
+
+			$empresas = Centro::where('es_empresa', 1)->get();
+			$restaurantes = Centro::where('es_empresa', 0)->get();
+			$centros = Centro::all();
+
 			return view('auth.signup')
-				->with('usuariosAdministradores', $usuariosAdministradores)
+				// ->with('usuariosAdministradores', $usuariosAdministradores)
 				->with('usuariosNormales', $usuariosNormales)
+				->with('restaurantes', $restaurantes)
+				->with('empresas', $empresas)
+				->with('centros', $centros)
 				;
-		}
-		
+		}	
 		return redirect()->route('auth.signout');		
 	}
 
+    public function createFiltrado($filtro)
+    {      
+        
+        if (!empty($_GET[$filtro])) {
+      		// dd(isset($_GET[$filtro]));
+        	$usuariosNormales = User::where('empresa_id',$_GET[$filtro])->orWhere('restaurante_id', $_GET[$filtro])->get();
+        	// dd($usuariosNormales);
+    	} else {
+    		$usuariosNormales=User::where('is_root',0)->get();
+    		// dd($usuariosNormales);
+    	}
+               
+		
+		$empresas = Centro::where('es_empresa', 1)->get();
+		$restaurantes = Centro::where('es_empresa', 0)->get();
+		$centros = Centro::all();
+
+        return view('auth.signup', compact('usuariosNormales','restaurantes','empresas','centros'));
+        
+    }
+
+
+
+
+
+
 	public function postSignup(Request $request)
 	{
+		// dd($request);
 		$this->validate($request, [
 			'email' => 'required|unique:users|email|max:255',
 			'nombre' => 'required|min:4|max:35',
 			'username' => 'required|alpha_dash|unique:users|max:20',
 			'password' => 'required|min:4|confirmed',
 			'password_confirmation' => 'required',
-			'restaurante' => 'required',
-			'empresa' => 'required',
+			// 'restaurante' => 'required',
+			// 'empresa' => 'required',
 			'entrada' => 'date_format:H:i',
 			'salida' => 'date_format:H:i',
 			'entrada2' => 'date_format:H:i',
 			'salida2' => 'date_format:H:i',
 			
 		]);
-		
+
 		$supervisor = 0;
 		$administrador = 0;
 		$turno_partido = 0;
@@ -78,14 +114,18 @@ class AuthController extends Controller
 			$salida2 = null;
 		}else {
 			$salida2 = date("H:i",strtotime($request->input('salida2')));}
-
-		User::create([
+		
+		$restauranteId = !empty($request->input('restaurante')) ? $request->input('restaurante') : NULL;
+		$empresaId = !empty($request->input('empresa')) ? $request->input('empresa') : NULL;
+		// dd($restauranteId,$empresaId);
+		
+		$nuevo = User::create([
 			'email' => $request->input('email'),
 			'nombre_completo' => $request->input('nombre'),
 			'username' => $request->input('username'),
 			'password' => bcrypt($request->input('password')),
-			'restaurante' => $request->input('restaurante'),
-			'empresa' => $request->input('empresa'),
+			'restaurante_id' => $restauranteId,
+			'empresa_id' => $empresaId,
 			'is_supervisor' => $supervisor,
 			'is_admin' => $administrador,
 			'entrada' => $entrada,
@@ -94,6 +134,16 @@ class AuthController extends Controller
 			'entrada2' => $entrada,
 			'salida2' => $salida2,
 		]);
+		
+		// dd($nuevo->id);
+		// $empresa = Centro::find($nuevo->empresa_id);
+		// $restaurante = Centro::find($nuevo->restaurante_id);
+
+		// $empresa->empleados()->attach($nuevo->id);
+		// $restaurante->empleados()->attach($nuevo->id);
+		$centros = array_filter(array($nuevo->empresa_id, $nuevo->restaurante_id));
+		// dd($centros,'empresa:'.$nuevo->empresa_id, 'restaurante:'.$nuevo->restaurante_id);
+		$nuevo->centros()->sync($centros);
 
 		return redirect()
 			->route('home')
@@ -102,26 +152,23 @@ class AuthController extends Controller
 
 	public function getmodificar($id)
 	{
-		$usuario = User::where('id', $id)->first();
-		$eventos = Event::where('empleado_id',$id)->get();
-	
-		return view('auth.detalleUsuario')->with('usuario', $usuario)->with('eventos',$eventos);
+
+		if (Auth::user()->isAdmin()){
+			$usuario = User::where('id', $id)->first();
+			$eventos = Event::where('empleado_id',$id)->get();
+			$restaurantes = Centro::where('es_empresa',0)->get();
+			$empresas = Centro::where('es_empresa',1)->get();
+		
+			return view('auth.detalleUsuario')->with('usuario', $usuario)->with('eventos',$eventos)->with('restaurantes',$restaurantes)->with('empresas', $empresas);
+		} else {
+			return redirect('home');
+		}
 	}
 
 	public function postModificar(Request $request, $usuarioId)
 	{
-		$this->validate($request, [
-			'email' => 'required|email|max:255|unique:users,email,'.$usuarioId,
-			'nombre' => 'required|min:4|max:35',
-			'restaurante' => 'required',
-			'empresa' => 'required',
-			'entrada' => 'date_format:H:i',
-			'salida' => 'date_format:H:i',
-			'entrada2' => 'date_format:H:i',
-			'salida2' => 'date_format:H:i',
-		]);
-
 		$usuario=User::where('id', $usuarioId)->first();
+
 		if(isset($_POST['estado'])){
 			
 			$usuario->active = $_POST['estado'];
@@ -140,13 +187,27 @@ class AuthController extends Controller
 			return redirect()->back()->with('info','La nueva password provisional es '.$random);
 		}
 
+		$this->validate($request, [
+			'email' => 'required|email|max:255|unique:users,email,'.$usuarioId,
+			'nombre' => 'required|min:4|max:35',
+			// 'restaurante' => 'required',
+			// 'empresa' => 'required',
+			'entrada' => 'date_format:H:i',
+			'salida' => 'date_format:H:i',
+			'entrada2' => 'date_format:H:i',
+			'salida2' => 'date_format:H:i',
+		]);
 		
+
+		$restauranteId = !empty($request->input('restaurante')) ? $request->input('restaurante') : null;
+		$empresaId = !empty($request->input('empresa')) ? $request->input('empresa') : null;
+		// dd($restauranteId,$empresaId);
 		$email = $request->input('email');
 		$username = $request->input('username');
 		$nombre = $request->input('nombre');
-		$restaurante = $request->input('restaurante');
-		$empresa = $request->input('empresa');
-		$entrada = $request->input('entrada');
+		$restaurante = $restauranteId;
+		// $empresa = $request->input('empresa');
+		$entrada = $empresaId;
 		$salida = $request->input('salida');
 		$entrada2 = $request->input('entrada2');
 		$salida2 = $request->input('salida2');
@@ -169,14 +230,21 @@ class AuthController extends Controller
 		$usuario->email = $email;
 		$usuario->username = $username;
 		$usuario->nombre_completo = $nombre;
-		$usuario->restaurante = $restaurante;
-		$usuario->empresa = $empresa;
+		$usuario->restaurante_id = $restauranteId;
+		$usuario->empresa_id = $empresaId;
 		$usuario->entrada = $entrada;
 		$usuario->salida = $salida;
 		$usuario->entrada2 = $entrada2;	
 		$usuario->salida2 = $salida2;	
-		
+		// dd($usuario->restauranteId);
 		$usuario->save();
+
+		
+		$centros = array_filter(array($usuario->empresa_id, $usuario->restaurante_id));
+
+		$usuario->centros()->sync($centros);
+
+
 
 		return redirect()->route('auth.signup')->with('info', 'Datos actualizados');
 	

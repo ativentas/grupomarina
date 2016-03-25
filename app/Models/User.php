@@ -13,7 +13,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'username', 'email', 'password', 'nombre_completo', 'restaurante', 'empresa','entrada','salida','active', 'is_admin', 'is_supervisor', 'entrada2', 'salida2', 'turno_partido',
+        'username', 'email', 'password', 'nombre_completo', 'restaurante_id', 'empresa_id','entrada','salida','active', 'is_admin', 'is_supervisor', 'entrada2', 'salida2', 'turno_partido',
     ];
 
     /**
@@ -54,6 +54,10 @@ class User extends Authenticatable
     public function isAdmin()
     {
         return (bool) $this->is_admin;
+    }    
+    public function isRoot()
+    {
+        return (bool) $this->is_root;
     }
     public function isSupervisor()
     {
@@ -67,5 +71,16 @@ class User extends Authenticatable
     {
         return $this->hasMany('Pedidos\Models\Event','empleado_id');
     }
-
+    public function centros()
+    {
+        return $this->belongsToMany('Pedidos\Models\Centro');
+    }
+    public function restaurante()
+    {
+        return $this->belongsTo('Pedidos\Models\Centro', 'restaurante_id');
+    }    
+    public function empresa()
+    {
+        return $this->belongsTo('Pedidos\Models\Centro', 'empresa_id');
+    }
 }
