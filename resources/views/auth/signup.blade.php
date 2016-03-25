@@ -71,11 +71,11 @@
             <div class="form-group{{$errors->has('restaurante') ? ' has-error' : ''}}">
                 <!-- <label for="restaurante" class="control-label">Elegir Restaurante</label> -->
                 <select class="form-control" id="restaurante" name="restaurante">
-                    <option value="">Elige un Restaurante</option>
+                    <option {{Request::old('restaurante')==''?' selected':''}} value="">Elige un Restaurante</option>
                     @foreach ($restaurantes as $restaurante)
-                    <option value={{$restaurante->id}}>{{$restaurante->nombre}}</option>
+                    <option {{Request::old('restaurante')==$restaurante->id ?' selected':''}} value={{$restaurante->id}}>{{$restaurante->nombre}}</option>
                     @endforeach
-                    <option {{Request::old('restaurante')==0?' selected':''}} value="">N/A</option>
+                    <option value="">N/A</option>
                 </select>
                 @if ($errors->has('restaurante'))
                     <span class="help-block">{{$errors->first('restaurante')}}</span>
@@ -91,11 +91,11 @@
                 <!-- <label for="empresa" class="control-label">Elegir Empresa</label> -->
                 <label for="empresa"> &nbsp;</label>
                 <select class="form-control" id="empresa" name="empresa">
-                    <option value="">¿En qué empresa está de alta?</option>
+                    <option {{Request::old('empresa')==''?' selected':''}} value="">¿En qué empresa está de alta?</option>
                     @foreach ($empresas as $empresa)
-                    <option value={{$empresa->id}}>{{$empresa->nombre}}</option>
+                    <option {{Request::old('empresa')==$empresa->id ?' selected':''}} value={{$empresa->id}}>{{$empresa->nombre}}</option>
                     @endforeach
-                    <option {{Request::old('empresa')==0?' selected':''}} value="">N/A</option>
+                    <option  value="">N/A</option>
                 </select>
                 @if ($errors->has('empresa'))
                     <span class="help-block">{{$errors->first('empresa')}}</span>
