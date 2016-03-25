@@ -62,10 +62,6 @@ class AuthController extends Controller
     }
 
 
-
-
-
-
 	public function postSignup(Request $request)
 	{
 		// dd($request);
@@ -207,7 +203,8 @@ class AuthController extends Controller
 		$nombre = $request->input('nombre');
 		$restaurante = $restauranteId;
 		// $empresa = $request->input('empresa');
-		$entrada = $empresaId;
+		$empresa = $empresaId;
+		$entrada = $request->input('entrada');
 		$salida = $request->input('salida');
 		$entrada2 = $request->input('entrada2');
 		$salida2 = $request->input('salida2');

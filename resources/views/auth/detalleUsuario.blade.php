@@ -56,7 +56,7 @@
             </div>
             <div class="form-group{{$errors->has('entrada')|$errors->has('salida') ? ' has-error' : ''}}">
                 <label for="entrada" class="control-label">Hora Entrada</label>
-                <input type="text" name="entrada" id="entrada" size=5 value="{{$usuario->entrada? date('H:i',strtotime($usuario->entrada)) :''}}" placeholder="00:00">
+                <input type="text" name="entrada" id="entrada" size=5 value="{{$usuario->entrada? date("H:i",strtotime($usuario->entrada)) :''}}" placeholder="00:00">
                 <label for="salida" class="control-label">Hora Salida</label>
                 <input type="text" name="salida" id="salida" size=5 value="{{$usuario->salida? date("H:i",strtotime($usuario->salida)) :''}}" placeholder="00:00">
                 @if ($errors->has('entrada')|$errors->has('salida'))

@@ -18,10 +18,10 @@ class CreateUsersTable extends Migration
             $table->string('username');
             $table->string('password');
             $table->string('nombre_completo')->nullable();
-            $table->integer('restaurante_id');
-            $table->string('restauranteNombre');
-            $table->integer('empresa_id');
-            $table->string('empresaNombre');
+            $table->integer('restaurante_id')->nullable();
+            $table->string('restauranteNombre')->nullable();
+            $table->integer('empresa_id')->nullable();
+            $table->string('empresaNombre')->nullable();
             $table->time('entrada')->nullable();
             $table->time('salida')->nullable();
             $table->boolean('turno_partido')->default(false);
