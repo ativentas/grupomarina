@@ -47,14 +47,20 @@ Route::group(['middleware' => ['web']], function () {
 
 
 
-	Route::get('/signup', [
-		'uses' => '\Pedidos\Http\Controllers\AuthController@getSignup',
-		'as' => 'auth.signup',
+	Route::get('/listUsers', [
+		'uses' => '\Pedidos\Http\Controllers\AuthController@getlistUsers',
+		'as' => 'auth.listUsers',
 		'middleware' => ['auth'],
 	]);
 
-	Route::post('/signup', [
-		'uses' => '\Pedidos\Http\Controllers\AuthController@postSignup',
+	Route::get('/nuevoUsuario', [
+		'uses' => '\Pedidos\Http\Controllers\AuthController@nuevoUsuario',
+		'as' => 'nuevoUsuario',
+		'middleware' => ['auth'],
+	]);
+
+	Route::post('/nuevoUsuario', [
+		'uses' => '\Pedidos\Http\Controllers\AuthController@postNuevoUsuario',
 		'middleware' => ['auth'],
 	]);
 

@@ -51,7 +51,7 @@
                             <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
                             Usuarios <span class="caret"></span></button>
                             <ul class="dropdown-menu" role="menu">
-                                <li><a href="{{route('auth.signup')}}">Gestión Usuarios</a></li>
+                                <li><a href="{{route('auth.listUsers')}}">Gestión Usuarios</a></li>
                                 <li><a href="{{route('fileentry')}}">Nominas</a></li>
                                 <li><a href="{{ url('/events')}}">Vacac/Bajas</a></li>
                                 <li><a href="{{route('cuadrantes')}}">Horarios</a></li>

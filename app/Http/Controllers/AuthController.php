@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-	public function getSignup()
+	public function getlistUsers()
 	{
 		if (Auth::user()->isAdmin())
 		{
@@ -29,7 +29,7 @@ class AuthController extends Controller
 			$restaurantes = Centro::where('es_empresa', 0)->get();
 			$centros = Centro::all();
 
-			return view('auth.signup')
+			return view('auth.listUsers')
 				// ->with('usuariosAdministradores', $usuariosAdministradores)
 				->with('usuariosNormales', $usuariosNormales)
 				->with('restaurantes', $restaurantes)
@@ -38,6 +38,13 @@ class AuthController extends Controller
 				;
 		}	
 		return redirect()->route('auth.signout');		
+	}
+
+	public function nuevoUsuario()
+	{
+		$empresas = Centro::where('es_empresa', 1)->get();
+		$restaurantes = Centro::where('es_empresa', 0)->get();
+		return view('auth.nuevoUsuario')->with('restaurantes', $restaurantes)->with('empresas', $empresas);	
 	}
 
     public function createFiltrado($filtro)
@@ -57,12 +64,12 @@ class AuthController extends Controller
 		$restaurantes = Centro::where('es_empresa', 0)->get();
 		$centros = Centro::all();
 
-        return view('auth.signup', compact('usuariosNormales','restaurantes','empresas','centros'));
+        return view('auth.listUsers', compact('usuariosNormales','restaurantes','empresas','centros'));
         
     }
 
 
-	public function postSignup(Request $request)
+	public function postNuevoUsuario(Request $request)
 	{
 		// dd($request);
 		$this->validate($request, [
@@ -141,9 +148,9 @@ class AuthController extends Controller
 		// dd($centros,'empresa:'.$nuevo->empresa_id, 'restaurante:'.$nuevo->restaurante_id);
 		$nuevo->centros()->sync($centros);
 
-		return redirect()
-			->route('home')
-			->with('info', 'Usuario Registrado. Ya puede entrar en la aplicación');
+		return redirect()->route('auth.listUsers')
+			// ->route('home')
+			->with('info', 'Usuario Registrado correctamente');
 	}
 
 	public function getmodificar($id)
@@ -243,7 +250,7 @@ class AuthController extends Controller
 
 
 
-		return redirect()->route('auth.signup')->with('info', 'Datos actualizados');
+		return redirect()->route('auth.listUsers')->with('info', 'Datos actualizados');
 	
 	}
 
