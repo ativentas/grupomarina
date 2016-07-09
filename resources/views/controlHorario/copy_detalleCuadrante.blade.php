@@ -1,22 +1,10 @@
-@extends('layout')
+@extends('templates.default')
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
 @section('content')
 
 <div class="row">
-    <div clss="col-lg-12">
-        <ol class="breadcrumb">
-
-            <li><a href="{{ url('cuadrantes') }}">Listado</a></li>
-            <li><a href="{{ url('nuevoHorario') }}">Nuevo Horario</a></li>
-            <li class="active">{{$cuadrante->centro->nombre}}</li>
-        </ol>
-    </div>
-</div>
-
-
-
-<div class="row">
-<h3>Fecha: {{$cuadrante->fecha->format('d/m/Y')}} - Empresa: {{$cuadrante->empresa}}
+<h3>Parte Horario. Fecha: {{$cuadrante->fecha->format('d/m/Y')}} - Empresa: {{$cuadrante->empresa}}
 	&nbsp;&nbsp;&nbsp;
 	<div style="display:inline"class="center-block">
 		<a href="{{route('cuadrantes')}}"><button type="button" class="btn btn-success" name="">Volver</button></a>
@@ -64,7 +52,49 @@
 
 
 	
+<script type="text/javascript">
+$( document ).ready(function() {
 
+google.charts.load('current', {packages: ['corechart', 'bar']});
+google.charts.setOnLoadCallback(drawBasic);
+
+function drawBasic() {
+
+      var data = new google.visualization.DataTable();
+      // data.addColumn('string', 'hora');
+      data.addColumn('timeofday', 'time');
+      data.addColumn('number', 'C');
+      data.addColumn({type:'number', role: 'annotation' });
+      data.addColumn({type: 'string', role: 'tooltip'});
+
+      data.addRows(valores);
+
+      var options = {
+        title: 'Empleados trabajando',
+        bar: {groupWidth: '100%'},
+        hAxis: {
+          title: '',
+          format: 'H:mm',
+          viewWindow: {
+            min: [7, 30, 0],
+            max: [23, 30, 0]
+          }
+        },
+        vAxis: {
+          gridlines: { count: 8 },
+          ticks: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+          title: ''
+        }
+      };
+
+      var chart = new google.visualization.ColumnChart(
+        document.getElementById('chart_div'));
+
+      chart.draw(data, options);
+    }
+
+});
+</script>
 	<table class="table table-bordered">
 		<thead>
 			<tr>
@@ -343,52 +373,7 @@
 		</form>
 
 	</table>
-<script type="text/javascript">
 
-$( document ).ready(function() {
-    // console.log( "ready!" );
-
-
-google.charts.load('current', {packages: ['corechart', 'bar']});
-google.charts.setOnLoadCallback(drawBasic);
-
-function drawBasic() {
-
-      var data = new google.visualization.DataTable();
-      // data.addColumn('string', 'hora');
-      data.addColumn('timeofday', 'time');
-      data.addColumn('number', 'C');
-      data.addColumn({type:'number', role: 'annotation' });
-      data.addColumn({type: 'string', role: 'tooltip'});
-
-      data.addRows(valores);
-
-      var options = {
-        title: 'Empleados trabajando',
-        bar: {groupWidth: '100%'},
-        hAxis: {
-          title: '',
-          format: 'H:mm',
-          viewWindow: {
-            min: [7, 30, 0],
-            max: [23, 30, 0]
-          }
-        },
-        vAxis: {
-          gridlines: { count: 8 },
-          ticks: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-          title: ''
-        }
-      };
-
-      var chart = new google.visualization.ColumnChart(
-        document.getElementById('chart_div'));
-
-      chart.draw(data, options);
-    }
-
-});
-</script>
 
   
 

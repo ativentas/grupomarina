@@ -28,8 +28,14 @@ class CuadranteController extends Controller
 	{
 		//los cuadrantes de hoy y los pendientes
 		$cuadrantes = Cuadrante::whereDate('fecha', '=', date('Y-m-d'))->orwhere('estado','!=', 'Completado')->orderBy('fecha','ASC')->get();
+		// $centros = Centro::all();
+		return view('controlHorario.gestionCuadrantes',compact('cuadrantes'));		
+	}
+
+	public function nuevoCuadrante (){
+
 		$centros = Centro::all();
-		return view('controlHorario.gestionCuadrantes',compact('cuadrantes','centros'));		
+		return view('controlHorario.nuevoHorario', compact('centros'));
 	}
 
 	public function generarCuadrante(Request $request)

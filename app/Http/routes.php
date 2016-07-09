@@ -372,6 +372,11 @@ Route::group(['middleware' => ['web']], function () {
 		'as' => 'cuadrantes',
 		'middleware' => ['auth'],
 		]);
+	Route::get('nuevoHorario', [
+		'uses' =>'CuadranteController@nuevoCuadrante',
+		'as' => 'nuevoHorario',
+		'middleware' => ['auth'],
+		]);
 	Route::get('cuadrante/detallle/{id}', [
 		'uses' => 'CuadranteController@mostrarDetalle',
 		'as' => 'cuadrante.detalle',

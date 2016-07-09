@@ -1,6 +1,16 @@
-@extends('templates.default')
+@extends('layout')
 
 @section('content')
+
+<div class="row">
+    <div clss="col-lg-12">
+        <ol class="breadcrumb">
+            <li class="active">Listado</li>
+            <li><a href="{{ url('nuevoHorario') }}">Nuevo Horario</a></li>
+
+        </ol>
+    </div>
+</div>
 
 <!-- este script es para los graficos -->
 <!--   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
@@ -65,36 +75,7 @@ function drawMultSeries() {
     }
 </script> -->
 
-<h3>Crear nuevo o consultar</h3>
 
-<div class="col-sm-4 row">
-<form role="form" action="{{route('cuadrante.generar')}}" method="post">
-  {{ csrf_field() }}
-  <div class="form-group{{$errors->has('fecha') ? ' has-error' : ''}}">
-    <label for="fecha">Fecha</label>
-    <input type="date" name="fecha" class="form-control" id="fecha" value={{date('Y-m-d')}}>
-		@if ($errors->has('fecha'))
-			<span class="help-block">{{$errors->first('fecha')}}</span>
-		@endif
-  </div>
-  
-	<div class="form-group{{$errors->has('centro') ? ' has-error' : ''}}">
-	    <!-- <label for="empresa" class="control-label">Elegir Empresa</label> -->
-	    <select class="form-control" id="centro" name="centro">
-	        <option value="">Elige Empresa/Restaurante</option>
-	        @foreach ($centros as $centro)
-          <option value={{$centro->id}}>{{$centro->nombre}}</option>
-          @endforeach
-
-	    </select>
-		@if ($errors->has('centro'))
-			<span class="help-block">{{$errors->first('centro')}}</span>
-		@endif	
-	</div>
-
-  <button type="submit" class="btn btn-default">Generar</button>
-</form>
-</div>
 
 
 <div class="col-sm-12 row">
