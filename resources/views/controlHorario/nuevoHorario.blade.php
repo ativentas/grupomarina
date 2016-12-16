@@ -20,7 +20,7 @@
   {{ csrf_field() }}
   <div class="form-group{{$errors->has('fecha') ? ' has-error' : ''}}">
     <label for="fecha">Fecha</label>
-    <input type="date" name="fecha" class="form-control" id="fecha" value={{date('Y-m-d')}}>
+    <input type="date" name="fecha" class="form-control" id="fecha" value={{date('d-m-Y')}}>
 		@if ($errors->has('fecha'))
 			<span class="help-block">{{$errors->first('fecha')}}</span>
 		@endif
