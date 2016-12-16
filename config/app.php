@@ -156,7 +156,6 @@ return [
         Pedidos\Providers\AuthServiceProvider::class,
         Pedidos\Providers\EventServiceProvider::class,
         Pedidos\Providers\RouteServiceProvider::class,
-        Barryvdh\DomPDF\ServiceProvider::class,
         Pedidos\Providers\CheckRoomAvailability::class,
         
       
@@ -208,7 +207,6 @@ return [
         'URL'       => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View'      => Illuminate\Support\Facades\View::class,
-        'PDF'       => Barryvdh\DomPDF\Facade::class,
         
         
 
