@@ -33,7 +33,7 @@
   </head>
 
   <body>
-@include('templates.partials.navigation')
+@include('templates.partials.navigationControlHorarios')
 <!--     <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container">
         <div class="navbar-header">
