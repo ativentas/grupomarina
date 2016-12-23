@@ -18,7 +18,7 @@
 		
 	</head>
 	<body>
-		@include('templates.partials.navigation')
+		@include('templates.partials.navigationControlHorarios')
 		<div bgcolor="#E6E6FA"  class="container-fluid">
 			@include('templates.partials.alerts')
 			@yield('content')
