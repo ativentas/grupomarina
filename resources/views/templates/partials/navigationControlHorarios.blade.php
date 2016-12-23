@@ -3,7 +3,8 @@
         
         <div class="navbar-header">
             <a class="navbar-brand" href="#">Grupo Marina</a>
-             @if (Auth::user()->isAdmin())
+            @if (Auth::check())
+                @if (Auth::user()->isAdmin())
             <ul class="nav navbar-nav">
                 <li class="nav-item">
                 <a class="nav-link" href="{{route('auth.listUsers')}}">Gestion Usuarios</a>
@@ -18,6 +19,7 @@
                 <a class="nav-link" href="{{route('cuadrantes')}}">Horarios</a>
                 </li>
             </ul>
+                @endif
             @endif
         </div>
 
