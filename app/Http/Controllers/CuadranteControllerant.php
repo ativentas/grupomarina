@@ -111,28 +111,48 @@ class CuadranteController extends Controller
 
 	public function mostrarDetalle($cuadrante_id){
 		function getClient() {
-		  	$client = new Google_Client();
-		  	$client->setApplicationName(APPLICATION_NAME);
-		  	$client->setScopes(SCOPES);
-		  	$client->setAuthConfigFile(CLIENT_SECRET_PATH);
-		  	$client->setAccessType('offline');
-		  	// dd($client);
-		  	// $client->setApprovalPrompt('force');//esta linea la he añadido yo
+		  $client = new Google_Client();
+		  $client->setApplicationName(APPLICATION_NAME);
+		  $client->setScopes(SCOPES);
+		  $client->setAuthConfigFile(CLIENT_SECRET_PATH);
+		  $client->setAccessType('offline');
+		  // dd($client);
+		  // $client->setApprovalPrompt('force');//esta linea la he añadido yo
 
-		  	// Load previously authorized credentials from a file.
-		  	$credentialsPath = CREDENTIALS_PATH;
-		  	if (file_exists($credentialsPath)) {		   
-		   	 	$accessToken = file_get_contents($credentialsPath);
-		  	}
+		  // Load previously authorized credentials from a file.
+		  $credentialsPath = CREDENTIALS_PATH;
+		  // dd($credentialsPath);
+		  if (file_exists($credentialsPath)) {		   
+		    $accessToken = file_get_contents($credentialsPath);
+		    // dd('existe');		   
+		  } else {
+		    // Request authorization from the user.
+		    dd('no hay autorización, habrá que modificar el código');
+		    $authUrl = $client->createAuthUrl();
+		    printf("Open the following link in your browser:\n%s\n", $authUrl);
+		    print 'Enter verification code: ';
+		    $authCode = trim(fgets(STDIN));
+
+		    // Exchange authorization code for an access token.
+		    $accessToken = $client->authenticate($authCode);
+
+		    // Store the credentials to disk.
+		    if(!file_exists(dirname($credentialsPath))) {
+		      mkdir(dirname($credentialsPath), 0700, true);
+		    }
+		    file_put_contents($credentialsPath, $accessToken);
+		    // printf("Credentials saved to %s\n", $credentialsPath);
+		  }
 		  
-		  	$client->setAccessToken($accessToken);
+		  $client->setAccessToken($accessToken);
 		  
-		  	// Refresh the token if it's expired.
-			if ($client->isAccessTokenExpired()) {
-				$client->fetchAccessTokenWithRefreshToken($client->getRefreshToken());
-			file_put_contents($credentialsPath, json_encode($client->getAccessToken()));
-			}
-		  	return $client;
+		  // Refresh the token if it's expired.
+		  if ($client->isAccessTokenExpired()) {
+		    $client->refreshToken($client->getRefreshToken());
+		  	dd($client->refreshToken($client->getRefreshToken()));    
+		    file_put_contents($credentialsPath, $client->getAccessToken());
+		  }
+		  return $client;
 		}
 		function listMessages($service, $userId, $fecha, $email) {
 		  $pageToken = NULL;

@@ -32,107 +32,43 @@ class CuadranteController extends Controller
 		return view('controlHorario.gestionCuadrantes',compact('cuadrantes'));		
 	}
 
-	public function nuevoCuadrante (){
 
-		$centros = Centro::all();
-		return view('controlHorario.nuevoHorario', compact('centros'));
-	}
-
-	public function generarCuadrante(Request $request)
-	{
-		$this->validate($request, [
-			'centro' => 'required',
-			'fecha' => 'required|date',
-			]);
-		$fecha = date('Y-m-d',strtotime($request->fecha));
-		
-		$cuadrante = Cuadrante::whereDate('fecha','=', $fecha)->where('centro_id', $request->centro)->first();
-		$eventos = Event::where('finalDay','>=',$request->fecha)->where('start_time','<=','fecha')->get();
-		$listaIdEmpleados = $eventos->lists('title','empleado_id')->toArray();
-
-		// dd($listaIdEmpleados[2]);
-		//si no existe ya uno hecho, se crea		
-		if (!$cuadrante){
-			$cuadrante = new Cuadrante;
-			$cuadrante->fecha = $fecha;
-			$cuadrante->centro_id = $request->centro;
-			$cuadrante->estado = 'Pendiente';
-			$cuadrante->save();
-			
-			$empleados = User::where('empresa_id', $request->centro)->orWhere('restaurante_id', $request->centro)->get();
-			// dd($empleados);
-		
-			foreach ($empleados as $empleado) {
-				$linea = new LineaCuadrante;
-				$linea->cuadrante_id = $cuadrante->id;
-				$linea->empleado_id = $empleado->id;
-				$linea->email = $empleado->email;
-				if (array_key_exists($empleado->id, $listaIdEmpleados)){
-					$tipo = $listaIdEmpleados[$empleado->id];
-					$evento = Event::where('empleado_id',$empleado->id)->first();
-					// dd($listaIdEmpleados[$empleado->id]);
-					if($tipo == 'Baja'){
-						$linea->tipo = 'Baja';
-						$linea->estado = 'Bloqueado';
-						$linea->fecha_inicio = $evento->start_time;
-						$linea->fecha_fin = $evento->finalDay;}
-					if($tipo == 'Vacaciones'){
-						$linea->tipo = 'Vacaciones';
-						$linea->estado = 'Bloqueado';
-						$linea->fecha_inicio = $evento->start_time;
-						$linea->fecha_fin = $evento->finalDay;}						
-					if($tipo == 'Falta'){
-						$linea->tipo = 'Falta';
-						$linea->estado = 'Bloqueado';
-						$linea->fecha_inicio = $evento->start_time;
-						$linea->fecha_fin = $evento->finalDay;}					
-				} 
-				else{	
-					$linea->entrada = $empleado->entrada;
-					$linea->salida = $empleado->salida;
-					if ($empleado->turno_partido == 1) { 
-						$linea->tipo = 'Partido';
-						$linea->entrada2 = $empleado->entrada2;
-						$linea->salida2 = $empleado->salida2;
-					}
-				}
-				// }
-				$linea->save();
-			}
-			$lineas = LineaCuadrante::where('cuadrante_id', $cuadrante->id)->get();
-			return redirect()->route('cuadrante.detalle', $cuadrante->id)->with('info', 'ya puedes confeccionar el horario');
-
-		} elseif ($cuadrante->count()){
-			$lineas = LineaCuadrante::where('cuadrante_id', $cuadrante->id)->orderBy('salida','asc')->get();
-			return redirect()->route('cuadrante.detalle',$cuadrante->id)->with('info','Ya existe un Cuadrante para ese día!!! Puedes modificarlo o Volver para crear otro diferente');
-			// return view ('controlHorario.detalleCuadrante', compact('cuadrante', 'lineas'))->with('info', 'Ya existe un Cuadrante para ese día!!! Puedes modificarlo o salir para crear otro diferente');
-		}
-	}
 
 	public function mostrarDetalle($cuadrante_id){
 		function getClient() {
-		  	$client = new Google_Client();
-		  	$client->setApplicationName(APPLICATION_NAME);
-		  	$client->setScopes(SCOPES);
-		  	$client->setAuthConfigFile(CLIENT_SECRET_PATH);
-		  	$client->setAccessType('offline');
-		  	// dd($client);
-		  	// $client->setApprovalPrompt('force');//esta linea la he añadido yo
+		  $client = new Google_Client();
+		  $client->setApplicationName(APPLICATION_NAME);
+		  $client->setScopes(SCOPES);
+		  $client->setAuthConfigFile(CLIENT_SECRET_PATH);
+		  $client->setAccessType('offline');
+		  $client->setApprovalPrompt('force');//esta linea la he añadido yo
 
-		  	// Load previously authorized credentials from a file.
-		  	$credentialsPath = CREDENTIALS_PATH;
-		  	if (file_exists($credentialsPath)) {		   
-		   	 	$accessToken = file_get_contents($credentialsPath);
-		  	}
+		  // Load previously authorized credentials from a file.
+		  $credentialsPath = CREDENTIALS_PATH;
+		  // dd($credentialsPath);
+		  if (file_exists($credentialsPath)) {		   
+		    $accessToken = file_get_contents($credentialsPath);
+		    // dd('existe');		   
+		  }
 		  
-		  	$client->setAccessToken($accessToken);
+		  $client->setAccessToken($accessToken);
 		  
-		  	// Refresh the token if it's expired.
-			if ($client->isAccessTokenExpired()) {
-				$client->fetchAccessTokenWithRefreshToken($client->getRefreshToken());
-			file_put_contents($credentialsPath, json_encode($client->getAccessToken()));
+		  // Refresh the token if it's expired.
+		  // if ($client->isAccessTokenExpired()) {
+
+		  //   $client->refreshToken($client->getRefreshToken());
+		  // 	dd($client->refreshToken($client->getRefreshToken()));    
+		  //   file_put_contents($credentialsPath, $client->getAccessToken());
+		  // }
+
+
+		  if ($client->isAccessTokenExpired()) {
+			    $client->fetchAccessTokenWithRefreshToken($client->getRefreshToken());
+			    file_put_contents($credentialsPath, json_encode($client->getAccessToken()));
 			}
-		  	return $client;
+
+
+		  return $client;
 		}
 		function listMessages($service, $userId, $fecha, $email) {
 		  $pageToken = NULL;
@@ -190,18 +126,6 @@ class CuadranteController extends Controller
 	  		return $results;
 		}
 
-		// function getBody($partes){
-		// 	foreach($partes as $parte){
-		// 		if($parte['name'] == 'body')
-		// 	}
-
-		// }
-
-		/*
-		 * Decode the body.
-		 * @param : encoded body  - or null
-		 * @return : the body if found, else FALSE;
-		 */
 		function decodeBody($body) {
 		    $rawData = $body;
 		    $sanitizedData = strtr($rawData,'-_', '+/');
@@ -226,7 +150,6 @@ class CuadranteController extends Controller
 		
 
 		if($cuadrante->estado == 'Validado') {
-
 			define('APPLICATION_NAME', 'Gmail API PHP Quickstart');
 			define('CREDENTIALS_PATH', base_path().'/storage/app/.credentials/gmail-php-quickstart.json');
 			define('CLIENT_SECRET_PATH', __DIR__ . '/client_secret.json');
@@ -234,14 +157,32 @@ class CuadranteController extends Controller
 			define('SCOPES', implode(' ', array(
 			  Google_Service_Gmail::GMAIL_MODIFY)
 			));
+			// define('CLIENT_SECRET_PATH', __DIR__ . '/client_secret.json');
+			// If modifying these scopes, delete your previously saved credentials
+			
+			// putenv("GOOGLE_APPLICATION_CREDENTIALS= ".__DIR__."/Horarios.json");
+			// putenv('GOOGLE_APPLICATION_CREDENTIALS=/home/vagrant/sites/pedidos/app/Http/Controllers/Horarios.json');
+
+			// define('SCOPES', implode(' ', array(
+			//   Google_Service_Gmail::GMAIL_MODIFY)
+			// ));
 			/**
 			 * Returns an authorized API client.
 			 * @return Google_Client the authorized client object
 			 */
-			
+			// dd(json_decode(json));
 			// Get the API client and construct the service object.
+			// $client = new Google_Client();
 			$client = getClient();
+
+			// $client->useApplicationDefaultCredentials();
+
+			//estas 2 lineas las he añadido yo aqui
+			// $client->setScopes(SCOPES); 
+			// $client->setConfig('subject', 'costaservishorarios@gmail.com');
+
 			$service = new Google_Service_Gmail($client);
+			// dd('para aqui');
 			$userId ='me';
 
 			// lista de labels con ids
@@ -249,7 +190,7 @@ class CuadranteController extends Controller
 			// dd($results);
 			
 			$messages = listMessages($service, $userId, $fecha, null);
-
+			// dd($messages);
 			if($messages){
 				foreach ($lineas as $linea) {
 					$email = $linea->empleado->email;
@@ -305,8 +246,6 @@ class CuadranteController extends Controller
 	public function updateCuadrante ($request, $cuadrante_id)
 	{		
 		
-
-
 		//update las lineas
 		
 		$lineas = LineaCuadrante::where('cuadrante_id', $cuadrante_id)->get();
