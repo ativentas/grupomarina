@@ -116,7 +116,6 @@ class CuadranteController extends Controller
 		  	$client->setScopes(SCOPES);
 		  	$client->setAuthConfigFile(CLIENT_SECRET_PATH);
 		  	$client->setAccessType('offline');
-		  	// dd($client);
 		  	// $client->setApprovalPrompt('force');//esta linea la he añadido yo
 
 		  	// Load previously authorized credentials from a file.
