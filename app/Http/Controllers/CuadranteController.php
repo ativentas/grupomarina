@@ -227,7 +227,7 @@ class CuadranteController extends Controller
 		if($cuadrante->estado == 'Validado') {
 
 			define('APPLICATION_NAME', 'Gmail API PHP Quickstart');
-			define('CREDENTIALS_PATH', base_path().'/storage/app/.credentials/gmail-php-quickstart.json');
+			define('CREDENTIALS_PATH', base_path().'/storage/app/credentials/gmail-php-quickstart.json');
 			define('CLIENT_SECRET_PATH', __DIR__ . '/client_secret.json');
 			// If modifying these scopes, delete your previously saved credentials
 			define('SCOPES', implode(' ', array(
