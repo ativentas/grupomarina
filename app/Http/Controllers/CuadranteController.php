@@ -123,12 +123,12 @@ class CuadranteController extends Controller
 		  	if (file_exists($credentialsPath)) {		   
 		   	 	$accessToken = file_get_contents($credentialsPath);
 		  	}
-		  
+		  	
 		  	$client->setAccessToken($accessToken);
-		  
 		  	// Refresh the token if it's expired.
 			if ($client->isAccessTokenExpired()) {
 				$client->fetchAccessTokenWithRefreshToken($client->getRefreshToken());
+				// dd('aqui');
 			file_put_contents($credentialsPath, json_encode($client->getAccessToken()));
 			}
 		  	return $client;
