@@ -224,6 +224,7 @@ class CuadranteController extends Controller
 			]);
 		
 
+
 		if($cuadrante->estado == 'Validado') {
 
 			define('APPLICATION_NAME', 'Gmail API PHP Quickstart');
